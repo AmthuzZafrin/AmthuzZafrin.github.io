@@ -66,7 +66,7 @@
   /* 62vh, not 66. Pinning the section below the bar spends height that
      centring used to share out, and this is what the carousel gives back so
      the pips still clear the foot of the page. */
-  height: clamp(20rem, 62vh, 36rem);
+  height: clamp(16rem, calc(100dvh - 294px), 55rem);
   display: grid;
   /* The row is stated rather than left to `auto`. An auto row is sized by its
      content, and its content — the certificate — is sized as a percentage of
@@ -212,10 +212,18 @@
 }
 
 .edu__scene--titled .edu__shot img {
+  /* Bounded on both axes and sized by neither: the picture keeps its own
+     proportions and shrinks to whichever limit it meets first.
+
+     It was `height: 100%` with object-fit: contain, which is not the same
+     thing. That gives the element the full box and fits the picture INSIDE
+     it — and since the rim and the shadow belong to the element, not the
+     picture, the leftover became two black bands drawn within the frame.
+     Here the element is the picture, so there is nothing left over. */
   width: auto;
-  height: 100%;
+  height: auto;
   max-width: 100%;
-  object-fit: contain;
+  max-height: 100%;
 }
 
 /* A stage with nothing to stand beside it is centred instead. Left-aligned it

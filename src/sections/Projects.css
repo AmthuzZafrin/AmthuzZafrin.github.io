@@ -118,7 +118,7 @@
 .projects__stage {
   /* Resolved once here so the rail can be sized off the same height the panel
      uses, whether that is the committed value or the ?edit override. */
-  --panel-h-used: var(--panel-h, min(28.25rem, 74vh));
+  --panel-h-used: var(--panel-h, min(60rem, calc(100dvh - 321px)));
   --rail-gap: clamp(0.5rem, 1.1vh, 1rem);
 
   display: grid;

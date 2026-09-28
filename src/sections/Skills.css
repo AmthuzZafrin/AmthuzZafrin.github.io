@@ -50,7 +50,14 @@
      taken theirs. The cluster takes the loss sideways rather than by shrinking
      — the wall it packs against is a squircle, so a shorter field spreads it
      wider instead of wedging it. */
-  height: min(30rem, 65vh);
+  /* Height first, width after.
+     The rem is a stop against a very tall monitor, not a working size. It was
+     set where the vh met it on a 773px window, which made it bind on every
+     window taller than that — the page stopped growing while the window
+     carried on, and the surplus came out as dead black. Set against ~1200px
+     instead, so the vh governs on any ordinary screen.
+  */
+  height: min(60rem, calc(100dvh - 293px));
   margin: 0 auto;
   padding: 0;
   list-style: none;

@@ -41,7 +41,7 @@
   --acc-cool: 150 116 214;
   /* Capped by the fixed nav, not by the section: the heading is centred with
      the plate, so any more height here pushes "The Story" up behind the bar. */
-  --main-h: min(31rem, 63vh);
+  --main-h: min(60rem, calc(100dvh - 286px));
   --rail-gap: clamp(0.45rem, 1.1vh, 0.8rem);
   /* Two by two, at exactly the main plate's height. A 2 x 2 block of 5 : 8
      tiles is itself 5 : 8, so the block comes out the same size as the plate
