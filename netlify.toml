@@ -1,0 +1,14 @@
+# Netlify build settings.
+#
+# No SPA catch-all redirect here on purpose. The usual /* -> /index.html 200
+# rule exists so a client-side router can own deep links, and this site has no
+# router — one page, ten scroll-snapped sections. With the rule in place a
+# missing asset would answer 200 with the HTML shell instead of a 404, which
+# turns a broken image into a silent one. Without it, anything that goes
+# missing says so.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
