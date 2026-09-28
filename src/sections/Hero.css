@@ -16,37 +16,48 @@
   overflow: hidden;
 }
 
-/* The picture, and the two things it needs to not look like a picture.
+/* The picture, hung on the bottom-right corner.
 
-   It is a 2.85 : 1 band in a window nearer 2 : 1, so it cannot fill the frame
-   without being blown up — sized to the height it would need 1900px of width
-   from a 1552px file, and a soft robot is worse than a small one. So it is
-   sized by WIDTH, a little over the window's, and hung on the right: the
-   overhang costs a few per cent of upscale, makes the figure large enough to
-   carry the page, and pushes the source's empty left third off the edge,
-   which is the part of it doing no work.
+   It is a 2.85 : 1 band in a window nearer 2 : 1, so something has to give at
+   one edge or the other. Centring it was wrong: the surplus split into a band
+   above AND below, and the one below cut the robot's lit body off mid-torso
+   against black — 106px of it on a 914px window. Anchored to the foot, the
+   whole surplus moves to the top, where the picture is only dark sky and the
+   nav is sitting over it anyway. The robot then runs off the bottom edge the
+   way a figure in a masthead should.
 
-   Centred vertically because the light the robot is touching sits on the
-   picture's own middle line, and that is the thing the eye should land on. */
+   Sized by width rather than by `cover`, which would be height-driven at this
+   ratio: covering a tall window drags the robot bodily leftward across the
+   frame and squeezes the type, and it does it most on the narrow windows that
+   have least room to spare. At a fixed 122% every landmark in the picture
+   keeps the same fraction of the window at every size — the pointing
+   fingertip sits at 46.2% of the width whatever the window is, which is what
+   lets the name be sized against it in the same units below.
+
+   The cap is high enough not to bite on any ordinary screen. It was 2000px,
+   which a 1850px window hit, and the picture stopped growing while the window
+   carried on. */
 .hero__ai {
   position: absolute;
-  top: 50%;
   right: 0;
-  transform: translateY(-50%);
-  width: min(122%, 2000px);
-  aspect-ratio: 1552 / 545;
+  bottom: 0;
+  width: min(122%, 2600px);
+  aspect-ratio: 2400 / 843;
   background: url('/hero-ai.webp') center / cover no-repeat;
   pointer-events: none;
 }
 
-/* And the seam. The picture's own background is a dark navy, not the page's
-   black, so its edges would otherwise draw a visible rectangle on the page.
-   Black is painted back over them instead of masking the image — the result
-   is identical on a black page and it asks nothing of mask-image support.
+/* And the seams. The picture's backdrop is a dark navy rather than the page's
+   black, so its edges would draw a rectangle if they were left alone. Black is
+   painted back over them instead of masking the image — identical on a black
+   page, and it asks nothing of mask-image support.
 
-   The left fade is much longer than the others, and is doing a second job:
-   it rebuilds the negative space the crop pushed off the frame, so the page
-   still has somewhere quiet to put a line of type. */
+   The top fade is the long one now: that is the edge carrying the surplus, and
+   it has to reach from the nav down to wherever the picture happens to start.
+   The foot only needs closing where the picture meets the page.
+
+   The left fade runs furthest of all and does a second job — it deepens the
+   quiet side of the picture to true black, which is what the name is set on. */
 .hero__ai::after {
   content: '';
   position: absolute;
@@ -55,26 +66,12 @@
     linear-gradient(
       90deg,
       #000 0%,
-      rgba(0, 0, 0, 0.94) 18%,
-      rgba(0, 0, 0, 0.55) 40%,
-      rgba(0, 0, 0, 0.12) 62%,
-      transparent 78%
+      rgba(0, 0, 0, 0.94) 16%,
+      rgba(0, 0, 0, 0.58) 34%,
+      rgba(0, 0, 0, 0.14) 54%,
+      transparent 70%
     ),
-    linear-gradient(
-      180deg,
-      #000 0%,
-      transparent 16%,
-      transparent 82%,
-      #000 100%
-    );
-}
-
-/* A short window has less height than the band needs and would crop it hard;
-   letting it sit wider keeps the robot whole. */
-@media (max-height: 34rem) {
-  .hero__ai {
-    width: min(150%, 2000px);
-  }
+    linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.45) 9%, transparent 22%, transparent 94%, #000 100%);
 }
 
 /* ---- the name ---- */
@@ -105,7 +102,12 @@
 .hero__name img,
 .hero__role img {
   display: block;
-  width: clamp(15rem, 35vw, 33rem);
+  /* The fingertip sits at 46.2% of the window's width at every size, and the
+     page margin takes 6% off the left, so 34% is the widest the block can be
+     and still keep a clear gap to the hand on any screen. Sized in vw for
+     exactly that reason: a cap in rem froze the name at 528px on a wide
+     window while the picture behind it carried on growing. */
+  width: clamp(15rem, 34vw, 44rem);
   height: auto;
 }
 

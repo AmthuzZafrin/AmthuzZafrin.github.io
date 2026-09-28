@@ -30,7 +30,7 @@ Run from the project root:  python3 tools/prep-hero-ai.py
 import pathlib
 import sys
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 SRC = pathlib.Path(
     "/home/zafrin/Downloads/Gemini_Generated_Image_au2tbhau2tbhau2t.png"
@@ -46,6 +46,10 @@ CUT = 545
 # robot and the rings of the interface, and both hold at this.
 QUALITY = 86
 
+# What the page asks for on a large window, so the browser is never the one
+# doing the enlarging.
+WIDE = 2400
+
 
 def main():
     if not SRC.exists():
@@ -59,6 +63,18 @@ def main():
         return 1
 
     band = im.crop((0, 0, w, CUT))
+
+    # Written wider than the file is, because the page draws it wider than the
+    # file is. The picture is hung at 122% of the window, so a 1850px window
+    # asks for 2257px across from a 1552px source — and a browser upscaling by
+    # half does it with a filter that smears every edge in the robot. Lanczos
+    # with a light unsharp does not invent detail either, but it keeps the
+    # edges it has, which is the whole difference between soft and mushy.
+    if band.width < WIDE:
+        tall = round(band.height * WIDE / band.width)
+        band = band.resize((WIDE, tall), Image.LANCZOS)
+        band = band.filter(ImageFilter.UnsharpMask(radius=1.1, percent=45, threshold=3))
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     band.save(OUT, "WEBP", quality=QUALITY, method=6)
 
