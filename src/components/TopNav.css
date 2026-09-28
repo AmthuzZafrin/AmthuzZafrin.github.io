@@ -1,0 +1,237 @@
+/* A flat bar across the top: wordmark left, sections right. No panel and no
+   pill — it should read as part of the page rather than as a control sitting
+   on it.
+
+   It does have to be a surface, though. A scrim alone was not enough: it faded
+   to nothing by the bottom edge, and a section heading passing underneath came
+   through it legibly and collided with the links — two sets of words in the
+   same place, both readable, neither meant to be read there.
+
+   So the bar frosts what is behind it rather than merely shading it. The blur
+   is the same one the glass panel on the first page uses; what changes here is
+   that the scrim over it no longer reaches transparent, so whatever passes
+   under the bar arrives as a smear of light and not as type. */
+.topnav {
+  /* The tabs' own three steps, and the glow that goes with the current one.
+     Scoped to the bar: the nav sits outside .page, so without these it
+     inherits the root champagne, which is what it was wearing. */
+  --tab: #8ac0e6;
+  --tab-hi: #e2f4ff;
+  --tab-on: #4fcbff;
+  --tab-glow: 79 203 255;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: clamp(0.9rem, 2.4vh, 1.6rem) var(--page-pad-x);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.94) 0%,
+    rgba(0, 0, 0, 0.82) 58%,
+    rgba(0, 0, 0, 0.66) 100%
+  );
+  /* Hard-edged at the foot rather than faded, which a blur has to be — you
+     cannot taper a backdrop-filter. The lit line below does the tapering
+     instead: it gives the edge a reason to be there. */
+  backdrop-filter: blur(16px) saturate(118%);
+  -webkit-backdrop-filter: blur(16px) saturate(118%);
+}
+
+/* The line the bar stands on.
+
+   The scrim above fades to nothing by the bottom edge, which is the right way
+   to keep type from colliding with a section passing underneath but leaves the
+   bar with no edge of its own — on a black page it simply dissolves into
+   whatever is below it. This is that edge: a cream filament at the middle, the
+   heading's own brightest stop, falling away to gold and then to nothing
+   before either end, with the gold thrown a little way down the page under it.
+
+   Brightest in the middle rather than uniform, because a rule that runs hard
+   into both corners reads as a border around a panel; one that fades reads as
+   light on an edge, which is what the rest of the site is lit by. */
+.topnav::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(var(--tab-glow) / 0.28) 10%,
+    rgb(var(--tab-glow) / 0.75) 28%,
+    var(--tab-hi) 50%,
+    rgb(var(--tab-glow) / 0.75) 72%,
+    rgb(var(--tab-glow) / 0.28) 90%,
+    transparent 100%
+  );
+  box-shadow:
+    0 1px 7px rgb(var(--tab-glow) / 0.42),
+    0 2px 20px rgb(var(--tab-glow) / 0.26),
+    0 4px 44px rgb(var(--tab-glow) / 0.14);
+}
+
+.topnav__mark {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 1.95vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--tab-hi);
+}
+
+/* Split, as the reference wordmark is — but the given name is filled with a
+   gradient rather than a flat accent, the same white-into-colour treatment the
+   section headings use, so it reads as a mark rather than as coloured text.
+
+   It runs on the tabs' own cerulean now, as does the lit edge under the bar.
+   Both were champagne, which was chosen when the page below them was a gold
+   moon; with a blue picture there they were the last warm things on the
+   screen. */
+.topnav__given {
+  background-image: linear-gradient(
+    165deg,
+    var(--tab-hi) 0%,
+    var(--tab-on) 45%,
+    #0b7cb4 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* The links can be narrower than their own content, which is what lets them
+   scroll rather than push the wordmark off the page. A flex item will not
+   shrink past its contents without being told. */
+.topnav nav {
+  min-width: 0;
+}
+
+.topnav__list {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.2vw, 2.1rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Nine tabs is one more than the row comfortably holds. Below about this, the
+   gap tightens and the row starts scrolling sideways instead — the labels are
+   nowrap, so without somewhere to go they would push the bar apart. The
+   narrower rule further down takes over from here. */
+@media (max-width: 1080px) {
+  .topnav__list {
+    gap: clamp(0.8rem, 1.7vw, 1.5rem);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .topnav__list::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.topnav__link {
+  position: relative;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  padding: 0.35rem 0;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.08vw, 1.02rem);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  /* Cerulean, taken off the picture on the home page rather than picked: its
+     interface glow, its halo and the light on the robot's visor all sit
+     between 200 and 204 degrees, so the tabs are set in the same light the
+     first thing you see is lit by.
+
+     What keeps it from reading dull is chroma, not brightness. A blue that
+     loses its saturation on the way down turns to slate, and slate is the
+     colour of a disabled control; this holds 41% at rest and climbs to 68%
+     on the tab you are actually on. The rest state is a shade brighter than
+     the tan it replaces — 9.8 : 1 against 9.1 — so the hierarchy between the
+     three states is unchanged, only its hue. */
+  color: var(--tab);
+  transition:
+    color 0.22s ease-out,
+    text-shadow 0.22s ease-out;
+}
+
+.topnav__link:hover {
+  color: var(--tab-hi);
+}
+
+/* The current section: the accent plus a short rule beneath it, the way the
+   reference marks its active link.
+
+   The glow is what makes this one read as lit rather than as simply a
+   brighter word. It is tight — a wide bloom on type this small silts up the
+   counters — and it is the only text on the site carrying one. */
+.topnav__link.is-current {
+  color: var(--tab-on);
+  text-shadow:
+    0 0 10px rgb(var(--tab-glow) / 0.45),
+    0 0 26px rgb(var(--tab-glow) / 0.22);
+}
+
+.topnav__link.is-current::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: 20px;
+  height: 2px;
+  transform: translateX(-50%);
+  border-radius: 2px;
+  background: var(--tab-on);
+  box-shadow:
+    0 0 8px rgb(var(--tab-glow) / 0.75),
+    0 0 18px rgb(var(--tab-glow) / 0.35);
+}
+
+.topnav__mark:focus-visible,
+.topnav__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* Narrow: the links keep their row and scroll sideways rather than wrapping
+   under the wordmark. */
+@media (max-width: 720px) {
+  .topnav {
+    gap: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .topnav__list {
+    gap: 1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .topnav__list::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topnav__link {
+    transition: none;
+  }
+}

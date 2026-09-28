@@ -1,0 +1,570 @@
+/* Per-project palette and sticker scale. Set on both the feature panel and the
+   rail thumbnail, so a miniature carries its project's colour too.
+
+   --sticker must agree with SCATTERS in src/lib/scatterLayout.js, which is what
+   the drag editor measures clearances against. */
+.is-bubu {
+  --acc: 139 63 240;
+  --gb-rim: 238 216 255;
+  --gb-glow: 199 130 255;
+  --gb-deep: 139 63 240;
+  /* the panel's own text — the heading and, where a project has them, its words */
+  --gb-text: #ecdcff;
+  /* the button: a violet body, not a dark pill with a violet outline */
+  --btn-a: #7c42d8;
+  --btn-b: #3c1878;
+  --btn-rim: 234 216 255;
+  --btn-glow: 170 108 255;
+  --btn-ink: #fdfaff;
+  --btn-ink-hi: #ffffff;
+  --btn-ink-lo: #ddc8ff;
+  --btn-emboss: 40 12 84;
+  --sticker: min(19.03cqh, 10.34cqw);
+
+  /* Amethyst, and the same one the project's own page is headed in. */
+  --gb-title-top: #fce9ff;
+  --gb-title: #dba6ff;
+  --gb-title-deep: #9a4dff;
+  --gb-title-glow: 198 122 255;
+}
+
+/* Yellow, sampled straight off the reference button — which was yellow, so
+   these are its own values rather than a translation of them. */
+.is-kukai {
+  --acc: 176 148 30;
+  --gb-rim: 240 231 168;
+  --gb-glow: 224 200 74;
+  --gb-deep: 176 148 30;
+  --gb-text: #f7e9a2;
+  /* Yellow at full strength, so the label goes dark — yellow and white is the
+     one pairing that cannot be made to read. */
+  --btn-a: #f4d049;
+  --btn-b: #ab8009;
+  --btn-rim: 255 247 212;
+  --btn-glow: 244 208 82;
+  --btn-ink: #2b2003;
+  /* Dark ink on gold: espresso rather than black, so it reads as ink pressed
+     into the metal instead of a hole in it. */
+  --btn-ink-hi: #4c3608;
+  --btn-ink-lo: #170f00;
+  --btn-emboss: 255 246 206;
+  --sticker: min(19cqh, 9.69cqw);
+
+  /* Light gold into a saturated amber — a metal, not a mustard. The accent's
+     own deep end is a dark desaturated yellow, which is the right shade for an
+     edge on a small control and turns to olive the moment it fills type this
+     large. */
+  --gb-title-top: #fff8e2;
+  --gb-title: #ffe9a8;
+  --gb-title-deep: #e0a42c;
+  --gb-title-glow: 250 199 92;
+}
+
+/* Ivory. Warmer than white so it reads as light rather than as paper, and the
+   fill carries the same quarter-strength tint the other two do. */
+.is-deen {
+  --acc: 198 178 132;
+  --gb-rim: 240 232 210;
+  --gb-glow: 226 212 176;
+  --gb-deep: 176 154 108;
+  --gb-text: #f8f0de;
+  /* Ivory, so this one is a pale body with dark ink — a cream card, not a
+     cream outline. */
+  --btn-a: #f9f3e6;
+  --btn-b: #cbba95;
+  --btn-rim: 255 253 247;
+  --btn-glow: 232 218 184;
+  --btn-ink: #2f2617;
+  --btn-ink-hi: #55432a;
+  --btn-ink-lo: #211809;
+  --btn-emboss: 255 252 242;
+  /* Words are sized by type, not by width — see .projects__word. */
+  --word-fs: 7cqh;
+
+  /* Champagne into an old bronze. Ivory is close enough to white that the ramp
+     needs a genuinely deep end to read as a ramp at all. */
+  --gb-title-top: #fffdf6;
+  --gb-title: #f4e8ce;
+  --gb-title-deep: #b6935c;
+  --gb-title-glow: 226 206 166;
+}
+
+/* Ivory sits far closer to white than purple or yellow do, so the same ambient
+   wash reads as fog on black and starts veiling the names behind it. Pulled
+   back for this palette only. */
+.is-deen .glow-btn::before {
+  opacity: 0.5;
+}
+
+/* The heading and the caption take the selected project's own colour, so the
+   page changes with the panel rather than sitting apart from it: violet on
+   BUBU, gold on KUKAI, ivory on Deen & Daleel. Each project names its three
+   stops in its .is-* block above, and they are the same three its own page
+   uses — so the heading you click and the heading you arrive at match. */
+#projects {
+  --sub-color: var(--gb-text);
+}
+
+.projects__title {
+  --title-top: var(--gb-title-top);
+  --title-color: var(--gb-title);
+  --title-deep: var(--gb-title-deep);
+}
+
+/* Feature panel on the left, a rail of three on the right — the selected
+   project is the big one, the rail is how you change it. The rail's items are
+   the same composition rendered small, not separate artwork, which works
+   because every size inside a panel is in container units. */
+.projects__stage {
+  /* Resolved once here so the rail can be sized off the same height the panel
+     uses, whether that is the committed value or the ?edit override. */
+  --panel-h-used: var(--panel-h, min(28.25rem, 74vh));
+  --rail-gap: clamp(0.5rem, 1.1vh, 1rem);
+
+  display: grid;
+  /* The rail's width is whatever makes three stacked thumbnails, at the
+     panel's own proportions, come to exactly the panel's height. */
+  grid-template-columns:
+    var(--panel-w, min(58rem, 66vw))
+    calc((var(--panel-h-used) - 2 * var(--rail-gap)) / 3 * (928 / 452));
+  gap: clamp(0.75rem, 1.6vw, 1.6rem);
+  align-items: center;
+  /* Sits below the section's centre line, matching the summary. A centred flex
+     item splits its own top margin, so this drops it by half the value. */
+  margin-top: clamp(0.5rem, 2vh, 1.4rem);
+}
+
+.projects__rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rail-gap);
+}
+
+.projects__thumb {
+  /* A true miniature of the panel beside it. */
+  width: 100%;
+  height: auto;
+  aspect-ratio: 928 / 452;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  container-type: size;
+  cursor: pointer;
+  opacity: 0.45;
+  transition:
+    opacity 0.3s ease-out,
+    box-shadow 0.3s ease-out;
+}
+
+.projects__thumb:hover {
+  opacity: 0.75;
+}
+
+.projects__thumb.is-current {
+  opacity: 1;
+  box-shadow:
+    0 0 0 1px rgb(var(--acc) / 0.7),
+    0 0 22px rgb(var(--acc) / 0.4);
+}
+
+.projects__thumb:focus-visible {
+  outline: 2px solid rgb(var(--acc));
+  outline-offset: 3px;
+}
+
+/* Slots for the projects that have no composition yet. */
+.projects__todo {
+  color: rgb(var(--gb-rim) / 0.42);
+  font-size: min(6cqh, 3cqw);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+/* The feature panel: the button sits dead centre, the faces are absolutely
+   positioned around it. Its width comes from the stage's grid column, so the
+   two stay in step. */
+.projects__box {
+  position: relative;
+  width: 100%;
+  /* Still taller than the summary panel — the scatter needs four bands of
+     stickers with clear air between them and the panel's own edge. */
+  height: var(--panel-h-used);
+  display: grid;
+  place-items: center;
+  /* Makes the panel a size container, so the faces can be sized off IT rather
+     than off the viewport. That matters: the panel's height comes from vh while
+     a viewport-sized face comes from vw, so on a short wide window the faces
+     kept their size while the panel lost height and the solved clearances
+     collapsed. In container units the solved layout holds at every size. */
+  container-type: size;
+}
+
+/* ---- the panel as a surface ----
+
+   The shared .glass fill is flat, which is what made these read as dull: a
+   single translucent grey has no light falling on it. Both the feature panel
+   and its thumbnails are built the same way so a miniature stays a true copy. */
+.glass.projects__box,
+.glass.projects__thumb {
+  border: 0;
+  border-radius: 16px;
+  background-image:
+    /* light from above */
+    radial-gradient(125% 105% at 50% -22%, rgba(255, 255, 255, 0.1), transparent 60%),
+    /* the project's own colour pooling up from the button at the centre */
+    radial-gradient(95% 115% at 50% 118%, rgb(var(--acc) / 0.16), transparent 64%),
+    linear-gradient(180deg, #1c1c27 0%, #101017 100%);
+  box-shadow:
+    /* a catch-light on the top edge and a hairline the whole way round */
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.075),
+    inset 0 -46px 78px -52px rgb(var(--acc) / 0.55),
+    /* the panel is an object on the page, so it gets contact before it gets
+       atmosphere */
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    0 22px 54px rgba(0, 0, 0, 0.62),
+    0 0 90px rgb(var(--acc) / 0.16);
+}
+
+/* A lit strip across the top edge, brightest at the middle and fading before
+   the corners. It is the detail that reads as instrumentation rather than
+   decoration — a panel that is powered rather than merely drawn. */
+.glass.projects__box::after,
+.glass.projects__thumb::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1.5px;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--acc) / 0.95) 30%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgb(var(--acc) / 0.95) 70%,
+    transparent
+  );
+  /* the light it throws down onto the panel below it */
+  box-shadow:
+    0 0 6px rgb(var(--acc) / 0.75),
+    0 0 18px rgb(var(--acc) / 0.4);
+}
+
+/* A lit strip across the top edge, brightest at the middle and fading before
+   the corners. It is the detail that reads as instrumentation rather than
+   decoration — a panel that is powered rather than merely drawn. */
+.glass.projects__box::after,
+.glass.projects__thumb::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1.5px;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--acc) / 0.95) 30%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgb(var(--acc) / 0.95) 70%,
+    transparent
+  );
+  /* the light it throws down onto the panel below it */
+  box-shadow:
+    0 0 6px rgb(var(--acc) / 0.75),
+    0 0 18px rgb(var(--acc) / 0.4);
+}
+
+/* ---- the floating expressions ---- */
+
+.projects__sticker {
+  position: absolute;
+  z-index: 1;
+  /* The cqh term is the base sticker against the panel height the layout was
+     solved at; the cqw term stops a tall narrow panel from crowding them
+     sideways. Both come from the project's palette block above. */
+  width: calc(var(--sticker) * var(--s, 1));
+  /* left/top place the face's centre, so the -50% pulls it back onto the
+     coordinate rather than hanging off it. Nothing may animate this element's
+     transform, or the centring goes with it. */
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.projects__sticker-pop {
+  /* Carries the entrance animation, keeping it off the positioning wrapper. */
+  display: block;
+}
+
+.projects__sticker img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 22%;
+  animation: bubu-float var(--dur) ease-in-out var(--delay) infinite;
+  /* The source frames are already pure black behind the device, so they sit on
+     the page without a cutout. Three shadows rather than one: a tight dark
+     contact, a soft cast shadow, and a faint accent-tinted halo. The first two
+     separate the sticker from a panel of nearly the same value — which is what
+     made them read as flat stamps — and the third ties them to the button. */
+  filter:
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8))
+    drop-shadow(0 9px 20px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 0 14px rgb(var(--acc) / 0.42));
+}
+
+@keyframes bubu-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--rot));
+  }
+  50% {
+    /* Charged into the solver's swept height, so even at the far end of the
+       drift nothing meets its neighbour, the button, or the panel's edge.
+       In container units so it scales with everything else. */
+    transform: translateY(-1.4cqh) rotate(calc(var(--rot) * -0.7));
+  }
+}
+
+/* ---- the button ----
+
+   Filled, not outlined. It was a near-black pill with a coloured hairline and
+   coloured text — the neon-outline pattern, which is what made it read as
+   dated. A real control is a body of colour with light falling on it, so the
+   colour moved into the fill and the label went to whatever contrasts with it.
+   That is why the label is dark on the yellow and cream ones. */
+
+.glow-btn {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  border: 0;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 0.36em 0.92em;
+  font-family: var(--font-display);
+  /* Sized off the panel, like the stickers. If this came from the viewport the
+     button would keep its size while a shrinking panel pulled the stickers in
+     around it, and the solved clearance to it would close up. */
+  font-size: min(8.4cqh, 4.55cqw);
+  font-weight: 600;
+  letter-spacing: 0.045em;
+  line-height: 1.1;
+  color: var(--btn-ink);
+
+  background-image:
+    /* A hard, narrow specular across the top third. Narrow on purpose: a broad
+       soft one is just a gradient, and a gradient is what reads as CSS. */
+    linear-gradient(
+      177deg,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0.14) 24%,
+      rgba(255, 255, 255, 0) 33%
+    ),
+    /* light gathering in the foot, bounced off the panel */
+    radial-gradient(125% 95% at 50% 132%, rgb(var(--btn-rim) / 0.42), transparent 64%),
+    linear-gradient(180deg, var(--btn-a) 0%, var(--btn-b) 100%);
+
+  box-shadow:
+    /* Bevel: a catch-light along the top inside edge and a hard dark line along
+       the bottom one. This pair is what makes a control read as machined. */
+    inset 0 1.2px 0 rgb(var(--btn-rim) / 0.9),
+    inset 0 -1.4px 0 rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgb(var(--btn-rim) / 0.28),
+    /* separation from the panel */
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    /* Contact. A real object sits on something: one tight dark shadow directly
+       under it, then two softer ones. Without these the pill floats. */
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 6px 14px rgba(0, 0, 0, 0.45),
+    0 18px 36px rgba(0, 0, 0, 0.32),
+    /* the light it throws */
+    0 0 22px rgb(var(--btn-glow) / 0.3),
+    0 0 60px rgb(var(--btn-glow) / 0.15);
+
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease-out,
+    filter 0.22s ease-out;
+}
+
+/* The label. Filled with a gradient of its own rather than a flat colour —
+   the same grading the section headings use, at a smaller scale: it is what
+   separates set type from a word typed into a box.
+
+   The emboss has to be a filter, not a text-shadow. The glyphs are painted by
+   the background, so there is no text colour for a shadow to pick up. Its
+   direction reads correctly either way: a dark lip under light type on the
+   violet, a light one under dark type on the gold and the ivory. */
+.glow-btn__label {
+  background-image: linear-gradient(178deg, var(--btn-ink-hi) 0%, var(--btn-ink-lo) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 0 rgb(var(--btn-emboss) / 0.4));
+}
+
+/* The ambient pool the button throws onto the panel. Its own layer so it can
+   spread wider than the rim shadows without dragging them out with it. */
+.glow-btn::before {
+  content: '';
+  position: absolute;
+  inset: -170% -60%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgb(var(--btn-glow) / 0.14) 0%,
+    rgb(var(--gb-deep) / 0.06) 38%,
+    transparent 70%
+  );
+}
+
+/* Surface grain. Nothing manufactured is perfectly smooth, and the absence of
+   any noise at all is most of what makes a rendered surface look drawn. */
+.glow-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.28;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='90' height='90' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+}
+
+.glow-btn:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1.2px 0 rgb(var(--btn-rim) / 1),
+    inset 0 -1.4px 0 rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgb(var(--btn-rim) / 0.4),
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 2px 3px rgba(0, 0, 0, 0.55),
+    0 9px 20px rgba(0, 0, 0, 0.45),
+    0 22px 44px rgba(0, 0, 0, 0.34),
+    0 0 28px rgb(var(--btn-glow) / 0.42),
+    0 0 76px rgb(var(--btn-glow) / 0.2);
+}
+
+/* Pressed: it goes down onto the panel, so the contact shadows collapse and the
+   bevel flips — dark at the top, light at the bottom. */
+.glow-btn:active {
+  transform: translateY(1.5px);
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.45),
+    inset 0 -1.2px 0 rgb(var(--btn-rim) / 0.5),
+    inset 0 0 0 1px rgb(var(--btn-rim) / 0.22),
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 0 16px rgb(var(--btn-glow) / 0.24);
+}
+
+.glow-btn:focus-visible {
+  outline: 2px solid var(--gb-text);
+  outline-offset: 5px;
+}
+
+/* A thumbnail is not the control — only the feature panel's button reacts. */
+.projects__thumb .glow-btn {
+  pointer-events: none;
+}
+
+/* Narrow screens: the panel goes tall, so the stickers have to come down or
+   they crowd the button. */
+@media (max-width: 640px) {
+  .projects__sticker {
+    width: calc(var(--sticker) * 1.45 * var(--s, 1));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects__sticker img {
+    animation: none;
+    transform: rotate(var(--rot));
+  }
+
+  .glow-btn {
+    transition: none;
+  }
+}
+
+/* ---- ?edit: drag to place ---- */
+
+.projects__box.is-editing .projects__sticker {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  /* Without this a drag across a word starts a text selection instead. */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.projects__box.is-editing .projects__sticker img,
+.projects__box.is-editing .projects__word {
+  /* Stopped, not paused: pausing freezes each sticker at an arbitrary point in
+     its cycle, which both moves it under your cursor and inflates its measured
+     box by whatever rotation it happens to be at. Dropping to the resting pose
+     makes placement predictable and the toolbar's numbers steady. The drift is
+     still budgeted for in those numbers. */
+  animation: none;
+  transform: rotate(var(--rot));
+}
+
+.projects__sticker.is-held {
+  cursor: grabbing;
+  z-index: 3;
+}
+
+.projects__sticker.is-held img {
+  outline: 2px solid rgb(var(--acc));
+  outline-offset: 3px;
+  border-radius: 22%;
+}
+
+.projects__sticker.is-clashing img {
+  outline: 2px solid #ff5d5d;
+  outline-offset: 3px;
+  border-radius: 22%;
+}
+
+/* ---- project 3: the names are set as type ---- */
+
+.projects__sticker--text {
+  /* A word's width comes from its own glyphs, so unlike an image sticker this
+     one is not given a width at all. */
+  width: auto;
+}
+
+.projects__word {
+  display: block;
+  font-family: Amiri, 'Noto Naskh Arabic', 'Geeza Pro', serif;
+  font-size: calc(var(--word-fs) * var(--s, 1));
+  line-height: 1.5; /* room for the vowel marks above and below */
+  white-space: nowrap;
+  color: var(--gb-text);
+  /* A quiet glow on the letters themselves: tight and bright first, then two
+     wider falloffs, the same shape as the button's rim. */
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.5),
+    0 0 5px rgb(var(--gb-rim) / 0.6),
+    0 0 16px rgb(var(--gb-glow) / 0.5),
+    0 0 40px rgb(var(--gb-deep) / 0.38);
+  animation: bubu-float var(--dur) ease-in-out var(--delay) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects__word {
+    animation: none;
+    transform: rotate(var(--rot));
+  }
+}

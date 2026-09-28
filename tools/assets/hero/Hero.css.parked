@@ -1,0 +1,339 @@
+/* The masthead.
+
+   It set the site's palette rather than taking one: cream, champagne, gold,
+   and every heading and sentence on every other page is now the same three
+   stops. So these read the shared tokens rather than repeating their values —
+   changing the site's ink means changing it once, in tokens.css.
+
+   Nothing is lit: no bloom on the letters and no pool of light behind them,
+   the same as every other heading on the site now, on a field of flat black. */
+.hero {
+  --hero-top: var(--title-top);
+  --hero-mid: var(--title-color);
+  --hero-deep: var(--title-deep);
+  /* Still named, because the divider under the name is drawn in it. */
+  --hero-glow: 226 206 166;
+  --page-glow: 226 206 166;
+}
+
+/* The block is centred in the section and the section is the window — but the
+   window is not what it has to sit in the middle of. The bar takes the top of
+   it and the moon takes the bottom 37%, and what is left is a band running from
+   about a tenth of the way down to a little under two thirds. The middle of
+   that band is at 36% of the height, not 50%.
+
+   A centred flex item rises by half of whatever is added below it, so this is
+   twice the distance between those two: the name now sits in the space it
+   actually has rather than in the space the window nominally offers, and the
+   gap under the roles is the moon's rather than dead air. */
+.hero.hero-pin__page {
+  padding-bottom: calc(var(--page-pad-y) + 28vh);
+}
+
+/* Unless the window is short, where a lift this size walks the name up behind
+   the bar — the type is sized off the width, so a wide, shallow window has a
+   full-size masthead and almost nowhere to put it. The moon gives up some of
+   its share at the same time. */
+@media (max-height: 40rem) {
+  .hero.hero-pin__page {
+    padding-bottom: calc(var(--page-pad-y) + 10vh);
+  }
+
+  .hero__moon {
+    height: 30%;
+  }
+}
+
+/* The moon.
+
+   A band cut off the top of a sphere — see tools/prep-moon.py, which completes
+   the disc the photograph only half contains and turns it so the lit limb is
+   the edge you see. Stretched to the box rather than fitted to it, which is
+   what pins the two ends of the arc to the bottom corners at every window
+   shape: taller windows get a rounder moon, wider ones a flatter one, and the
+   corners are met either way.
+
+   37% is the rise in the sketch this came from. */
+.hero__moon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 37%;
+  z-index: 0;
+  pointer-events: none;
+  background: url('/moon.webp') center top / 100% 100% no-repeat;
+}
+
+.hero__stage {
+  position: relative;
+  /* Over the moon, never under it. */
+  z-index: 1;
+  width: 100%;
+}
+
+/* ---- the name ---- */
+
+.hero__name {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-family: var(--font-title);
+  /* Synthetic bold, for the reason the chapter headings are: Instrument Serif
+     ships one weight and the 700 Google answers with is a 400. */
+  font-weight: 700;
+  /* Sized off the viewport with a ceiling rather than clamped between two
+     rems, because the constraint here is not taste but the line fitting: it is
+     thirteen capitals that must stay on one line at every width.
+
+     Measured rather than guessed, and the guess was badly out: Instrument
+     Serif's capitals are narrow, and the whole line sets in 6.77em. So this is
+     the size at which the name lands about 80% of the way across the column at
+     1480px, with the rest left for the bloom to fall into before .section
+     clips it. The ceiling is what stops a 4K window setting it at 280px. */
+  font-size: min(10.6vw, 13rem);
+  line-height: 1.04;
+  /* Capitals set solid look crowded; a serif's sidebearings are drawn for
+     mixed case. This is the smallest amount that opens them. */
+  letter-spacing: 0.015em;
+  text-align: center;
+  /* A name is a signature. It breaks over two lines only if it physically
+     cannot fit, which at this size it always can. */
+  white-space: nowrap;
+  /* No bloom. The chapter headings carry four passes of drop-shadow; this one
+     carries none, and is the only heading on the site set that way. At this
+     size the type does not need help being seen, and a champagne this warm
+     glows on its own against true black — the filter was adding a haze that
+     softened the serif's hairlines, which are the whole reason for setting a
+     name in this face. */
+}
+
+.hero__word {
+  display: inline-block;
+}
+
+.hero__word + .hero__word {
+  margin-left: 0.24em;
+}
+
+/* Every letter carries the gradient itself rather than sharing one across the
+   heading, and it has to: background-clip on the parent clips to where the
+   text is laid out, not to where a transform has since moved it, so a letter
+   that rises would have left its own fill behind.
+
+   At 168deg the ramp is all but vertical anyway, so a letter's own ramp and
+   its slice of the line's are the same picture — with the bonus that every
+   letter now runs the full length of the colour instead of the ones at the
+   ends getting a corner of it. */
+.hero__glyph {
+  display: inline-block;
+  background-image:
+    /* the travelling highlight. Held at a little over half strength: at full
+       it does not read as a light crossing the name, it reads as each letter
+       turning white in turn. */
+    linear-gradient(
+      100deg,
+      transparent 16%,
+      rgb(255 255 255 / 0.56) 50%,
+      transparent 84%
+    ),
+    /* the fill */
+    linear-gradient(
+      168deg,
+      var(--hero-top) 0%,
+      var(--hero-mid) 44%,
+      var(--hero-deep) 100%
+    );
+  background-repeat: no-repeat;
+  background-size:
+    62% 100%,
+    100% 100%;
+  /* Parked off the left. A background-position percentage is a percentage of
+     the room the image has to move in — here 100% - 62% = 38% of the letter —
+     so -190% puts the band's right edge a tenth of a letter clear of it, and
+     290% puts its left edge a tenth clear of the other side. */
+  background-position:
+    -190% 0,
+    0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* One highlight crossing the name, every nine seconds.
+
+   It is thirteen separate animations and it reads as one because of the delay:
+   each letter is lit for a quarter of a second, and the next starts an eighth
+   of a second later, which is a band about two letters wide moving at a
+   constant speed. Linear on purpose — light crossing a surface does not ease.
+
+   The lead-in clears the entrance: the last letter has landed by 1.5s. */
+.hero__stage.is-home .hero__glyph {
+  animation: hero-sheen 9s linear calc(2.4s + var(--g) * 0.125s) infinite;
+}
+
+@keyframes hero-sheen {
+  0% {
+    background-position:
+      -190% 0,
+      0 0;
+  }
+  2.8% {
+    background-position:
+      290% 0,
+      0 0;
+  }
+  100% {
+    background-position:
+      290% 0,
+      0 0;
+  }
+}
+
+/* ---- the line that types itself ---- */
+
+.hero__roles {
+  position: relative;
+  z-index: 1;
+  margin: clamp(1rem, 3vh, 2.1rem) 0 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(0.7rem, 1.12vw, 1.05rem);
+  font-weight: 600;
+  /* Tracked wide and set in capitals: the site already speaks this way for its
+     labels, and under a serif this size a line of ordinary sentence case reads
+     as a caption that got lost rather than as the second line of a masthead. */
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+/* The words as a screen reader gets them — once, punctuated, and not one
+   character at a time. The clip rectangle is the standard way to keep text in
+   the accessibility tree while taking it off the page; display:none and
+   visibility:hidden would take it out of both. */
+.hero__said {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Two layers in one box: the finished line, invisible, holding the width open,
+   and the typed line laid over it. */
+.hero__line {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.hero__ghost,
+.hero__typed {
+  display: block;
+  white-space: nowrap;
+}
+
+.hero__ghost {
+  visibility: hidden;
+}
+
+.hero__typed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* Left, not centre: the typed text has to start where the finished line
+     starts, or every keystroke would re-centre what has been written so far
+     and the whole line would crawl sideways as it was typed. */
+  text-align: left;
+}
+
+/* The divider, struck like a key in its turn. Empty inline-block, so it hangs
+   from the baseline — the negative alignment is what drops it back down to sit
+   with the capitals rather than towering over them. */
+.hero__divider {
+  display: inline-block;
+  width: 1px;
+  height: 0.95em;
+  margin: 0 clamp(0.55rem, 1.3vw, 1.1rem);
+  vertical-align: -0.14em;
+  border-radius: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgb(var(--hero-glow) / 0.9) 50%,
+    transparent
+  );
+}
+
+/* The caret. It needs no positioning of its own: it is the last thing in the
+   typed layer, so it stands wherever the writing has got to, and it steps
+   along by the exact width of each character without anything having to
+   measure one. */
+.hero__caret {
+  display: inline-block;
+  width: 0.09em;
+  min-width: 1px;
+  height: 0.95em;
+  margin-left: 0.04em;
+  vertical-align: -0.14em;
+  background: currentColor;
+  animation: hero-blink 0.78s steps(1, end) infinite;
+}
+
+/* And it goes out a beat after the last character, rather than blinking at the
+   visitor for as long as they stay on the page. */
+.hero__typed.is-done .hero__caret {
+  animation: hero-caret-off 0.45s ease-out 1.1s forwards;
+}
+
+@keyframes hero-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-caret-off {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Narrow: the line stays on one line, so the tracking gives way before the
+   size does — it is the tracking that costs a third of the width. */
+@media (max-width: 34rem) {
+  .hero__roles {
+    letter-spacing: 0.14em;
+  }
+
+  .hero__divider {
+    margin: 0 0.45rem;
+  }
+}
+
+@media (max-width: 21rem) {
+  .hero__roles {
+    font-size: 0.6rem;
+  }
+}
+
+/* Nothing here is load-bearing: the name and the roles are the page and the
+   highlight is ornament on top of them. It is gated on .is-home, which the
+   component never sets when the visitor has asked for less motion — this is
+   the belt to that braces. */
+@media (prefers-reduced-motion: reduce) {
+  .hero__stage.is-home .hero__glyph,
+  .hero__caret {
+    animation: none;
+  }
+}

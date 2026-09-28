@@ -1,0 +1,98 @@
+:root {
+  /* Surface — true black, as specified. The page still reaches #000 at every
+     edge; what sits on top of it is in --page-* below. */
+  --bg: #000000;
+
+  /* The section's own colour, as an rgb triplet, overridden per section in
+     global.css.
+
+     It used to light the page as well — a low-alpha dome of it over the black
+     behind every section. That is gone and the field is flat #000 throughout,
+     so this is now only the hairline between two sections, the selection
+     colour and the focus ring. */
+  --page-glow: 226 206 166;
+
+  /* Type.
+
+     One warm scale for the whole site, taken off the masthead: cream at the
+     top, champagne through the middle, gold at the foot. Every page used to
+     tint its own words towards its own accent — the premise blue, the receipts
+     pink, the journey green — and on a flat black field that read as eight
+     different sites. It is one voice now, and the pages are told apart by what
+     is on them rather than by the colour of their sentences.
+
+     Not neutral greys, and now not cool ones either. A grey on a field this
+     warm reads as a different material; every step here is pulled towards the
+     cream the headings are set in.
+
+     Off-white rather than #ffffff: full-strength white on true black glares,
+     and the fringe it throws is what makes long copy tiring to read. */
+  --fg: #f6efdd;
+  /* Secondary copy, and the line under every heading. */
+  --fg-muted: #d6c9aa;
+  /* The quietest step — still lit, which is the whole trick of it: below about
+     this it stops reading as quiet and starts reading as switched off. */
+  --fg-dim: #7e7154;
+  /* Labels, kickers and the other small type that used to be set in whatever
+     the section's accent was. */
+  --fg-accent: #cdb078;
+
+  /* The heading ramp, in one place. Sections no longer name their own: see
+     .section-title in global.css, which is the only thing that reads these. */
+  --title-top: #fffdf6;
+  --title-color: #f4e8ce;
+  --title-deep: #b6935c;
+
+  /* Ribbon. Deep falloff through to a hot centre, the way real light behaves —
+     the shape is the Lusion reference's, the colour is the site's.
+
+     It was an indigo neon, which is what the whole page used to be lit by. Now
+     that the type is champagne it is a gold one: the same six steps, the same
+     climb in lightness, moved to the type's own hue. The filament is the
+     heading's cream rather than pure white, so the brightest thing on the page
+     and the brightest stop of every heading are the same colour. */
+  --line-atmos: #e08a00;
+  --line-far: #f0a318;
+  --line-glow: #f8c257;
+  --line-halo: #fbdc9c;
+  --line-core: #fde9c0;
+  --line-hot: #fffdf6;
+  --line-w: clamp(9px, 1.15vw, 17px);
+  /* The mark under the current tab in the bar, and the focus ring. */
+  --accent: #cdb078;
+
+  /* Each project's glow-button palette lives with the project, in
+     Projects.css — see the .is-<project> blocks there. */
+
+  /* Glass panel */
+  /* Lighter than the page's pure black, so the panel reads as a surface.
+     Still translucent enough to let the ribbon through behind it. */
+  --glass-bg: rgba(27, 24, 19, 0.74);
+  --glass-border: rgba(255, 255, 255, 0.14);
+
+  /* Fonts.
+
+     Three faces, each answering to one thing. Madane sets the section
+     headings and is declared where it is used, in global.css, because that is
+     a typographic decision rather than a token anything else should reach
+     for. Everything below a heading — the caption included — is the sans.
+
+     --font-title is what is left of the serif: the hero's name and the
+     book's title, and the fallback Madane swaps out of. A serif used for one
+     job reads as a decision, a serif used for everything reads as a theme.
+
+     --font-display is the interface — panel titles, buttons, labels, nav —
+     and --font-body the running copy. Both are Inter, and they are kept
+     apart so a later change to one does not drag the other with it. */
+  --font-title: 'Instrument Serif', 'Iowan Old Style', 'Palatino Linotype', Palatino,
+    Georgia, serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* Rhythm */
+  --page-pad-x: clamp(1.5rem, 6vw, 8rem);
+  --page-pad-y: clamp(2rem, 6vh, 5rem);
+  --measure: 62ch;
+}

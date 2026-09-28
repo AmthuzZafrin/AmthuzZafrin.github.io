@@ -1,0 +1,258 @@
+/* The heading sits below the nav rather than being centred with the cards.
+   Centred, every pixel the cards grew pushed the heading up toward the bar, and
+   that — not taste — was what capped their size. Pinned, the row simply takes
+   whatever height is left. */
+/* This page's own colour.
+
+   The whole site was on one warm scale for a while; it is back to a hue per
+   page. Setting the shared type tokens here rather than restyling anything is
+   what makes that cheap: --title-* is the heading's gradient, --fg and its
+   two quieter steps are every sentence on the page, --fg-accent is the small
+   caps. They inherit, so a section that names them recolours everything
+   inside it, including the parts of it written before any of this existed. */
+#certificates {
+  /* Light pink. The first pass at this was a rose running into crimson,
+     which was pink but not LIGHT pink — the ramp spent its bottom half below
+     the midpoint and the word read hot rather than soft.
+
+     So the whole ramp moves up: the body sits at 12 : 1 on black where it
+     used to sit at 8, and the shadow at 8 : 1 where it used to sit at 4.
+     What it keeps is the travel, because a pale colour is the easiest of all
+     to flatten into a swatch — the highlight is a near-white blush at 338
+     degrees, the body a light pink at 330, and the shadow an orchid at 317.
+     21 degrees, carried entirely in the top half of the lightness range.
+
+     The Websites page no longer competes with it: that one is cream now. */
+  --title-top: #fff4f8;
+  --title-color: #ffadd6;
+  --title-deep: #e878c8;
+  --fg: #fbeaf4;
+  --fg-muted: #e2c0d6;
+  --fg-dim: #866b7c;
+  --fg-accent: #f79ad2;
+  --page-glow: 255 173 214;
+
+  justify-content: flex-start;
+  padding-top: calc(5.5rem + clamp(0.5rem, 2vh, 1.4rem));
+}
+
+.certs__title {
+  margin-bottom: calc(clamp(0.6rem, 1.6vh, 1.1rem) - var(--descender));
+}
+
+.certs__stage {
+  /* The line around the front card, the bloom off it and the pips under the
+     row — all one token, and all now the champagne the headings are set in.
+     It was a rose, which was this page's own note back when each page had one;
+     a lit edge in a colour that appears nowhere in the type reads as a border
+     someone forgot to restyle. */
+  --acc: 255 173 214;
+  /* Capped by the section, not by taste: a taller card pushes the heading up
+     behind the nav bar. Height is the binding constraint now — the row has the
+     whole width of the page, and what is left of a viewport once the nav, the
+     heading and the rail have taken theirs is what a card can be. */
+  --card-h: min(36rem, 55vh);
+  /* The frame's proportions, taken from the first certificate. */
+  --card-r: 1.479;
+
+  /* ---- where a card sits in the row, one step out from the front ----
+     Tuned together: the neighbour is pushed far enough sideways that it clears
+     the front card's edge, turned away from you, and set back. */
+  --row-x: 88%;
+  --row-z: -140px;
+  --row-ry: 26deg;
+  --row-scale: 0.1;
+  --row-fade: 0.45;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: clamp(0.3rem, 1.2vh, 0.8rem);
+}
+
+/* ---- the row ---- */
+
+.certs__deck {
+  position: relative;
+  z-index: 3;
+  /* A window onto a row that runs off both ways, rather than a box holding one
+     card. It takes the whole line: what is beside the front card is another
+     certificate, and at this width there is room for the neighbours to stand
+     almost whole rather than as slivers.
+
+     Capped in card widths rather than at some round number of pixels, because
+     what the cap is for is keeping the window full: a neighbour reaches about
+     1.2 cards out from the middle, so past about two and a half the row would
+     end in bands of nothing on a wide monitor. */
+  width: min(100%, calc(var(--card-h) * var(--card-r) * 2.42));
+  /* Only the front card is at full size, so this needs no more than its height
+     plus room for the glow to fall off. */
+  height: calc(var(--card-h) * 1.14);
+  perspective: 1500px;
+  perspective-origin: 50% 50%;
+  /* The row is cut off at the window's edges, and faded into them, so a
+     neighbour reads as carrying on past the frame rather than as a card that
+     happens to be sliced. The mask does the hiding; overflow keeps the part
+     that is never seen from being painted at all. */
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+  /* The wheel is captured here and nowhere else, so the page scrolls as usual
+     everywhere around it. */
+  overscroll-behavior: contain;
+}
+
+.certs__card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  /* One card for all seventeen. The certificates themselves run from 1.29 to
+     1.60, so left to their own proportions they came out visibly different
+     widths at the same height; each now sits mounted inside a frame of the
+     same size, the way a set of prints is hung. */
+  height: var(--card-h);
+  width: calc(var(--card-h) * var(--card-r));
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #17171f 0%, #0b0b11 100%);
+
+  /* -50%,-50% centres it; the rest is the card's place in the row. --a is how
+     many steps out it stands and --s which way, so one formula covers both
+     sides and the front card, where --s is 0 and every term falls away.
+
+     The turn is what makes it a row seen in perspective rather than a strip of
+     shrunken pictures: a card to the right is hinged so its near edge — the one
+     against the front card — stands closest to you and its far edge goes back.
+     Rotating after the sideways move keeps each card turning on its own centre. */
+  transform:
+    translate(-50%, -50%)
+    translateX(calc(var(--s) * var(--a) * var(--row-x)))
+    translateZ(calc(var(--a) * var(--row-z)))
+    rotateY(calc(var(--s) * var(--row-ry)))
+    scale(calc(1 - var(--a) * var(--row-scale)));
+  transform-origin: center center;
+  opacity: calc(1 - var(--a) * var(--row-fade));
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.55s ease-out,
+    box-shadow 0.55s ease-out;
+
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 2px 5px rgba(0, 0, 0, 0.6),
+    0 20px 44px rgba(0, 0, 0, 0.6);
+}
+
+/* The certificate inside its mount: as large as it can be without cropping, so
+   a narrow one is not stretched and a wide one is not cut.
+
+   Absolutely positioned against the card, with width and height given
+   explicitly. Two earlier attempts failed for the same underlying reason: as a
+   centred grid item `height: 100%` resolved to auto, and an absolutely
+   positioned replaced element ignores opposing insets — `width: auto` keeps the
+   image's intrinsic size, so it sat at its full 1597px. Percentages of a
+   definite containing block are what object-fit needs; the padding is the
+   mount the certificate sits in. */
+.certs__card img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: calc(var(--card-h) * 0.022);
+  object-fit: contain;
+}
+
+/* A neighbour is a place to go, and says so. */
+.certs__card:not(.is-front):not(.is-out) {
+  cursor: pointer;
+}
+
+/* Coming up out of the row a little as the pointer rests on it, so the click
+   is answered before it is made. */
+.certs__card:not(.is-front):not(.is-out):hover {
+  opacity: calc(1 - var(--a) * var(--row-fade) * 0.55);
+  transform:
+    translate(-50%, -50%)
+    translateX(calc(var(--s) * var(--a) * (var(--row-x) - 3%)))
+    translateZ(calc(var(--a) * var(--row-z) * 0.78))
+    rotateY(calc(var(--s) * var(--row-ry) * 0.86))
+    scale(calc(1 - var(--a) * var(--row-scale) * 0.8));
+}
+
+/* The one you are looking at: forward, square on, and lit. */
+.certs__card.is-front {
+  box-shadow:
+    0 0 0 1px rgb(var(--acc) / 0.65),
+    0 0 0 5px rgb(var(--acc) / 0.08),
+    0 0 18px rgb(var(--acc) / 0.35),
+    0 0 60px rgb(var(--acc) / 0.2),
+    0 2px 5px rgba(0, 0, 0, 0.6),
+    0 26px 60px rgba(0, 0, 0, 0.7);
+}
+
+/* Waiting its turn, one place further along the row than the neighbour — the
+   position --a is clamped to. It keeps the transform above, so a card that
+   comes into play slides in from the side it was parked on rather than
+   appearing out of the middle.
+
+   Kept in the document so stepping back is instant and the browser holds the
+   decoded image, but taken out of painting altogether — at opacity 0 alone all
+   seventeen were still being composited inside a 3D-transformed subtree, which
+   is enough to stall the renderer. */
+.certs__card.is-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ---- the rail ---- */
+
+.certs__rail {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: clamp(0.7rem, 2.2vh, 1.3rem);
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.certs__notch {
+  width: 15px;
+  height: 3px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  background: rgb(var(--acc) / 0.25);
+  transition:
+    background 0.3s ease-out,
+    width 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease-out;
+}
+
+.certs__notch:hover {
+  background: rgb(var(--acc) / 0.55);
+}
+
+.certs__notch.is-current {
+  width: 30px;
+  background: #ffd8e8;
+  box-shadow: 0 0 10px rgb(var(--acc) / 0.7);
+}
+
+.certs__notch:focus-visible {
+  outline: 2px solid rgb(var(--acc));
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .certs__card {
+    transition-duration: 0.2s;
+  }
+}

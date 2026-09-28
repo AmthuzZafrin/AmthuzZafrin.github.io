@@ -1,0 +1,169 @@
+/* This page's own colour. Setting the shared type tokens recolours everything
+   inside the section, heading and sentences alike — see Summary.css for the
+   longer note on why it is done this way.
+
+   Cream. It was a pink, and the pink has gone back to the Certificates page
+   where it started — which leaves this one free to be the quietest colour on
+   the site, and that suits it: the page is two recordings of somebody else's
+   website, and a loud heading over them competes with the work it is meant
+   to introduce.
+
+   Premium is the same discipline here as everywhere else — the hue MOVES.
+   A cream that does not travel is just off-white. The highlight is a cool
+   ivory at 48 degrees, the body the cream proper at 43, and the shadow a
+   soft gold at 34: gold leaf, which is the oldest premium ramp there is.
+
+   It sits near the champagne the Projects heading wears — but that heading
+   takes the selected project's own colour and is champagne only on Deen &
+   Daleel, violet on BUBU and gold on KUKAI, so the two overlap in one state
+   of three rather than permanently.
+
+   --acc here is only a fallback. Both recordings name their own on
+   .commission__frame, gold and purple, sampled off the videos themselves —
+   this is what a third frame would inherit if one were ever added. */
+#commission {
+  --title-top: #fffcf0;
+  --title-color: #f6e7c2;
+  --title-deep: #c79552;
+  --fg: #f7efdf;
+  --fg-muted: #d8c8a8;
+  --fg-dim: #857a5f;
+  --fg-accent: #e0c184;
+  --page-glow: 246 231 194;
+
+  --acc: 246 231 194;
+
+  /* Pinned below the bar rather than centred: the recording is tall enough
+     that a centred block pushes its own heading up against the nav. And the
+     foot gives up most of its padding, because every pixel taken off the
+     bottom of the page goes into the video — at 1.9 : 1 it is height, not
+     width, that decides how big the thing can be. */
+  justify-content: flex-start;
+  padding-top: calc(4.6rem + clamp(0.5rem, 2vh, 1.4rem));
+  padding-bottom: clamp(1rem, 3vh, 2rem);
+}
+
+/* Tighter than the shared caption gap, for the same reason. */
+#commission .section-sub {
+  margin-bottom: clamp(0.5rem, 1.55vh, 0.85rem);
+}
+
+/* The second recording's line. Far enough below the first video to read as the
+   start of the next thing rather than as a note on the last one — this is the
+   only seam in a page that is now taller than the window. */
+.commission__sub {
+  margin-top: clamp(2rem, 6vh, 4rem);
+}
+
+/* And the section is no longer one screen: it holds two recordings, so it
+   grows and is scrolled rather than snapped through. min-height on .section
+   already allows that; this only stops the flex column from stretching them. */
+#commission {
+  justify-content: flex-start;
+}
+
+.commission__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* The recording, as large as the page can hold it.
+
+   Sized by the height it has left rather than by the width it would like: at
+   1.9 : 1 the width is never the constraint on a screen this shape. The
+   heading and its caption, plus what is left of the padding above and below,
+   come to about fourteen and a half rems — and the rest of the window, times
+   the recording's own ratio, is the widest it can be and still fit on one
+   screen. 100% is the floor for a narrow window, where the width does bind.
+
+   Lit rather than outlined. The rim it had was a single hairline drawn INSIDE
+   the plate, which put a coloured line across the edge of the recording — it
+   read as part of the website being shown rather than as a frame around it.
+   Everything here is outside the box instead: a crisp line on the very edge,
+   a close halo against it, then two passes that fall away into the black. The
+   recording keeps its own edges and the plate is what glows. */
+.commission__frame {
+  margin: 0;
+  width: min(100%, calc((100dvh - 14.6rem) * 1.9));
+  aspect-ratio: 1280 / 674;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #07060a;
+  box-shadow:
+    0 0 0 1px rgb(var(--acc) / 0.66),
+    0 0 0 6px rgb(var(--acc) / 0.07),
+    0 0 22px rgb(var(--acc) / 0.34),
+    0 0 64px rgb(var(--acc) / 0.18),
+    /* and what it stands on */
+    0 2px 5px rgba(0, 0, 0, 0.6),
+    0 26px 60px rgba(0, 0, 0, 0.7);
+}
+
+/* A colour each, sampled off the recordings themselves rather than picked:
+   the Kala Master site sits at about 25 degrees of hue and BUBU's at about
+   277. Both are lifted in saturation and lightness from the average the
+   sampler returned — a mid-tone taken off a photograph is the colour of the
+   thing lit, and what is wanted here is the colour of the light. */
+.commission__frame.is-kala {
+  --acc: 232 180 104;
+}
+
+.commission__frame.is-bubu {
+  --acc: 166 88 222;
+}
+
+.commission__frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* The recording is the plate's own shape, so there is nothing to crop; this
+     is only here so a re-record at another size cannot stretch. */
+  object-fit: cover;
+}
+
+/* Blue, like every other link on the site. The page is coral and a coral link
+   is decoration; blue is the one colour here that means this goes somewhere. */
+.commission__link {
+  --link: 124 170 255;
+
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 1vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #b9d2ff;
+  text-decoration: underline;
+  text-underline-offset: 0.26em;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgb(var(--link) / 0.45);
+  transition:
+    color 0.2s ease-out,
+    text-decoration-color 0.2s ease-out;
+}
+
+.commission__link:hover,
+.commission__link:focus-visible {
+  color: #e6efff;
+  text-decoration-color: rgb(var(--link));
+}
+
+.commission__link:focus-visible {
+  outline: 2px solid rgb(var(--link));
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+/* A hairline pinned to the foot of the section, there only to be snapped to:
+   `end` puts the section's bottom edge on the window's bottom edge, which is
+   the last screenful of it. Out of flow, so it adds no height, and out of the
+   hit-test path. */
+.commission__end {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  scroll-snap-align: end;
+  pointer-events: none;
+}

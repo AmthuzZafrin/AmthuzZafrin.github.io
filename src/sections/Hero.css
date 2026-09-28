@@ -1,0 +1,130 @@
+/* The first page.
+
+   Its ink points at the shared stops rather than repeating their values, so
+   changing the site's colour means changing it once, in tokens.css. Nothing
+   is set in type here at the moment, but the tokens still carry the text
+   selection colour, and anything put back on this page reads from them. */
+.hero {
+  --hero-top: var(--title-top);
+  --hero-mid: var(--title-color);
+  --hero-deep: var(--title-deep);
+  --page-glow: 226 206 166;
+
+  /* The picture is the page, so it gets the whole box rather than sitting in
+     the padded column the other sections use. */
+  padding: 0;
+  overflow: hidden;
+}
+
+/* The picture, and the two things it needs to not look like a picture.
+
+   It is a 2.85 : 1 band in a window nearer 2 : 1, so it cannot fill the frame
+   without being blown up — sized to the height it would need 1900px of width
+   from a 1552px file, and a soft robot is worse than a small one. So it is
+   sized by WIDTH, a little over the window's, and hung on the right: the
+   overhang costs a few per cent of upscale, makes the figure large enough to
+   carry the page, and pushes the source's empty left third off the edge,
+   which is the part of it doing no work.
+
+   Centred vertically because the light the robot is touching sits on the
+   picture's own middle line, and that is the thing the eye should land on. */
+.hero__ai {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: min(122%, 2000px);
+  aspect-ratio: 1552 / 545;
+  background: url('/hero-ai.webp') center / cover no-repeat;
+  pointer-events: none;
+}
+
+/* And the seam. The picture's own background is a dark navy, not the page's
+   black, so its edges would otherwise draw a visible rectangle on the page.
+   Black is painted back over them instead of masking the image — the result
+   is identical on a black page and it asks nothing of mask-image support.
+
+   The left fade is much longer than the others, and is doing a second job:
+   it rebuilds the negative space the crop pushed off the frame, so the page
+   still has somewhere quiet to put a line of type. */
+.hero__ai::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      #000 0%,
+      rgba(0, 0, 0, 0.94) 18%,
+      rgba(0, 0, 0, 0.55) 40%,
+      rgba(0, 0, 0, 0.12) 62%,
+      transparent 78%
+    ),
+    linear-gradient(
+      180deg,
+      #000 0%,
+      transparent 16%,
+      transparent 82%,
+      #000 100%
+    );
+}
+
+/* A short window has less height than the band needs and would crop it hard;
+   letting it sit wider keeps the robot whole. */
+@media (max-height: 34rem) {
+  .hero__ai {
+    width: min(150%, 2000px);
+  }
+}
+
+/* ---- the name ---- */
+
+/* Ranged left, in the dark the pointing hand leaves open, and sitting on the
+   window's own middle line.
+
+   The hand's leftmost fingertip reaches x=684 of a 1480px window at this
+   framing. The block is capped so its right edge stops short of that with a
+   gap wide enough that the two never look like they are touching. */
+.hero__intro {
+  position: absolute;
+  z-index: 1;
+  left: var(--page-pad-x);
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: left;
+}
+
+.hero__name,
+.hero__role {
+  margin: 0;
+}
+
+/* Both lines are one drawing each, so they are sized by width and their
+   height follows from the viewBox. The two share a width, which is what keeps
+   the role's line ranged flush with the name above it. */
+.hero__name img,
+.hero__role img {
+  display: block;
+  width: clamp(15rem, 35vw, 33rem);
+  height: auto;
+}
+
+.hero__role {
+  margin-top: clamp(1.1rem, 2.8vh, 1.9rem);
+}
+
+/* Narrow windows: the robot keeps the right of the frame at every width, so
+   the type gives ground rather than running under it. */
+@media (max-width: 60rem) {
+  .hero__name img,
+  .hero__role img {
+    width: min(58vw, 26rem);
+  }
+}
+
+@media (max-width: 34rem) {
+  .hero__name img,
+  .hero__role img {
+    width: min(78vw, 20rem);
+  }
+}

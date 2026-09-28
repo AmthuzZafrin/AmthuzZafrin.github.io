@@ -1,0 +1,558 @@
+/* This page's own colour. Setting the shared type tokens recolours everything
+   inside the section, heading and sentences alike — see Summary.css for the
+   longer note on why it is done this way. */
+#experience {
+  /* Orange, in the family the Novel page uses, as amber going into copper.
+
+     The highlight is pulled toward gold at 38 degrees, the body is the orange
+     proper at 30, and the shadow lands on copper at 14 — 24 degrees of travel
+     against the 3 the Novel page's own ramp manages. That is the difference
+     between metal and a traffic cone.
+
+     Premium the same way the other reworked pages are: the hue MOVES. A ramp
+     built from one hue at three lightnesses is a coloured letter and the eye
+     reads it as poster paint. A real material lit from above shifts hue as it
+     travels — the highlight runs away from the body, the body holds the most
+     chroma, and the shadow rotates further still.
+
+     This page was a sapphire an hour ago, so every token moves, not just the
+     heading: the running copy is a warm tinted white now rather than a cool
+     one, or the sentences would still be reading blue under an orange name. */
+  --title-top: #ffeccc;
+  --title-color: #ff9d3d;
+  --title-deep: #d1461a;
+  --fg: #f9e8d8;
+  --fg-muted: #dcc0a4;
+  --fg-dim: #8a6f57;
+  --fg-accent: #f0913f;
+  --page-glow: 255 157 61;
+}
+
+/* Top left of the stage, over the ring rather than over the sheet. It shrinks
+   to its own width so the certificate's column is not held open by it. */
+.exp__head {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  align-self: start;
+  justify-self: start;
+  width: fit-content;
+  max-width: 100%;
+  position: relative;
+  z-index: 2;
+  /* It already sits at the top of its row, so lifting it further means going
+     above the row. The negative top margin does not change the block's height
+     — the certificate beside it sets that — it just takes the heading up and
+     gives the extra to the row the ring sits in. */
+  margin: calc(-1 * clamp(1rem, 3.4vh, 2.4rem)) 0 clamp(0.6rem, 1.8vh, 1.2rem);
+}
+
+.exp__title {
+
+  text-align: left;
+  margin: 0;
+}
+
+/* Ranged left under the heading rather than centred under it, because this
+   one is not in the middle of anything. */
+/* The only heading and caption on the site that are not flex items — they sit
+   in a block, so their margins collapse. The heading's bottom margin is now
+   negative (it is paying back the padding that gives its descenders room), and
+   a negative collapsing against this 0.35rem produced their sum rather than the
+   larger of the two, dropping the caption six pixels. Its own margin comes off
+   and the heading's is left to set the gap, exactly as it does everywhere
+   else. */
+.exp__sub {
+  margin: 0;
+  text-align: left;
+}
+
+/* Ring on the left, whatever is in hand read out on the right. */
+.exp__stage {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  /* Heading over the ring on the left and the line under it at the foot; the
+     certificate spans all three rows on the right so it stays centred against
+     the column. The middle row takes all the slack, so the heading sits at the
+     top rather than drifting down a row stretched by the sheet beside it. */
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  column-gap: clamp(1.1rem, 2.8vw, 2.6rem);
+  align-items: center;
+  width: 100%;
+  max-width: 80rem;
+  /* Sits below the section's centre line. A centred flex item splits its own
+     top margin, so this drops the whole stage by half the value. */
+  margin-top: clamp(3rem, 12vh, 7rem);
+}
+
+/* The rig: clasp at the top, everything else hanging off the ring below it.
+   Perspective lives here, so the tags rotate in real depth rather than being
+   flat shapes that merely turn. */
+.exp__rig {
+  --rig: min(28rem, 56vh);
+  /* The ring's own centre, worked out from the clasp: the art is 120 x 168 and
+     the ring sits at y 122, so at a width of 0.34 rig the ring lands here.
+     The fan has to pivot on that point or the tags hang off nothing. */
+  --ring-y: calc(var(--rig) * 0.346);
+  --wire: calc(var(--rig) * 0.078);
+  --tag-w: calc(var(--rig) * 0.185);
+  /* The plastic's actual thickness. */
+  --slab: calc(var(--rig) * 0.032);
+  --tag-h: calc(var(--rig) * 0.58);
+
+  position: relative;
+  width: var(--rig);
+  height: var(--rig);
+  /* A long lens. At 1100px with the vanishing point up by the clasp, the tags
+     hang far enough below it that the keystone turned them into trapezoids —
+     they stopped reading as tags at all. Longer still now: the outermost tag
+     sits furthest from the vanishing point and took the worst of it. */
+  perspective: 3200px;
+  perspective-origin: 50% 46%;
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.exp__clasp {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: calc(var(--rig) * 0.34);
+  height: auto;
+  transform: translateX(-50%);
+  z-index: 20;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.7));
+}
+
+/* The shadow the bunch throws. Nothing else in the section gives it a place to
+   be, and without contact it reads as a sticker rather than an object. */
+.exp__rig::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 1%;
+  width: 62%;
+  height: 7%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.75), transparent 72%);
+  filter: blur(6px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* The pivot. Zero-sized on purpose: it is the point on the ring that every tag
+   swings about, not a box that contains them. */
+.exp__fan {
+  position: absolute;
+  left: 50%;
+  top: var(--ring-y);
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  animation: exp-sway 7s ease-in-out infinite;
+}
+
+/* The whole bunch drifts, the way a bunch of keys does — and stops dead the
+   moment one is picked up, because then the motion belongs to the tag. */
+@keyframes exp-sway {
+  0%,
+  100% {
+    transform: rotate(-1.4deg);
+  }
+  50% {
+    transform: rotate(1.4deg);
+  }
+}
+
+.exp__rig.is-held .exp__fan {
+  animation-play-state: paused;
+}
+
+/* ---- a tag ---- */
+
+.exp__tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--tag-w);
+  height: calc(var(--wire) + var(--tag-h));
+  margin-left: calc(var(--tag-w) / -2);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+
+  /* The pivot is the top of this box, which sits on the ring — so rotate()
+     swings the tag rather than spinning it in place. translateZ comes first so
+     it moves toward the viewer rather than along the tag's own turned axis. */
+  transform-origin: top center;
+  transform: translateZ(var(--z, 0)) rotate(var(--a, 0deg));
+  transform-style: preserve-3d;
+  transition:
+    transform 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.45s ease-out;
+}
+
+.exp__tag:focus-visible {
+  outline: none;
+}
+
+.exp__tag:focus-visible .exp__face {
+  outline: 2px solid #aab5ff;
+  outline-offset: 3px;
+}
+
+/* The wire from the ring down to the tag's hole. It is radial, so it stays
+   aligned with the tag through the whole swing.
+
+   It starts below the pivot, not at it. The pivot is the ring's centre, so a
+   wire beginning there ran up through the ring's middle — and four of them
+   converging drew a hard X inside it. Beginning at 0.028 of the rig puts each
+   wire's top behind the ring's lower turn, which is where it would hook. */
+.exp__wire {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--rig) * 0.028);
+  width: 2.5px;
+  height: calc(var(--wire) - var(--rig) * 0.028);
+  margin-left: -1.25px;
+  border-radius: 2px;
+  /* Across the wire, not along it — a lit core between two dark rims is what
+     makes a 2px line read as a round wire rather than as a drawn stroke. */
+  background: linear-gradient(90deg, #23262e 0%, #cbd1de 34%, #ffffff 50%, #757c8c 72%, #23262e 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.exp__body {
+  position: absolute;
+  left: 0;
+  top: var(--wire);
+  width: 100%;
+  height: var(--tag-h);
+  border-radius: 7px;
+
+  /* The turn belongs here, not on the wrapper. On the wrapper it would pivot
+     about the ring and about an axis already tilted by the swing, which shears
+     the tag into a fan blade instead of turning it. */
+  transform: rotateY(var(--ry, 0deg));
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  transition: transform 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The slab: the same silhouette pushed back by the thickness of the plastic.
+   Turn the tag and this is the edge you see — the single thing that stops it
+   reading as a coloured rectangle. Darker than the face, because the light is
+   above and in front and almost none of it reaches the side. */
+.exp__edge {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform: translateZ(calc(var(--slab) * -1));
+  background: linear-gradient(180deg, var(--edge-a) 0%, var(--edge-b) 100%);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.85),
+    0 24px 46px rgba(0, 0, 0, 0.7);
+}
+
+/* The face: the moulded surface itself. */
+.exp__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35em;
+  border-radius: inherit;
+  overflow: hidden;
+
+  background:
+    /* the room's one light, falling across the top corner */
+    linear-gradient(152deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 30%),
+    /* the black room reflected back off the lower half */
+    linear-gradient(200deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.3) 100%),
+    linear-gradient(180deg, var(--fill-a) 0%, var(--fill-b) 100%);
+  box-shadow:
+    /* Fresnel: a translucent solid gathers light at its edges, so the rim is
+       brighter than the middle and the whole thing stops looking like a fill. */
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 0 14px rgba(255, 255, 255, 0.3),
+    inset 0 -18px 26px -18px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(0, 0, 0, 0.7);
+}
+
+/* A specular streak. Narrow and hard-edged — a broad soft one reads as a
+   gradient, and a gradient is what makes CSS objects look like CSS. */
+.exp__face::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background: linear-gradient(
+    104deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.55) 47%,
+    rgba(255, 255, 255, 0.16) 50%,
+    transparent 56%
+  );
+  mix-blend-mode: screen;
+}
+
+/* The metal eyelet the ring runs through. A punched hole on its own reads as a
+   dot; the ring of hardware around it is what says the tag is meant to hang. */
+.exp__grommet {
+  position: absolute;
+  inset: -42%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 210deg,
+    #f2f5fa 0deg,
+    #9aa1b1 60deg,
+    #2a2e38 130deg,
+    #767d8d 190deg,
+    #e8ecf4 250deg,
+    #454b58 320deg,
+    #f2f5fa 360deg
+  );
+  box-shadow:
+    0 0 0 1px rgba(10, 12, 16, 0.9),
+    0 1px 2px rgba(0, 0, 0, 0.7);
+  /* the hole through the middle of it */
+  mask: radial-gradient(circle, transparent 0 41%, #000 42%);
+  -webkit-mask: radial-gradient(circle, transparent 0 41%, #000 42%);
+}
+
+/* Moulding grain. Real plastic is never perfectly smooth, and the absence of
+   any noise at all is most of what makes a rendered surface look drawn. */
+.exp__face::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+}
+
+/* Dimming for the tags that are not the one in hand. */
+.exp__shade {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform: translateZ(1px);
+  pointer-events: none;
+  background: rgba(4, 5, 12, 0.55);
+  opacity: 0;
+  transition: opacity 0.45s ease-out;
+}
+
+.exp__rig.is-held .exp__tag:not(.is-up) .exp__shade {
+  opacity: 1;
+}
+
+/* The punched hole, with the thickness of the plastic showing in its wall. */
+.exp__hole {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--tag-h) * 0.075);
+  width: calc(var(--tag-w) * 0.17);
+  height: calc(var(--tag-w) * 0.17);
+  margin-left: calc(var(--tag-w) * -0.085);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, #05060c 0%, #0b0d16 70%);
+  /* The wall of the punched hole, lit at the bottom where the light gets in. */
+  box-shadow:
+    inset 0 2px 2px rgba(0, 0, 0, 0.9),
+    inset 0 -2px 1px rgba(255, 255, 255, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+/* The label is moulded into the tag, not printed on it: near-transparent, lit
+   from above and shadowed below, so it reads as relief. */
+.exp__label {
+  font-family: var(--font-display);
+  font-size: calc(var(--tag-w) * 0.2);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  text-align: center;
+  writing-mode: vertical-rl;
+  color: var(--ink);
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5),
+    0 -1px 1px rgba(0, 0, 0, 0.45);
+}
+
+.exp__meta {
+  position: absolute;
+  bottom: calc(var(--tag-h) * 0.05);
+  font-size: calc(var(--tag-w) * 0.1);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity 0.35s ease-out;
+}
+
+.exp__tag.is-up .exp__meta {
+  opacity: 0.62;
+}
+
+/* ---- the plastics. Each carries its own slab colour: the edge of a piece of
+   plastic is the same material seen end-on, so it is the face's colour with the
+   light taken away, not a generic grey. ---- */
+
+.exp__tag.is-frost {
+  --fill-a: rgba(244, 246, 253, 0.95);
+  --fill-b: rgba(182, 188, 206, 0.9);
+  --edge-a: #8d93a6;
+  --edge-b: #4c505e;
+  --ink: #23262f;
+}
+
+.exp__tag.is-steel {
+  --fill-a: rgba(152, 159, 182, 0.94);
+  --fill-b: rgba(84, 90, 110, 0.9);
+  --edge-a: #565c70;
+  --edge-b: #292d38;
+  --ink: #0f1118;
+}
+
+.exp__tag.is-smoke {
+  --fill-a: rgba(104, 110, 130, 0.92);
+  --fill-b: rgba(52, 57, 72, 0.9);
+  --edge-a: #383d4c;
+  --edge-b: #1a1d25;
+  --ink: #e6e9f5;
+}
+
+.exp__tag.is-accent {
+  --fill-a: rgba(158, 171, 255, 0.96);
+  --fill-b: rgba(78, 94, 216, 0.92);
+  --edge-a: #4a58b4;
+  --edge-b: #232a5c;
+  --ink: #0d1038;
+}
+
+/* The motel-key shape: square shoulders, a round foot. The foot was 46% of the
+   width by 26% of the height, which on a tag this narrow swept the straight
+   edge into a curve most of the way up — the silhouette came out a leaf rather
+   than a tag, and on the outermost tag, where the swing is greatest, it read
+   as bent. A shallow foot keeps the shape but leaves the sides straight. */
+.exp__tag.is-motel .exp__body,
+.exp__tag.is-motel .exp__edge,
+.exp__tag.is-motel .exp__face {
+  border-radius: 7px 7px 30% 30% / 7px 7px 9% 9%;
+}
+
+/* ---- picked up ---- */
+
+.exp__tag.is-up .exp__face {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 18px rgba(255, 255, 255, 0.36),
+    inset 0 -18px 26px -18px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 0 44px rgb(150 165 235 / 0.28);
+}
+
+.exp__tag.is-up .exp__edge {
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.85),
+    0 34px 70px rgba(0, 0, 0, 0.75);
+}
+
+/* ---- what is in hand ---- */
+
+.exp__detail {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  /* One cell, both children in it — they overlap and cross-fade, and grid
+     centres them without a transform of its own (framer owns transform here). */
+  display: grid;
+  align-items: center;
+  min-width: 0;
+  min-height: calc(var(--rig, 28rem) * 0.7);
+  /* Extra air off the ring. The portrait sheet is much narrower than the
+     landscape one, so without this it sat almost against the tags. */
+  padding-left: clamp(0.8rem, 2.4vw, 2.4rem);
+}
+
+.exp__detail > * {
+  grid-area: 1 / 1;
+}
+
+.exp__cert {
+  margin: 0;
+  width: 100%;
+}
+
+.exp__cert-title {
+  padding-bottom: 0.1em;
+  margin: 0 0 calc(clamp(0.55rem, 1.6vh, 1rem) - 0.1em);
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.5vw, 1.4rem);
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  /* The ramp comes from the certificate below it — see `tint` in the tag data.
+     The fallbacks are the section's indigo, for a tag with no tint of its own. */
+  background-image: linear-gradient(
+    168deg,
+    var(--title-top) 0%,
+    var(--title-color) 38%,
+    var(--title-deep) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* The paper is a photograph of a real object, so it is framed like one: a hard
+   contact shadow under it and a thin lit edge, rather than floating flat. */
+.exp__cert img {
+  display: block;
+  /* Sized by its own height, not stretched to the column: at width 100% the
+     box stayed wider than the sheet and painted bars down either side. */
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  /* Tall enough for a portrait sheet: at a smaller cap a full letter came out
+     barely 250px wide. Landscape ones are still limited by their own width. */
+  max-height: min(40rem, 70vh);
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 2px 5px rgba(0, 0, 0, 0.6),
+    0 22px 52px rgba(0, 0, 0, 0.65),
+    0 0 60px rgb(150 165 235 / 0.14);
+}
+
+/* Under the bunch, and centred on it: it is the label on the control now, not
+   a caption to the heading. In the flow, because it is always there — the row
+   it adds is a fixed one, so nothing below it moves as tags change. */
+.exp__hint {
+  grid-column: 1;
+  grid-row: 3;
+  margin: clamp(0.7rem, 2.2vh, 1.4rem) 0 0;
+  text-align: center;
+  font-size: clamp(0.66rem, 0.78vw, 0.8rem);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exp__fan {
+    animation: none;
+  }
+
+  .exp__tag {
+    transition-duration: 0.25s;
+  }
+}

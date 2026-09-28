@@ -1,0 +1,441 @@
+/* The project page sits over everything, the nav included: it is a page, not a
+   panel floating on top of one. Fixed to the viewport, so the scroll track
+   behind it neither moves nor shows through. */
+.detail {
+  /* The column's type. These are the fallback — every project overrides all
+     three below, in its own colour, so that the account of a product is set
+     in the product's colour rather than in a house one. */
+  --ink-hi: #fffdf6;
+  --ink: #ece3cd;
+  --ink-mid: #c2b69c;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.4rem, 4vh, 2.6rem) var(--page-pad-x) clamp(2rem, 5vh, 3rem);
+
+  /* Black, with the project's own colour pooling in from the top and from the
+     foot — the same light the panels on the work section are built with. */
+  background:
+    radial-gradient(120% 70% at 50% -12%, rgb(var(--acc) / 0.12), transparent 62%),
+    radial-gradient(100% 55% at 50% 112%, rgb(var(--acc) / 0.09), transparent 60%),
+    #05050a;
+}
+
+/* Each project brings its whole palette with it — the accent that lights the
+   rules and the plates, the heading's three stops, and the three steps the
+   column of prose is set in. The page is that product's, not the template's.
+
+   The heading ramps are their own, not the button colours reused: a button's
+   deep end is a dark, desaturated version of its accent, which is right for an
+   edge on a small control and turns to mud the moment it fills type this
+   large. */
+.detail.is-kukai {
+  --acc: 214 182 52;
+  --acc-text: #f0dc6a;
+  --acc-deep: #8a7318;
+
+  --title-top: #fff8e2;
+  --title-hi: #ffe9a8;
+  --title-low: #e0a42c;
+
+  --ink-hi: #fffaea;
+  --ink: #ece2c2;
+  --ink-mid: #c9bd93;
+}
+
+.detail__back {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  /* The page is a flex column, which would otherwise stretch the button the
+     full width and centre its label along with it. */
+  align-self: flex-start;
+  border: 0;
+  background: none;
+  padding: 0.4rem 0;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: clamp(0.78rem, 0.92vw, 0.9rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--ink-mid);
+  transition: color 0.2s ease-out;
+}
+
+.detail__back:hover,
+.detail__back:focus-visible {
+  color: var(--acc-text);
+}
+
+.detail__back:focus-visible {
+  outline: 2px solid rgb(var(--acc));
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.detail__body {
+  max-width: 80rem;
+  /* auto on all four sides rather than justify-content: center — a centred
+     flex item in a scroller has its overflow cut off at the top, an auto
+     margin does not. */
+  margin: auto;
+  width: 100%;
+}
+
+.detail__title {
+  --title-color: var(--title-hi);
+  --title-deep: var(--title-low);
+  /* Lifts the heading. The page centres its body, so a taller gap here raises
+     the heading by half of it and lowers the demo by the other half — which is
+     the separation that was missing. Where a caption follows, the gap is its
+     to keep — see .detail__sub. */
+  margin-bottom: calc(clamp(1.7rem, 5vh, 3.2rem) - var(--descender));
+}
+
+.detail__sub {
+  --sub-color: var(--ink-mid);
+  margin: 0 0 clamp(1.7rem, 5vh, 3.2rem);
+}
+
+/* Video on the left, the account of it on the right. The demo is the thing
+   worth looking at, so it takes the larger share and the text is set to a
+   comfortable measure beside it rather than matching it column for column. */
+.detail__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(1.2rem, 3vw, 2.6rem);
+  align-items: start;
+}
+
+/* ---- the demo ---- */
+
+.detail__media {
+  margin: 0;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+  /* The same lit outer line the novel's plate uses, in this project's colour:
+     a crisp hairline first, then widening passes that fall off into the black
+     so the frame is lit rather than outlined. */
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgb(var(--acc) / 0.75),
+    0 0 0 5px rgb(var(--acc) / 0.08),
+    0 0 18px rgb(var(--acc) / 0.4),
+    0 0 54px rgb(var(--acc) / 0.22),
+    0 24px 60px rgba(0, 0, 0, 0.75);
+}
+
+.detail__media video {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* The recording's own shape, named by the project — see `ratio` in
+     Projects.jsx. Stated rather than left to the file's intrinsic size,
+     because that is not known until the metadata lands and the page would
+     change height underneath the reader when it did. 16 : 9 is only the
+     fallback; neither of the two recordings on this site is a desktop that
+     shape. */
+  aspect-ratio: var(--ratio, 16 / 9);
+  border-radius: inherit;
+  background: #000;
+}
+
+/* Violet, the work section's own values. The type is graded in it too: the
+   page is lit violet, and a neutral grey under a coloured light reads as
+   dirty rather than as neutral. */
+.detail.is-bubu {
+  --acc: 139 63 240;
+  /* The lit end of the violet, for the one or two things that should catch:
+     the labels down the account, and a link. Brighter and cleaner than the
+     accent itself, which is a body colour and goes muddy in type. It carries
+     the most pink of anything here, which is what makes it catch against the
+     orchid the sentences are set in. */
+  --acc-deep: #4a1f8c;
+  --acc-text: #f3b9ff;
+
+  --title-top: #fce9ff;
+  --title-hi: #dba6ff;
+  --title-low: #9a4dff;
+
+  /* Orchid rather than a white with a violet cast, and kept high in luminance:
+     colour this saturated goes to mud below about 70% lightness on black, and
+     a page whose type is pretty and hard to read is not the premium end of
+     anything. */
+  --ink-hi: #f7e6ff;
+  --ink: #e3c8f6;
+  --ink-mid: #c2a0dc;
+}
+
+/* Ivory — close enough to white that the heading's ramp needs a genuinely
+   deep end to read as a ramp at all: champagne into an old bronze. */
+.detail.is-deen {
+  --acc: 198 178 132;
+  --acc-text: #f0e8d4;
+  --acc-deep: #8d7548;
+
+  --title-top: #fffdf6;
+  --title-hi: #f4e8ce;
+  --title-low: #b6935c;
+
+  --ink-hi: #fffdf6;
+  --ink: #e9e1d0;
+  --ink-mid: #c2b69c;
+}
+
+/* With the faces in it rather than a recording, the frame comes off. A lit
+   plate is how you present a video — it is the screen the footage plays on —
+   and around a device that is already a screen it only fences it in. */
+.detail__media.is-bare {
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/* The live face. It brings its own square and its own light — the renderer
+   draws the glow — so all this has to do is stand it in the middle of the
+   column the recording would have taken. */
+.bubu-stage {
+  display: grid;
+  place-items: center;
+  margin: 0 auto;
+}
+
+.bubu-stage canvas {
+  display: block;
+}
+
+/* No box, so no proportions to hold and nothing to paint: the device stands on
+   the page itself, lit by its own glow. */
+.detail__reel {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+/* All of them stacked in the one cell. Only opacity and scale move, so a turn
+   costs a composite and nothing else — and the face that is coming up has
+   already been decoded, because it has been in the document since the page
+   opened.
+
+   The height is the one the product's own page shows it at — about three fifths
+   of the window — rather than a share of a frame, since there is no frame any
+   more. It is well past the artwork's own size: these are 168 x 160 sprites, so
+   at this height they are drawn at nearly three times what they were made for.
+
+   The settle is what keeps a stack of stills from reading as a slideshow — the
+   face arrives a hair under size and comes up to it, the way a screen refreshes
+   rather than the way a photograph is swapped. */
+.detail__face {
+  grid-area: 1 / 1;
+  height: min(60vh, 30rem);
+  width: auto;
+  opacity: 0;
+  transform: scale(0.97);
+  /* Slow, because the faces are the whole demo: long enough to read one as an
+     expression rather than as a frame going past. */
+  transition:
+    opacity 0.7s ease-out,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  /* It is a lit screen in a dark case: a shadow under it to stand it on the
+     page, and its own glow around it. Both fall on the device's own shape
+     rather than on a square, because tools/cutout-bubu.py took the black field
+     these were exported on out of the artwork. */
+  filter:
+    drop-shadow(0 18px 34px rgba(0, 0, 0, 0.7))
+    drop-shadow(0 0 44px rgb(var(--acc) / 0.42));
+}
+
+.detail__face.is-at {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detail__face {
+    transition: none;
+    transform: scale(1);
+  }
+}
+
+/* Stands in for the demo until the recording is in. */
+.detail__pending {
+  display: grid;
+  place-items: center;
+  aspect-ratio: var(--ratio, 16 / 9);
+  border-radius: inherit;
+  background: linear-gradient(180deg, #14120e 0%, #0a0906 100%);
+  font-size: clamp(0.68rem, 0.8vw, 0.8rem);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+/* ---- the account ---- */
+
+.detail__copy {
+  min-width: 0;
+}
+
+/* The one sentence that says what the thing is. Set larger than the rest and
+   at the page's brightest value, with the tracking pulled in a little the way
+   a line of display type wants it — it is a statement, not a first paragraph. */
+.detail__lead {
+  margin: 0 0 clamp(1.1rem, 2.8vh, 1.7rem);
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.18vw, 1.2rem);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.012em;
+  color: var(--ink-hi);
+  text-wrap: pretty;
+}
+
+.detail__points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: clamp(0.85rem, 2.1vh, 1.25rem);
+}
+
+.detail__point {
+  position: relative;
+  padding-left: 1.15rem;
+  font-size: clamp(0.82rem, 0.94vw, 0.95rem);
+  line-height: 1.65;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* A lit point rather than a bullet: the same light the rest of the page is
+   built with, at the size of a full stop. */
+.detail__point::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.66em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--acc-text);
+  box-shadow: 0 0 10px rgb(var(--acc) / 0.9);
+}
+
+/* On its own line, so the four of them can be read down the column without
+   reading the sentences at all. */
+.detail__point-label {
+  display: block;
+  font-weight: 600;
+  letter-spacing: -0.008em;
+  color: var(--acc-text);
+}
+
+/* Where it runs and what it costs, set as a specification rather than as
+   prose: small, spaced, and quiet.
+
+   In the project's lit colour held back, rather than in the accent itself.
+   The accent is a body colour — here it is a deep violet — and uppercase type
+   at three quarters of a rem in it goes from quiet to unreadable. */
+/* The one way out of this page.
+
+   Blue, like the book's buy links, and for the same reason: every page on this
+   site is set in its own colour, so a pill in the project's colour is
+   decoration and says nothing about being clickable. Blue is the site's one
+   signal that something goes somewhere, and it is worth standing outside the
+   palette to keep it legible as that. */
+.detail__links {
+  margin: clamp(1.1rem, 2.8vh, 1.8rem) 0 0;
+}
+
+.detail__repo {
+  --link: 124 170 255;
+
+  display: inline-flex;
+  align-items: center;
+  padding: 0.62em 1.15em;
+  border: 1px solid rgb(var(--link) / 0.5);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgb(var(--link) / 0.16), rgb(var(--link) / 0.05));
+  font-family: var(--font-display);
+  font-size: clamp(0.72rem, 0.85vw, 0.86rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: #b9d2ff;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    background 0.2s ease-out;
+}
+
+.detail__repo:hover,
+.detail__repo:focus-visible {
+  color: #e6efff;
+  border-color: rgb(var(--link) / 0.95);
+  background: linear-gradient(180deg, rgb(var(--link) / 0.3), rgb(var(--link) / 0.12));
+  text-decoration: underline;
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: 1px;
+}
+
+.detail__repo:focus-visible {
+  outline: 2px solid rgb(var(--link));
+  outline-offset: 3px;
+}
+
+.detail__meta {
+  margin: clamp(1.2rem, 3vh, 1.8rem) 0 0;
+  font-size: clamp(0.66rem, 0.76vw, 0.78rem);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--acc-text);
+  opacity: 0.78;
+}
+
+/* The honest part. Below a hairline and set small, but in the body's own ink
+   rather than greyed away — it is not fine print, it is the product. */
+.detail__note {
+  margin: clamp(0.7rem, 1.8vh, 1rem) 0 0;
+  padding-top: clamp(0.7rem, 1.8vh, 1rem);
+  border-top: 1px solid rgb(var(--acc) / 0.28);
+  font-size: clamp(0.74rem, 0.84vw, 0.85rem);
+  line-height: 1.62;
+  color: var(--ink-mid);
+  text-wrap: pretty;
+}
+
+.detail__para {
+  margin: 0 0 clamp(0.6rem, 1.7vh, 1rem);
+  font-size: clamp(0.78rem, 0.9vw, 0.92rem);
+  line-height: 1.7;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* The first paragraph is what the thing is, so it carries the page's brightest
+   value and the rest sit back from it. */
+.detail__para:first-child {
+  color: var(--ink-hi);
+}
+
+.detail__para:last-child {
+  margin-bottom: 0;
+}
+
+/* Narrow: the video goes above the account rather than beside it. */
+@media (max-width: 60rem) {
+  .detail__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

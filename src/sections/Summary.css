@@ -1,0 +1,221 @@
+/* The seam.
+
+   This page is the first thing that covers the masthead, and until now it slid
+   up over it with nothing to mark the join — two black pages, one arriving.
+   So it has a lit top edge, and its top corners are rounded, which is what
+   makes the arrival read as a surface coming up in front of another one rather
+   than as the content simply moving.
+
+   The line is the inset shadow: one and a half pixels just inside the edge, so
+   it follows the two corners round. Everything after it is the light that line
+   is throwing, offset upwards and unclipped — a box-shadow is drawn outside
+   the border box and the section's own overflow:hidden does not touch it, so
+   the glow falls on the page being covered. Three passes, in the ribbon's own
+   gold: tight and bright, then a bloom, then a wash that lifts the black.
+
+   Both are gone once the page is parked, which is the point of them — the edge
+   is at the top of the viewport by then, behind the bar's scrim. */
+/* This page's own colour.
+
+   The whole site was on one warm scale for a while; it is back to a hue per
+   page. Setting the shared type tokens here rather than restyling anything is
+   what makes that cheap: --title-* is the heading's gradient, --fg and its
+   two quieter steps are every sentence on the page, --fg-accent is the small
+   caps. They inherit, so a section that names them recolours everything
+   inside it, including the parts of it written before any of this existed. */
+#summary {
+  /* Light blue. The ribbon, the panel it passes behind and the type are all
+     in it — see --line-* below, which is the same neon moved off gold. */
+  --title-top: #eaf6ff;
+  --title-color: #a8d8ff;
+  --title-deep: #3f9fe8;
+  --fg: #e7f3fb;
+  --fg-muted: #b7d2e3;
+  --fg-dim: #5e7c8f;
+  --fg-accent: #79bfe8;
+  --page-glow: 150 205 245;
+
+  /* The ribbon. Same six steps and the same climb, in this page's hue. */
+  --line-atmos: #0a5ca8;
+  --line-far: #1a83d6;
+  --line-glow: #4aa9ee;
+  --line-halo: #93cdf6;
+  --line-core: #c4e4fb;
+  --line-hot: #f2fbff;
+
+  --seam-r: clamp(0.9rem, 1.4vw, 1.6rem);
+  border-top-left-radius: var(--seam-r);
+  border-top-right-radius: var(--seam-r);
+  box-shadow:
+    inset 0 1.5px 0 0 var(--title-top),
+    0 -2px 10px rgb(120 195 245 / 0.5),
+    0 -7px 30px rgb(70 160 230 / 0.3),
+    0 -18px 68px rgb(30 110 200 / 0.2);
+}
+
+.summary__title {
+  position: relative;
+  z-index: 1;
+}
+
+/* Centred in the section, built as a lit surface rather than a flat wash — the
+   same construction as the project panels. It stays translucent and keeps its
+   blur, because the ribbon runs behind it and has to read through. */
+.glass.summary__box {
+  /* The light that gathers at the foot of the panel, rings its top edge and
+     runs down the rule beside the examples — the ribbon's own colour, caught
+     on the surface in front of it. Gold now, like the ribbon and like the
+     sentences it is lighting. */
+  --acc: 130 200 248;
+
+  --ink-hi: #f4fbff;
+  --ink: #dbeefb;
+  --ink-mid: #a9c8dc;
+
+  position: relative;
+  z-index: 1;
+  border: 0;
+  border-radius: 16px;
+  background-image:
+    /* light from above */
+    radial-gradient(125% 105% at 50% -22%, rgba(255, 255, 255, 0.09), transparent 60%),
+    /* the ribbon's own colour gathering at the foot of the panel */
+    radial-gradient(95% 115% at 50% 118%, rgb(var(--acc) / 0.15), transparent 64%),
+    linear-gradient(180deg, rgba(32, 28, 22, 0.5) 0%, rgba(19, 17, 13, 0.58) 100%);
+  /* Thinner fill and a softer blur than the project panels: the ribbon passes
+     behind this one and should still be legible as a line through it, not just
+     as a smear of light. */
+  backdrop-filter: blur(11px) saturate(130%);
+  -webkit-backdrop-filter: blur(11px) saturate(130%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.075),
+    inset 0 -46px 78px -52px rgb(var(--acc) / 0.5),
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    0 22px 54px rgba(0, 0, 0, 0.62),
+    0 0 90px rgb(var(--acc) / 0.14);
+  width: 100%;
+  max-width: 62rem;
+  /* Vertical padding is vh-based so the panel keeps its height on tall
+     viewports without overflowing a short one. */
+  padding: clamp(1.75rem, 5vh, 3.75rem) clamp(1.75rem, 3.8vw, 3.25rem);
+  /* Nudged below the section's centre line so the ribbon's entry sweep
+     stays clear above it. */
+  margin-top: clamp(0.5rem, 2.5vh, 1.5rem);
+}
+
+/* The lit strip across the top edge, brightest at the middle and fading before
+   the corners — the panel reads as powered rather than merely drawn. */
+.glass.summary__box::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1.5px;
+  border-radius: 2px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--acc) / 0.95) 30%,
+    rgba(255, 253, 246, 0.95) 50%,
+    rgb(var(--acc) / 0.95) 70%,
+    transparent
+  );
+  box-shadow:
+    0 0 6px rgb(var(--acc) / 0.75),
+    0 0 18px rgb(var(--acc) / 0.4);
+}
+
+.summary__thesis {
+  /* Same fault as the section headings at a smaller scale — the p of
+     "products" was losing its tail. See .section-title in global.css. */
+  padding-bottom: 0.1em;
+  margin: 0 0 -0.1em;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.4vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
+  /* White at the cap height falling into the ribbon's periwinkle by the
+     baseline — the same idea as the section heading, held back so the two do
+     not compete. The glow has to be a filter: the glyphs are painted by the
+     background, so there is no text colour for a shadow to pick up. */
+  background-image: linear-gradient(
+    168deg,
+    var(--title-top) 0%,
+    var(--title-color) 42%,
+    var(--title-deep) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-wrap: balance;
+}
+
+.summary__lede {
+  margin: clamp(1rem, 3vh, 2rem) 0 0;
+  font-size: clamp(0.98rem, 1.25vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--ink-mid);
+}
+
+/* The three examples break out so the parallel structure is visible
+   and each one lands on its own beat. */
+.summary__examples {
+  list-style: none;
+  margin: clamp(1rem, 2.9vh, 1.95rem) 0 0;
+  padding: 0 0 0 clamp(1.1rem, 1.9vw, 1.6rem);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.7rem, 1.8vh, 1.2rem);
+}
+
+/* The rule down the left of the list, as a lit edge rather than a flat bar:
+   brightest against the first example and falling away down the list, with the
+   ribbon's own bloom behind it. Its own element so the glow stays on the rule
+   instead of ringing the whole list box. */
+.summary__examples::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    180deg,
+    #d8ecfd 0%,
+    rgb(var(--acc) / 0.72) 58%,
+    rgb(var(--acc) / 0.3) 100%
+  );
+  box-shadow: 0 0 12px rgb(var(--acc) / 0.5);
+}
+
+.summary__example {
+  font-size: clamp(0.98rem, 1.25vw, 1.15rem);
+  line-height: 1.55;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* The stakes and the closer are one beat, so they sit tighter to each other
+   than to the list above, and share one value. */
+.summary__stakes {
+  margin: clamp(1rem, 3vh, 2rem) 0 0;
+  font-size: clamp(0.98rem, 1.25vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--ink-mid);
+}
+
+.summary__closer {
+  margin: clamp(0.3rem, 0.8vh, 0.55rem) 0 0;
+  font-size: clamp(0.98rem, 1.25vw, 1.15rem);
+  line-height: 1.6;
+  /* Same value as the stakes line above it — the two are one beat. */
+  color: var(--ink-mid);
+}

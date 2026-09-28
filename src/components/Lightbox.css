@@ -1,0 +1,132 @@
+/* Over the sections (1), the nav (40) and a project page (60), and under the
+   grain (70) — which covers every other surface on the site, so a picture that
+   escaped it would be the one thing on the page that looked pasted on. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(0.7rem, 2vh, 1.2rem);
+  padding: clamp(0.9rem, 2.6vh, 1.6rem) clamp(1rem, 4vw, 2.6rem) clamp(1.2rem, 3vh, 2rem);
+  /* Nearly opaque rather than a tint: what is behind it is a lit page, and a
+     document read through it would be read against whatever colour happened to
+     be pooling there. The blur below is the nicety; this is the part that has
+     to work, because a compositor that declines the filter still has to leave
+     the certificate readable. */
+  background: rgba(4, 4, 9, 0.96);
+  backdrop-filter: blur(14px) saturate(115%);
+  -webkit-backdrop-filter: blur(14px) saturate(115%);
+  overscroll-behavior: contain;
+  cursor: zoom-out;
+}
+
+.lightbox__bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.4rem, 1.2vw, 0.8rem);
+  cursor: auto;
+}
+
+/* What it is, first and largest, because it is the answer to "which one is
+   this?" — the rest of the bar is machinery. */
+.lightbox__name {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(0.78rem, 0.94vw, 0.94rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  /* One line: a long certificate title would otherwise push the controls down
+     and take height off the picture. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lightbox__act {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.44rem 0.85rem;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.05);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: clamp(0.64rem, 0.74vw, 0.74rem);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--fg-muted);
+  transition:
+    background 0.2s ease-out,
+    border-color 0.2s ease-out,
+    color 0.2s ease-out;
+}
+
+.lightbox__act:hover {
+  background: rgb(255 255 255 / 0.1);
+  border-color: rgb(255 255 255 / 0.28);
+  color: var(--fg);
+}
+
+.lightbox__act:focus-visible {
+  outline: 2px solid rgb(var(--page-glow));
+  outline-offset: 3px;
+}
+
+.lightbox__plate {
+  position: relative;
+  min-height: 0;
+  cursor: auto;
+}
+
+/* Absolutely positioned against the plate, and centred by `margin: auto`
+   between opposing insets, rather than laid out inside it.
+
+   Laid out, `max-height: 100%` did not bind: a percentage height resolves
+   against a definite containing block, and as a grid item the picture's block
+   was not one — so only `max-width` applied and a portrait mark sheet came out
+   1900px tall in a 770px window, running off both ends of the screen. Against
+   an absolutely positioned box's containing block, which is the plate's padding
+   box and definitely 683px, both percentages resolve and the picture fits.
+
+   Sized by its own proportions rather than filling a box with `object-fit`,
+   so the lit edge and the shadow below sit on the picture and not on a
+   letterboxed frame around it. */
+.lightbox__plate img {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  border-radius: 4px;
+  /* The same lit hairline the certificates carry on the section they came
+     from, in neutral: this frame stands over every section in turn and cannot
+     borrow any one of their accents without clashing with the others. */
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.18),
+    0 2px 6px rgba(0, 0, 0, 0.7),
+    0 30px 70px rgba(0, 0, 0, 0.8);
+}
+
+/* ---- the images that open one ---- */
+
+/* Set on every picture wired to the lightbox, wherever it lives. */
+[data-zoom] {
+  cursor: zoom-in;
+}
+
+[data-zoom]:focus-visible {
+  outline: 2px solid rgb(var(--page-glow));
+  outline-offset: 4px;
+  border-radius: 3px;
+}

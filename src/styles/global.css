@@ -1,0 +1,319 @@
+/* Madane, the display face the section headings are set in.
+
+   Shipped as a TTF rather than WOFF2 only because there is no woff2 tool on
+   this machine; at 45kB it is already smaller than most subsetted webfonts,
+   so the conversion would buy a handful of kilobytes.
+
+   The weight range is a deliberate fiction. Madane has one weight, a black —
+   and .section-title asks for 700, which would make the browser synthesise a
+   bold ON TOP of a face that is already as heavy as it goes, smearing it.
+   Declaring the file as covering the whole range tells the browser this IS
+   the 700 and to draw it as drawn.
+
+   LICENCE: freeware, non-commercial, personal use, and the author asks that
+   the file not be passed to anyone else. Serving it from /fonts does pass it
+   to every visitor. See the note where this was added. */
+@font-face {
+  font-family: 'Madane';
+  src: url('/fonts/madane.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  /* The serif shows immediately and is swapped when Madane lands, rather than
+     the heading being invisible while it loads. */
+  font-display: swap;
+}
+
+/* Super Adorable, the face the name on the home page is set in.
+
+   The same single-weight fiction as Madane. The file is one weight, declared
+   400, and it is drawn black — so asking for the 700 the masthead wants would
+   have the browser synthesise a bold ON TOP of a face already as heavy as it
+   goes, thickening the strokes until the counters close. Declaring the range
+   says this IS the 700.
+
+   LICENCE: freeware, with no non-commercial clause — unlike Madane, which is
+   the other display face here. */
+@font-face {
+  font-family: 'Super Adorable';
+  src: url('/fonts/super-adorable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Form controls do not inherit type. That is the UA stylesheet's rule, not an
+   oversight of this one, and it is why the year on each Experience badge was
+   coming out in Arial: .exp__tag is a <button>, nothing in its subtree names a
+   face, and the inheritance chain stops dead at the button rather than
+   reaching the body.
+
+   Only the family is inherited. `font: inherit` is the usual reset and it also
+   hands over size, weight and line-height — which here would resize every
+   control that has been sized against the UA default instead of against this
+   stylesheet. The family is the part that was wrong. */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  /* Proportional figures in running copy; the one counter that changes under
+     the reader's eye asks for tabular separately. */
+  font-variant-numeric: proportional-nums;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selection in the section's own light rather than the browser's blue, which is
+   the one colour on the page nobody chose. */
+::selection {
+  background: rgb(var(--page-glow) / 0.32);
+  color: #fffdf6;
+}
+
+/* And a focus ring that belongs to the site. Keyboard only — :focus-visible —
+   so a mouse press does not leave one behind. */
+:focus-visible {
+  outline: 2px solid rgb(var(--page-glow) / 0.85);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* The scroll-snap track. One section per viewport. */
+.page {
+  height: 100dvh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.page::-webkit-scrollbar {
+  display: none;
+}
+
+.section {
+  position: relative;
+  min-height: 100dvh;
+  /* Black, flat, and nothing else.
+
+     Every section used to paint a dome of its own accent over this, a
+     counter-light from below and a neutral lift through the middle — a lit
+     room for the content to stand in. It is now one colour, edge to edge, on
+     every page. The colour still lives in the type and the artwork; it has
+     come out of the air around them.
+
+     The background-color stays load-bearing regardless: the sections are
+     opaque and slide over one another, and this is the layer that stops the
+     one behind showing through. */
+  background-color: var(--bg);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding: var(--page-pad-y) var(--page-pad-x);
+}
+
+/* The pinned first page. The spacer holds its viewport of scroll and carries
+   the snap point, so the track's geometry is ordinary; the page itself is
+   fixed to the viewport and simply never moves.
+
+   It stays painted for the whole scroll, which costs nothing: every section
+   after it is opaque and lands on top. */
+.hero-pin {
+  height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.hero-pin__page {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  min-height: 0;
+  /* It still carries .section's snap rules, and a fixed box's snap area sits
+     wherever the viewport is — a snap point that follows the scroll and so is
+     never left behind. That is what stopped an upward scroll from getting off
+     the second page. The spacer around it carries the real snap point. */
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+  /* And it must stay out of the hit-test path. It is a full-viewport fixed
+     box, so at the top of the page every wheel and swipe lands on it — and a
+     fixed box's scroll chain runs to the document, not to .page, so those
+     gestures had nothing to scroll. Anything interactive added to this page
+     later has to set pointer-events: auto on itself. */
+  pointer-events: none;
+}
+
+/* Everything after the first page rides over it. */
+.page > .section {
+  z-index: 1;
+}
+
+/* A page covering the one before it used to carry a lit hairline along its top
+   edge — brightest at the middle, in that section's own colour — so the overlap
+   had something to read as it travelled up. It is gone, along with the four
+   sections that named a colour for it. One page slides over another with
+   nothing drawn on the seam; the content moving is the only thing that marks
+   the change.
+
+   --page-glow survives it, on :root and on the two sections that set their own,
+   because the selection colour and the focus ring are still drawn in it. */
+
+/* The grain that used to lie over the whole scroller is gone with the
+   gradients it was there for. Five per cent of fractal noise is invisible over
+   a lit field and is the only thing you can see on an unlit one: on flat #000
+   it stopped reading as a lens and started reading as a dirty panel. Nothing
+   is left between the content and the black. */
+
+@media (prefers-reduced-motion: reduce) {
+  .page {
+    scroll-behavior: auto;
+  }
+}
+
+/* Centred sections put their single child in the middle of the screen. */
+.section--center {
+  align-items: center;
+}
+
+/* The transparent panel content sits in. Kept barely-there so the
+   ribbon stays visible through it. */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+/* Section headings — the chapter titles.
+
+   Set in the serif, at 400, because Instrument Serif has one weight and asking
+   for more only gets a synthesised smear. The type is filled with a gradient
+   running from white at the cap height down into the section's own accent,
+   which is what stops a large heading looking like a plain coloured word.
+
+   The glow has to be a filter rather than a text-shadow: the glyphs are painted
+   by the background, so there is no text colour for a shadow to pick up. It is
+   tighter than it was for the grotesque — a serif's hairlines are thin enough
+   that a wide bloom eats them. */
+/* The line under a section's name: what the page holds, said once, before the
+   visitor has had to work it out from the artwork.
+
+   Quiet by construction — a light weight, a size close to body copy, and the
+   section's own colour held well back. It is a caption to the heading, and a
+   caption that competes with what it captions is a second heading. */
+.section-sub {
+  margin: 0 0 clamp(1rem, 2.6vh, 1.9rem);
+  /* The same face as the copy it introduces. It was set in Tradehouse for a
+     while, which made the caption a third voice between the display heading
+     and the paragraph; one display face per page turns out to be the limit
+     before the hierarchy stops being a hierarchy. */
+  font-family: var(--font-body);
+  /* Up about a fifth from where it started. It was sized as a caption that
+     should not compete with the heading above it, and at that size it had
+     stopped reading as a sentence and started reading as small print. */
+  font-size: clamp(0.9rem, 1.15vw, 1.15rem);
+  font-weight: 450;
+  line-height: 1.5;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--sub-color, var(--fg-muted));
+}
+
+/* The heading hands its own gap down to the line below it, so a section pays
+   for a line of type rather than for a line plus the space that used to sit
+   under the heading. Three of these pages are within fifty pixels of the
+   bottom of the window as it is. */
+.section-title:has(+ .section-sub) {
+  margin-bottom: calc(clamp(0.35rem, 0.9vh, 0.6rem) - var(--descender));
+}
+
+.section-title {
+  /* Room under the baseline for the descenders.
+
+     The gradient is clipped to the glyphs, but it is only ever painted inside
+     the element's own box — and at line-height 1.02 that box ends above where
+     the descenders go. Anything hanging below it had no paint to show through
+     and was cut off flat: the J and the y of "The Journey", the p of "The
+     Receipts", the y of "The Story".
+
+     Measured at nine pixels of overhang on a 67px heading, which is 0.134em;
+     this is a little more than that. Every margin below a heading has the same
+     amount taken back out of it, in the rules that follow and in the four
+     sections that set their own — so the box is taller and nothing moved. */
+  --descender: 0.17em;
+  padding-bottom: var(--descender);
+  margin: 0 0 calc(clamp(1rem, 2.6vh, 1.9rem) - var(--descender));
+  /* Madane first, the serif behind it. The fallback is doing real work here
+     and not only covering a failed download: Madane has no hyphen, no dash
+     and no curly apostrophe, so those characters are drawn by Instrument
+     Serif inside an otherwise Madane word. The home page's name is not in
+     this rule and keeps the serif. */
+  font-family: 'Madane', var(--font-title);
+  font-size: clamp(2.5rem, 5.1vw, 4.2rem);
+  /* Bold, and the browser draws it: Instrument Serif ships one weight, and
+     asking Google for wght@700 is answered with a 400 — the error, not the
+     weight. So this is a synthetic bold.
+     
+     That is usually a thing to avoid at display size, because emboldening a
+     high-contrast serif by algorithm thickens its hairlines as much as its
+     stems and flattens the contrast that makes it worth setting. Checked at
+     the size it is actually used, against the alternative of a stroke under
+     the fill, and it holds: the stroke swelled the counters and rounded the
+     serifs, and this did not. Swapping the face for one with a real 700 is the
+     other way out, and a larger decision than this was. */
+  font-weight: 700;
+  /* A serif at display size needs none of the negative tracking a grotesque
+     wants — its sidebearings are already drawn for the size. */
+  letter-spacing: 0;
+  line-height: 1.02;
+  text-align: center;
+  /* Cream at the cap height, champagne through the middle, gold at the foot —
+     the three stops are on :root and nothing overrides them, so every heading
+     on the site is this one ramp. The nine sections used to name their own and
+     that is what the change undid. */
+  background-image: linear-gradient(
+    170deg,
+    var(--title-top) 0%,
+    var(--title-color) 52%,
+    var(--title-deep) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  /* No bloom. This carried four passes of drop-shadow — a tight one on the
+     stroke's edge, a close halo, a wide one, and a far cast that lifted the
+     black around the word. All of it is gone, on every heading on the site.
+     The gradient above is doing the work now, and against a flat black field
+     it does not need help: what the glow was adding, at this size, was a haze
+     on the serif's hairlines.
+
+     --title-glow is kept because each section still names one, and taking the
+     token out would mean editing nine files to say nothing. */
+}

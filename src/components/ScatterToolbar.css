@@ -1,0 +1,78 @@
+.scatter-toolbar {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(18, 18, 24, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px);
+  font-size: 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.scatter-toolbar__hint {
+  color: var(--fg-dim);
+}
+
+.scatter-toolbar__size {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--fg-muted);
+}
+
+.scatter-toolbar__size input {
+  width: 6rem;
+  accent-color: #c17bff;
+}
+
+.scatter-toolbar__stat {
+  color: var(--fg-muted);
+}
+
+.scatter-toolbar__verdict {
+  color: #7ee08a;
+}
+
+.scatter-toolbar__stat.is-bad,
+.scatter-toolbar__verdict.is-bad {
+  color: #ff6b6b;
+}
+
+.scatter-toolbar button {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--fg);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.scatter-toolbar button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Shown only when the clipboard is unavailable — select all and copy by hand. */
+.scatter-toolbar__fallback {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 0.5rem);
+  width: 34rem;
+  height: 13rem;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #0e0e13;
+  color: var(--fg);
+  font: inherit;
+  resize: none;
+}

@@ -1,0 +1,242 @@
+import { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion.js'
+import './Hero.css'
+
+/**
+ * The first page is pinned: it stays where it is while the page after it rides
+ * up and covers it, instead of the two scrolling away together.
+ *
+ * The pin is a fixed inner box inside an in-flow spacer, rather than `position:
+ * sticky` on the section itself. Sticky would work visually, but a stuck
+ * element reports its stuck position as offsetTop — so the nav's Home link and
+ * the snap points would both be reading a number that moves as you scroll. The
+ * spacer keeps the scroll geometry ordinary; only the painting is unusual.
+ */
+
+const NAME = 'AMTHUZ ZAFRIN F'
+
+/**
+ * The name is still split to letters, though it now arrives in one piece: the
+ * light that walks along it is a CSS animation per letter, offset down the
+ * line, and there is no other way to get a highlight to travel across type
+ * whose fill is a gradient clipped to the glyphs.
+ *
+ * Words keep a span of their own so a break, if one were ever forced, would
+ * happen between words and not inside a surname.
+ */
+let counter = 0
+const WORDS = NAME.split(' ').map((word) => [...word].map((ch) => ({ ch, i: counter++ })))
+
+/** How long the name takes to come up, and how long it waits first. */
+const FADE_LEAD = 0.15
+const FADE_FOR = 1.4
+
+/**
+ * The line under the name, as the sequence it is typed in. The divider is a
+ * drawn rule rather than a pipe character, so it travels in the queue as an
+ * item of its own and is struck like any other key.
+ */
+const RULE = { rule: true }
+const KEYS = [
+  ...[...'GEN AI Engineer'].map((ch) => ({ ch })),
+  RULE,
+  ...[...'Fullstack Developer'].map((ch) => ({ ch })),
+]
+
+/** Typing starts as the name is settling — not after silence. */
+const TYPE_LEAD = 1300
+/**
+ * Eighteen characters a second, which is fast for a person and right for an
+ * animation. The line is two seconds even at that, and nobody watches a
+ * subtitle type itself for longer than that twice.
+ */
+const KEY_MS = 42
+/** A hand pauses between words, and pauses longer at a piece of punctuation. */
+const WORD_MS = 80
+const RULE_MS = 120
+
+/** The wait before revealing KEYS[i], given what was struck before it. */
+function gapBefore(i) {
+  const prev = KEYS[i - 1]
+  const next = KEYS[i]
+  if (prev === RULE || next === RULE) return KEY_MS + RULE_MS
+  if (prev && prev.ch === ' ') return KEY_MS + WORD_MS
+  return KEY_MS
+}
+
+/**
+ * The struck keys, as far as `upTo`. Both layers of the line are drawn with
+ * this — the invisible one at full length to hold the width open, the visible
+ * one at whatever has been typed — so the two can never disagree about how
+ * wide the finished line is.
+ *
+ * Spaces go in as non-breaking ones: an ordinary trailing space at the end of
+ * a half-typed line collapses to nothing, and the caret would step backwards
+ * over it and then forwards again.
+ */
+function struck(upTo) {
+  return KEYS.slice(0, upTo).map((key, i) =>
+    key === RULE ? (
+      <span className="hero__divider" key="rule" />
+    ) : key.ch === ' ' ? (
+      ' '
+    ) : (
+      key.ch
+    )
+  )
+}
+
+export default function Hero() {
+  const spacer = useRef(null)
+  const [home, setHome] = useState(false)
+  const [typed, setTyped] = useState(0)
+  const reduced = usePrefersReducedMotion()
+
+  /**
+   * Whether the visitor is actually on the first page.
+   *
+   * It cannot be asked of the section itself: that box is fixed to the viewport
+   * and so is always in view. The spacer around it is the one that scrolls, and
+   * it is exactly one viewport tall, so how much of it is on screen is how much
+   * of the home page is uncovered.
+   *
+   * Two thresholds, deliberately far apart. The entrance plays once a third of
+   * the page is back — early enough that most of it runs after the scroll has
+   * snapped home — but it only re-arms when the spacer is gone completely, at
+   * which point the next section is covering this one and the reset cannot be
+   * seen. One threshold for both would re-arm halfway through a scroll and
+   * flicker the name.
+   */
+  useEffect(() => {
+    const el = spacer.current
+    if (!el) return undefined
+
+    const watch = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.intersectionRatio >= 0.35) setHome(true)
+        else if (!entry.isIntersecting) setHome(false)
+      },
+      /* The root is pulled in by a pixel because a zero-area touch counts as
+         an intersection: parked exactly one section down, the spacer's bottom
+         edge sits precisely on the viewport's top edge and the observer calls
+         that still in view, so the reset never fired and coming back from the
+         second page found the name already on. A pixel of margin makes flush
+         mean gone. */
+      { threshold: [0, 0.35], rootMargin: '-1px 0px' }
+    )
+    watch.observe(el)
+    return () => watch.disconnect()
+  }, [])
+
+  /**
+   * The typing itself: a chain of timeouts rather than one interval, because
+   * the gap between two keys is not always the same length.
+   *
+   * It is deliberately not a CSS steps() animation over the line's width.
+   * Steps divide the width evenly and these characters are not evenly wide, so
+   * the reveal would land mid-letter as often as between two — which is the
+   * tell that the text is being wiped rather than typed.
+   */
+  useEffect(() => {
+    if (!home) {
+      setTyped(0)
+      return undefined
+    }
+    if (reduced) {
+      setTyped(KEYS.length)
+      return undefined
+    }
+
+    let i = 0
+    let timer = window.setTimeout(function strike() {
+      i += 1
+      setTyped(i)
+      if (i < KEYS.length) timer = window.setTimeout(strike, gapBefore(i))
+    }, TYPE_LEAD)
+
+    return () => window.clearTimeout(timer)
+  }, [home, reduced])
+
+  /** The name comes up as one thing, slowly. */
+  const name = {
+    hidden: { opacity: 0 },
+    shown: {
+      opacity: 1,
+      transition: {
+        delay: reduced ? 0 : FADE_LEAD,
+        duration: reduced ? 0.5 : FADE_FOR,
+        ease: [0.4, 0, 0.25, 1],
+      },
+    },
+  }
+
+  /**
+   * The line below it has no entrance of its own — the typing is the entrance.
+   * Under reduced motion there is no typing, so it takes one instead.
+   */
+  const line = {
+    hidden: { opacity: reduced ? 0 : 1 },
+    shown: {
+      opacity: 1,
+      transition: { delay: reduced ? 0.35 : 0, duration: reduced ? 0.5 : 0 },
+    },
+  }
+
+  return (
+    <div id="hero" className="hero-pin" ref={spacer}>
+      <section className="section section--center hero-pin__page hero">
+        {/* Rising across the foot of the page, its limb running corner to
+            corner. Decoration, and it says nothing, so it is hidden. */}
+        <div className="hero__moon" aria-hidden="true" />
+
+        <motion.div
+          className={`hero__stage${home && !reduced ? ' is-home' : ''}`}
+          initial="hidden"
+          animate={home ? 'shown' : 'hidden'}
+        >
+          {/* Labelled, and the letters hidden: a screen reader should be handed
+              the name once, in sentence case, rather than thirteen separate
+              capitals to spell out. */}
+          <motion.h1 className="hero__name" aria-label="Amthuz Zafrin F" variants={name}>
+            {WORDS.map((word) => (
+              <span className="hero__word" key={word[0].i} aria-hidden="true">
+                {word.map(({ ch, i }) => (
+                  <span
+                    className="hero__glyph"
+                    key={i}
+                    /* The sheen is a CSS animation per letter, and this is its
+                       place in the queue — the delay is what turns thirteen
+                       separate highlights into one travelling across the name. */
+                    style={{ '--g': i }}
+                  >
+                    {ch}
+                  </span>
+                ))}
+              </span>
+            ))}
+          </motion.h1>
+
+          <motion.p className="hero__roles" variants={line}>
+            {/* Said once, properly punctuated, for anything reading the page
+                aloud. What follows is the same words being performed. */}
+            <span className="hero__said">GEN AI Engineer, Fullstack Developer</span>
+
+            <span className="hero__line" aria-hidden="true">
+              {/* The full line, invisible, holding the width open so the
+                  finished sentence is centred from the first keystroke — a
+                  centred line that grows as it types slides leftwards the
+                  whole way and reads as drift, not as typing. */}
+              <span className="hero__ghost">{struck(KEYS.length)}</span>
+
+              <span className={`hero__typed${typed >= KEYS.length ? ' is-done' : ''}`}>
+                {struck(typed)}
+                {!reduced && typed > 0 && <span className="hero__caret" />}
+              </span>
+            </span>
+          </motion.p>
+        </motion.div>
+      </section>
+    </div>
+  )
+}

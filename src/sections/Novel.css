@@ -1,0 +1,364 @@
+/* The three columns sit a little below the heading's centre line. Adding the
+   drop to the stage's own margin alone would not do it: the section centres
+   its children, so a taller group simply rises and takes the heading up with
+   it. The section's top padding gains the same amount, which cancels that and
+   leaves the heading where it was. */
+/* This page's own colour.
+
+   The whole site was on one warm scale for a while; it is back to a hue per
+   page. Setting the shared type tokens here rather than restyling anything is
+   what makes that cheap: --title-* is the heading's gradient, --fg and its
+   two quieter steps are every sentence on the page, --fg-accent is the small
+   caps. They inherit, so a section that names them recolours everything
+   inside it, including the parts of it written before any of this existed. */
+#novel {
+  /* Orange. */
+  --title-top: #fff0e2;
+  --title-color: #ffc79a;
+  --title-deep: #f0812a;
+  --fg: #f8eade;
+  --fg-muted: #d9bfa8;
+  --fg-dim: #856a54;
+  --fg-accent: #e59a5c;
+  --page-glow: 245 165 100;
+
+  --stage-drop: clamp(0.9rem, 2.4vh, 1.7rem);
+  padding-top: calc(var(--page-pad-y) + var(--stage-drop));
+}
+
+.novel__title {
+  /* Tighter than the shared heading margin — the plate below wants the height
+     more than the gap does. */
+  margin-bottom: calc(clamp(0.75rem, 1.8vh, 1.3rem) - var(--descender));
+}
+
+/* Three columns on the page itself — no panel. The four pages sit two by two
+   on the left, the plate on show is held large beside them in a lit rim, and
+   the copy stands on the black rather than in a box. */
+.novel__stage {
+  --acc: 240 150 80;
+  /* the cover's own sunset violet, used only in the widest glow pass */
+  --acc-cool: 150 116 214;
+  /* Capped by the fixed nav, not by the section: the heading is centred with
+     the plate, so any more height here pushes "The Story" up behind the bar. */
+  --main-h: min(31rem, 63vh);
+  --rail-gap: clamp(0.45rem, 1.1vh, 0.8rem);
+  /* Two by two, at exactly the main plate's height. A 2 x 2 block of 5 : 8
+     tiles is itself 5 : 8, so the block comes out the same size as the plate
+     beside it — the gap is the only difference, and it is a few pixels. */
+  --thumb-h: calc((var(--main-h) - var(--rail-gap)) / 2);
+  /* 5 : 8 — the trim size the book was set at. */
+  --thumb-w: calc(var(--thumb-h) * 0.625);
+
+  display: grid;
+  grid-template-columns:
+    calc(2 * var(--thumb-w) + var(--rail-gap))
+    calc(var(--main-h) * 0.625)
+    minmax(0, 1fr);
+  grid-template-rows: var(--main-h);
+  gap: clamp(0.85rem, 2vw, 1.9rem);
+  align-items: center;
+  width: 100%;
+  max-width: 80rem;
+  margin-top: calc(clamp(0.5rem, 2vh, 1.4rem) + var(--stage-drop));
+}
+
+/* ---- the strip of pages ---- */
+
+.novel__rail {
+  display: grid;
+  grid-template-columns: repeat(2, var(--thumb-w));
+  grid-template-rows: repeat(2, var(--thumb-h));
+  gap: var(--rail-gap);
+  /* Shorter than the main plate, so it centres against it. */
+  align-self: center;
+}
+
+.novel__thumb {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #0b0910;
+  /* A hairline that is a lit edge rather than a grey box, plus enough contact
+     shadow that four small pages read as objects on the black. */
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--acc) / 0.42),
+    0 1px 2px rgba(0, 0, 0, 0.7),
+    0 6px 14px rgba(0, 0, 0, 0.45);
+  opacity: 0.86;
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s ease-out,
+    opacity 0.28s ease-out;
+}
+
+.novel__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.novel__thumb:hover,
+.novel__thumb:focus-visible {
+  opacity: 1;
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--acc) / 0.85),
+    0 1px 2px rgba(0, 0, 0, 0.7),
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 0 22px rgb(var(--acc) / 0.4);
+}
+
+.novel__thumb:focus-visible {
+  outline: 2px solid rgb(var(--acc));
+  outline-offset: 3px;
+}
+
+/* ---- the plate on show ---- */
+
+.novel__feature {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  background: #0b0910;
+  /* The lit outer line. A crisp gold hairline first — the edge has to stay an
+     edge — then three widening passes of the same colour so the light falls
+     off into the black instead of stopping at a ring. */
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 0 0 1px rgb(var(--acc) / 0.9),
+    0 0 0 5px rgb(var(--acc) / 0.09),
+    0 0 16px rgb(var(--acc) / 0.5),
+    0 0 48px rgb(var(--acc) / 0.28),
+    0 0 90px rgb(var(--acc) / 0.15),
+    0 0 150px rgb(var(--acc-cool) / 0.2),
+    0 24px 60px rgba(0, 0, 0, 0.75);
+}
+
+.novel__feature img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  /* Each swap arrives rather than cuts. */
+  animation: novel-plate-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes novel-plate-in {
+  from {
+    opacity: 0;
+    transform: scale(1.035);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* A single slow sheen down the plate — the light a printed jacket catches. */
+.novel__feature::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    108deg,
+    transparent 38%,
+    rgba(255, 246, 224, 0.16) 48%,
+    transparent 58%
+  );
+  background-size: 260% 100%;
+  animation: novel-sheen 7.5s ease-in-out infinite;
+}
+
+@keyframes novel-sheen {
+  0%,
+  62% {
+    background-position: 130% 0;
+  }
+  100% {
+    background-position: -30% 0;
+  }
+}
+
+/* ---- the copy, on the page rather than in a box ---- */
+
+.novel__copy {
+  min-width: 0;
+  /* Narrower than the column it is given, so the measure stays a comfortable
+     read rather than running the full width of the grid track. */
+  max-width: 29rem;
+  /* Extra air on this seam only. The plate is a lit object and the text was
+     sitting inside its glow; the grid's own gap is right for the two picture
+     columns but too tight between a picture and a column of prose. */
+  padding-left: clamp(0.9rem, 2.4vw, 2.6rem);
+
+  /* Runs the plate's full height rather than floating centred against it: the
+     title sits on the plate's top edge and the credits on its bottom one. */
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+
+.novel__name {
+  margin: 0;
+  /* The same sans as the rest of the page. It was the serif, matching the
+     cover three inches to the left; set against Inter everywhere else it read
+     as a fragment of a different site rather than as a book. */
+  font-family: var(--font-body);
+  font-size: clamp(2rem, 3.4vw, 3.05rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.02;
+  /* The same gradient fill the section headings use, in the book's gold. */
+  background-image: linear-gradient(
+    170deg,
+    var(--title-top) 0%,
+    var(--title-color) 34%,
+    var(--title-deep) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  /* Unlit, like every other heading on the site. */
+}
+
+/* Above the title rather than under it, which is the order the listing reads
+   in — the state of the thing first, then what it is. */
+.novel__eyebrow {
+  margin: 0 0 clamp(0.3rem, 0.9vh, 0.55rem);
+  font-size: clamp(0.64rem, 0.76vw, 0.78rem);
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--fg-accent);
+}
+
+/* The book's own subtitle, under the title and in the same face, so the two
+   still read as one lockup — the same pair, in the same order, as the cover
+   three inches to the left. */
+.novel__tagline {
+  margin: clamp(0.24rem, 0.7vh, 0.44rem) 0 0;
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.35vw, 1.3rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--fg-muted);
+}
+
+.novel__author {
+  margin: clamp(0.34rem, 1vh, 0.6rem) 0 0;
+  font-size: clamp(0.66rem, 0.78vw, 0.8rem);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+
+.novel__blurb {
+  margin: clamp(0.8rem, 2.1vh, 1.3rem) 0 0;
+  /* Sized so the column fills the plate's height from the type rather than
+     from a hole above the buttons — and no taller, or they overrun the plate's
+     bottom edge. It moves with --main-h. */
+  font-size: clamp(0.84rem, 0.98vw, 1.02rem);
+  line-height: 1.62;
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+
+/* The second paragraph is the one in his own voice, so it takes the page's
+   full white and the story keeps the warmer, quieter tone. */
+.novel__blurb--mine {
+  color: var(--fg);
+}
+
+/* Where to buy it.
+
+   Blue, and the only blue left on the site. Everything else is champagne, and
+   a champagne pill among champagne type is decoration — there is nothing to
+   tell a reader that this one is a way out of the page. Blue is the one colour
+   that says link without a label, and it is worth breaking the palette for on
+   the two things here that actually go somewhere.
+
+   Outlined rather than filled: the cover plate to the left is the brightest
+   thing on this page and two solid buttons under it would compete with it. */
+.novel__buy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(0.45rem, 1vw, 0.8rem);
+  /* auto, not a fixed gap: whatever height the prose does not use falls here,
+     which is what keeps the buttons on the plate's bottom edge now that the
+     credits line that used to do it is gone. The padding is the floor, for a
+     window short enough that there is no slack to give them. */
+  margin-top: auto;
+  padding-top: clamp(0.9rem, 2.4vh, 1.5rem);
+}
+
+.novel__buy-link {
+  /* A lit azure rather than the browser's blue: #0000ee on black is a dead
+     colour, and this page is lit warm — the link has to read as blue without
+     reading as a default. */
+  --link: 124 170 255;
+
+  display: inline-flex;
+  align-items: center;
+  padding: 0.62em 1.15em;
+  border: 1px solid rgb(var(--link) / 0.5);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgb(var(--link) / 0.16), rgb(var(--link) / 0.05));
+  font-family: var(--font-display);
+  font-size: clamp(0.72rem, 0.85vw, 0.86rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: #b9d2ff;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    background 0.2s ease-out;
+}
+
+.novel__buy-link:hover,
+.novel__buy-link:focus-visible {
+  color: #e6efff;
+  border-color: rgb(var(--link) / 0.95);
+  background: linear-gradient(180deg, rgb(var(--link) / 0.3), rgb(var(--link) / 0.12));
+  text-decoration: underline;
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: 1px;
+}
+
+.novel__buy-link:focus-visible {
+  outline: 2px solid rgb(var(--link));
+  outline-offset: 3px;
+}
+
+/* The territories, said once and quietly — it belongs with the buttons rather
+   than with the credits, which are about the book and not about buying it. */
+.novel__where {
+  margin: clamp(0.4rem, 1.1vh, 0.65rem) 0 0;
+  font-size: clamp(0.7rem, 0.82vw, 0.82rem);
+  line-height: 1.5;
+  color: var(--fg-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .novel__feature::after,
+  .novel__feature img {
+    animation: none;
+  }
+}

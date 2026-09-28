@@ -1,0 +1,119 @@
+.glowline-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.glowline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+}
+
+.glowline path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  /* Light adds, it does not paint over. Additive blending is most of the
+     difference between "glow" and "blue paint". */
+  mix-blend-mode: plus-lighter;
+  /* No transition on stroke-dashoffset — it is driven frame by frame from the
+     scroll position, and easing it would just make it lag the scroll. Only the
+     bloom fades. */
+  transition: opacity 0.45s ease-out;
+}
+
+/* Seven passes. What makes a light read as real is not the number of layers but
+   the CONTRAST between them: a small, almost clipped white filament, a bright
+   tube around it, then a falloff that drops away fast and only then trails off
+   into faint air. The earlier stack had the core and the halo close in both
+   width and brightness, which is what made it look like a thick soft stroke
+   rather than something emitting. */
+.glowline__atmos {
+  stroke-width: calc(var(--line-w) * 7);
+  filter: blur(84px);
+}
+
+.glowline__far {
+  stroke-width: calc(var(--line-w) * 4.4);
+  filter: blur(44px);
+}
+
+.glowline__bloom {
+  stroke-width: calc(var(--line-w) * 2.5);
+  filter: blur(21px);
+}
+
+.glowline__halo {
+  stroke-width: calc(var(--line-w) * 1.55);
+  filter: blur(9px);
+}
+
+/* Hugs the tube. This tight band is the difference between light that has an
+   edge and light that is a cloud. */
+.glowline__edge {
+  stroke-width: calc(var(--line-w) * 1.04);
+  filter: blur(2.4px);
+}
+
+/* The tube itself. */
+.glowline__core {
+  stroke-width: var(--line-w);
+  filter: blur(0.4px);
+}
+
+/* The filament. Thin, white and barely blurred — a real emitter is overexposed
+   at its centre, and this is the part the eye reads as the light. */
+.glowline__hot {
+  stroke-width: calc(var(--line-w) * 0.24);
+  filter: blur(0.8px);
+}
+
+/* The bloom fades up as soon as the ribbon starts drawing, and back out when
+   the scroll erases it to nothing. */
+.glowline-wrap.is-drawn .glowline__atmos {
+  /* Kept low. The page is pure black, and an atmosphere heavy enough to be
+     obvious tints the whole section navy instead of reading as air. */
+  opacity: 0.085;
+}
+.glowline-wrap.is-drawn .glowline__far {
+  opacity: 0.22;
+}
+.glowline-wrap.is-drawn .glowline__bloom {
+  opacity: 0.3;
+}
+.glowline-wrap.is-drawn .glowline__halo {
+  opacity: 0.3;
+}
+
+.glowline-wrap.is-drawn .glowline__edge {
+  opacity: 0.5;
+}
+.glowline-wrap.is-drawn .glowline__core {
+  opacity: 0.78;
+}
+.glowline-wrap.is-drawn .glowline__hot {
+  opacity: 1;
+}
+
+.glowline__grain {
+  position: absolute;
+  inset: -10%;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.glowline-wrap.is-static .glowline path {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glowline path {
+    transition: none;
+  }
+}

@@ -1,0 +1,205 @@
+/* Periwinkle, and the whole section is in it: the heading, the caption and the
+   film on every bubble. It is the light this page is already lit by — the
+   background dome here is the page's default indigo — so the bubbles now read
+   as being in the room rather than as an object of another colour set down in
+   it. The jade went to the journey. */
+/* This page's own colour.
+
+   The whole site was on one warm scale for a while; it is back to a hue per
+   page. Setting the shared type tokens here rather than restyling anything is
+   what makes that cheap: --title-* is the heading's gradient, --fg and its
+   two quieter steps are every sentence on the page, --fg-accent is the small
+   caps. They inherit, so a section that names them recolours everything
+   inside it, including the parts of it written before any of this existed. */
+#skills {
+  /* Purple, and the bubbles take it too — --acc below is the film on each of
+     them, so the cluster is lit by the same colour the heading is set in. */
+  --title-top: #f6eaff;
+  --title-color: #d5aaff;
+  --title-deep: #9a4dff;
+  --fg: #f0e6fa;
+  --fg-muted: #cab5e0;
+  --fg-dim: #746389;
+  --fg-accent: #c194f0;
+  --page-glow: 178 130 245;
+
+  --acc: 168 118 240;
+
+  /* Pinned below the nav rather than centred in the window, the same way the
+     certificates page is. Centred, the heading had nowhere to go: the field
+     underneath it takes most of a viewport, so the block filled the section
+     and pushed its own heading up under the bar — it was starting at 43px
+     with the nav occupying the first 71. */
+  justify-content: flex-start;
+  padding-top: calc(5.5rem + clamp(0.5rem, 2vh, 1.4rem));
+}
+
+/* The field the cluster lives in. Its proportions are the cluster's own: the
+   pull toward the middle is measured against this box's half-width and
+   half-height, so a wide field gives a wide drift.
+
+   Both numbers are what twenty-nine circles of this size need, simulated
+   against four window shapes before they were set: the pack sits at about
+   three quarters of the area it is given, which is close enough to full to
+   read as one cluster and loose enough that nothing is ever wedged. */
+.skills__field {
+  position: relative;
+  width: 100%;
+  max-width: 83rem;
+  /* What is left of the window once the nav, the heading and the caption have
+     taken theirs. The cluster takes the loss sideways rather than by shrinking
+     — the wall it packs against is a squircle, so a shorter field spreads it
+     wider instead of wedging it. */
+  height: min(30rem, 65vh);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+/* The caption gives up most of its gap to the field. Every pixel between the
+   two is a pixel off the bubbles, because the field's height is what caps
+   how large twenty-nine of them can be. */
+#skills .section-sub {
+  margin-bottom: clamp(0.4rem, 1vh, 0.8rem);
+}
+
+/* Placed by the simulation and by nothing else. left/top put the origin in the
+   middle of the field, and the transform it is given is an offset from there
+   with the bubble's own radius already taken off, so a bubble's coordinates
+   are its centre rather than its corner. */
+.skills__slot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  will-change: transform;
+}
+
+/* ---- a bubble ----
+
+   Built the way one looks rather than the way a tag looks. A soap bubble is
+   nearly nothing in the middle — the page is straight through it — and almost
+   everything at the rim, where you are looking through the film at a grazing
+   angle and through both of its walls at once. So the fill is empty in the
+   centre and gathers into a bright edge, the light wraps round the far side
+   rather than sitting flat on the near one, and the whole of it carries the
+   interference colours a film that thin makes.
+
+   `aspect-ratio` against a content width is what makes it a circle that fits
+   its word: the box takes the label's width up to the cap, then squares
+   itself. Past the cap a two-word label wraps and the circle stops growing.
+   The caps are in vh as well as rem, so a short window gets smaller bubbles
+   rather than a cluster wedged against its own walls. */
+.skills__bubble {
+  position: relative;
+  /* The film's own layers stay the film's own business. */
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  aspect-ratio: 1;
+  /* Three caps, because three things run out. The rem is the size they should
+     be; the vh is the field's height, which is what a short window takes away;
+     the vw is its width, which is what a narrow one does. Whichever is
+     smallest wins, so the pack keeps its proportions to the space rather than
+     wedging itself into a window it was not measured for. */
+  min-width: min(5.95rem, 13vh, 6.3vw);
+  max-width: min(9.6rem, 21.2vh, 10.3vw);
+  padding: 0.63rem 0.86rem;
+  border-radius: 50%;
+  text-align: center;
+  text-wrap: balance;
+  font-family: var(--font-display);
+  font-size: clamp(0.84rem, 0.96vw, 1.01rem);
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  line-height: 1.25;
+  /* Near-white with the periwinkle in it rather than the periwinkle itself: a
+     saturated mid-tone on a fill this transparent has nothing to be read
+     against. */
+  color: var(--fg);
+  background:
+    /* the sheen off the near surface */
+    radial-gradient(40% 32% at 30% 24%, rgb(255 255 255 / 0.14), transparent 72%),
+    /* the wall: clear through the middle, thickening into the rim */
+    radial-gradient(
+      circle at 50% 50%,
+      transparent 44%,
+      rgb(var(--acc) / 0.1) 70%,
+      rgb(var(--acc) / 0.26) 89%,
+      rgb(var(--acc) / 0.44) 98%,
+      transparent 100%
+    ),
+    /* the page bouncing up into the underside */
+    radial-gradient(110% 100% at 50% 114%, rgb(var(--acc) / 0.16), transparent 58%),
+    rgb(var(--acc) / 0.035);
+  box-shadow:
+    /* the edge of the film itself, one pixel of it */
+    0 0 0 1px rgb(255 255 255 / 0.15),
+    /* light wrapping round the far side — the thing that says ball rather than
+       disc, and the reason it is offset rather than even */
+    inset -4px -5px 15px rgb(255 255 255 / 0.2),
+    inset 5px 6px 18px rgb(var(--acc) / 0.2),
+    /* and it is a body in the room: it drops a shadow and it glows */
+    0 16px 38px rgba(0, 0, 0, 0.5),
+    0 0 38px rgb(var(--acc) / 0.14);
+}
+
+/* The interference colours, kept to the rim where a real film shows them: the
+   middle of a bubble is its thinnest part and shows almost none. Masked to a
+   ring rather than faded out, because the band on a bubble has an edge. */
+.skills__bubble::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from var(--spin, 0deg),
+    rgb(255 140 210 / 0.5),
+    rgb(140 200 255 / 0.45),
+    rgb(150 255 205 / 0.4),
+    rgb(255 235 150 / 0.5),
+    rgb(255 150 190 / 0.45),
+    rgb(255 140 210 / 0.5)
+  );
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 38%, #000 80%, #000 97%, transparent 100%);
+  mask-image: radial-gradient(circle at 50% 50%, transparent 38%, #000 80%, #000 97%, transparent 100%);
+  /* Strong enough to be seen as colour. At half this it reads as a grey-green
+     ball with a bright edge, which is a marble — the bands are the whole
+     difference between a marble and a bubble. */
+  opacity: 0.62;
+  pointer-events: none;
+}
+
+/* The word is inside the bubble, so it sits over the film and under the light
+   on the front of it. */
+.skills__word {
+  position: relative;
+  z-index: 1;
+}
+
+/* The light, twice: the source caught on the near surface, and the small cold
+   one the page throws back into the underside. Both are on the front of the
+   bubble, so both are over everything else in it. */
+.skills__bubble::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      22% 15% at 29% 22%,
+      rgb(255 255 255 / 0.85),
+      rgb(255 255 255 / 0.22) 58%,
+      transparent 100%
+    ),
+    radial-gradient(11% 7.5% at 70% 79%, rgb(255 255 255 / 0.45), transparent 100%);
+  pointer-events: none;
+}
+
+/* There is no hover state, deliberately. The cursor's whole effect here is
+   that the bubbles get out of its way — see the pointer in Skills.jsx — so
+   nothing is ever under it long enough to light up, and a lift that fired on
+   the way past would only flicker.
+*/
