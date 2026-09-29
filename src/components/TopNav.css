@@ -1,3 +1,28 @@
+/* The bar's three colours, typed so they can be animated. An unregistered
+   custom property is a string as far as the engine is concerned, and strings
+   do not interpolate — without this the bar would jump between page colours
+   instead of moving between them. */
+@property --tab {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #8ac0e6;
+}
+@property --tab-hi {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #e2f4ff;
+}
+@property --tab-on {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #4fcbff;
+}
+@property --tab-deep {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #0b7cb4;
+}
+
 /* A flat bar across the top: wordmark left, sections right. No panel and no
    pill — it should read as part of the page rather than as a control sitting
    on it.
@@ -18,7 +43,18 @@
   --tab: #8ac0e6;
   --tab-hi: #e2f4ff;
   --tab-on: #4fcbff;
-  --tab-glow: 79 203 255;
+  --tab-deep: #0b7cb4;
+
+  /* The bar takes the colour of whatever section is on screen, and TopNav.jsx
+     sets these three from that section's own tokens as you scroll. They are
+     registered as <color> above so the change can be interpolated: a custom
+     property is an untyped string by default and jumps, and a bar that snaps
+     from teal to coral mid-scroll reads as a glitch rather than as a move. */
+  transition:
+    --tab 0.45s ease,
+    --tab-hi 0.45s ease,
+    --tab-on 0.45s ease,
+    --tab-deep 0.45s ease;
 
   position: fixed;
   top: 0;
@@ -66,17 +102,17 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgb(var(--tab-glow) / 0.28) 10%,
-    rgb(var(--tab-glow) / 0.75) 28%,
+    color-mix(in srgb, var(--tab-on) 28%, transparent) 10%,
+    color-mix(in srgb, var(--tab-on) 75%, transparent) 28%,
     var(--tab-hi) 50%,
-    rgb(var(--tab-glow) / 0.75) 72%,
-    rgb(var(--tab-glow) / 0.28) 90%,
+    color-mix(in srgb, var(--tab-on) 75%, transparent) 72%,
+    color-mix(in srgb, var(--tab-on) 28%, transparent) 90%,
     transparent 100%
   );
   box-shadow:
-    0 1px 7px rgb(var(--tab-glow) / 0.42),
-    0 2px 20px rgb(var(--tab-glow) / 0.26),
-    0 4px 44px rgb(var(--tab-glow) / 0.14);
+    0 1px 7px color-mix(in srgb, var(--tab-on) 42%, transparent),
+    0 2px 20px color-mix(in srgb, var(--tab-on) 26%, transparent),
+    0 4px 44px color-mix(in srgb, var(--tab-on) 14%, transparent);
 }
 
 .topnav__mark {
@@ -95,16 +131,16 @@
    gradient rather than a flat accent, the same white-into-colour treatment the
    section headings use, so it reads as a mark rather than as coloured text.
 
-   It runs on the tabs' own cerulean now, as does the lit edge under the bar.
-   Both were champagne, which was chosen when the page below them was a gold
-   moon; with a blue picture there they were the last warm things on the
-   screen. */
+   Its three stops are the section's three, so the mark is set in the colour of
+   whatever page you are on — cerulean over the picture, violet on BUBU, green
+   on Education. They were champagne once, chosen when the page below them was
+   a gold moon. */
 .topnav__given {
   background-image: linear-gradient(
     165deg,
     var(--tab-hi) 0%,
     var(--tab-on) 45%,
-    #0b7cb4 100%
+    var(--tab-deep) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -165,8 +201,15 @@
      colour of a disabled control; this holds 41% at rest and climbs to 68%
      on the tab you are actually on. The rest state is a shade brighter than
      the tan it replaces — 9.8 : 1 against 9.1 — so the hierarchy between the
-     three states is unchanged, only its hue. */
-  color: var(--tab);
+     three states is unchanged, only its hue.
+
+     The cerulean is only the home page's now; every page lends the bar its
+     own. The mix is what keeps that readable from page to page: --tab is the
+     section's caption colour, and most of those are pale enough that on their
+     own they read as white rather than as the page's colour. A third of the
+     heading pulls the hue back into them without disturbing the hierarchy —
+     nothing here falls below 8 : 1. */
+  color: color-mix(in srgb, var(--tab) 68%, var(--tab-on));
   transition:
     color 0.22s ease-out,
     text-shadow 0.22s ease-out;
@@ -185,8 +228,8 @@
 .topnav__link.is-current {
   color: var(--tab-on);
   text-shadow:
-    0 0 10px rgb(var(--tab-glow) / 0.45),
-    0 0 26px rgb(var(--tab-glow) / 0.22);
+    0 0 10px color-mix(in srgb, var(--tab-on) 45%, transparent),
+    0 0 26px color-mix(in srgb, var(--tab-on) 22%, transparent);
 }
 
 .topnav__link.is-current::after {
@@ -200,8 +243,8 @@
   border-radius: 2px;
   background: var(--tab-on);
   box-shadow:
-    0 0 8px rgb(var(--tab-glow) / 0.75),
-    0 0 18px rgb(var(--tab-glow) / 0.35);
+    0 0 8px color-mix(in srgb, var(--tab-on) 75%, transparent),
+    0 0 18px color-mix(in srgb, var(--tab-on) 35%, transparent);
 }
 
 .topnav__mark:focus-visible,
@@ -231,6 +274,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* The bar still changes colour with the page — that is information, not
+     decoration — but it cuts rather than travels. */
+  .topnav,
   .topnav__link {
     transition: none;
   }

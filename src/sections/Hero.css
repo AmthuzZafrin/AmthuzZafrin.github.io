@@ -5,10 +5,17 @@
    is set in type here at the moment, but the tokens still carry the text
    selection colour, and anything put back on this page reads from them. */
 .hero {
-  --hero-top: var(--title-top);
-  --hero-mid: var(--title-color);
-  --hero-deep: var(--title-deep);
-  --page-glow: 226 206 166;
+  /* The page's own colour, which is the picture's: the robot's interface
+     glow, its halo and the light on its visor all measure 200 to 204 degrees.
+     It used to alias the shared --title-* tokens, which by then meant the
+     root champagne — a leftover from when the masthead was a gold moon, and
+     wrong for a blue picture. The bar reads these to take the page's colour,
+     so they have to be the truth rather than an alias. */
+  --title-top: #dff4ff;
+  --title-color: #4fcbff;
+  --title-deep: #0b7cb4;
+  --fg-muted: #8ac0e6;
+  --page-glow: 79 203 255;
 
   /* The picture is the page, so it gets the whole box rather than sitting in
      the padded column the other sections use. */
