@@ -421,6 +421,17 @@
   line-height: 1.7;
   color: var(--ink);
   text-wrap: pretty;
+  /* Flush on both edges, the same as the book's copy on the Novel page. This
+     column already fills its grid track, so unlike that one there was no
+     empty strip to reclaim — the change here is the alignment alone.
+
+     It justifies well because the measure is right: about 75 characters, so
+     there are enough words on a line for the spaces to absorb the slack
+     between them. Hyphenation is what keeps that true when they cannot —
+     without it the browser can only stretch the word spaces, and a line that
+     ends on a long word opens a visible gap across the whole of it. */
+  text-align: justify;
+  hyphens: auto;
 }
 
 /* The first paragraph is what the thing is, so it carries the page's brightest
