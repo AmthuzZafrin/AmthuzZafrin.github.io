@@ -1,8 +1,6 @@
-/* Periwinkle, and the whole section is in it: the heading, the caption and the
-   film on every bubble. It is the light this page is already lit by — the
-   background dome here is the page's default indigo — so the bubbles now read
-   as being in the room rather than as an object of another colour set down in
-   it. The jade went to the journey. */
+/* Green, and the whole section is in it: the heading, the caption and the film
+   on every bubble, so the cluster reads as being in the room rather than as an
+   object of another colour set down in it. */
 /* This page's own colour.
 
    The whole site was on one warm scale for a while; it is back to a hue per
@@ -12,18 +10,23 @@
    caps. They inherit, so a section that names them recolours everything
    inside it, including the parts of it written before any of this existed. */
 #skills {
-  /* Purple, and the bubbles take it too — --acc below is the film on each of
-     them, so the cluster is lit by the same colour the heading is set in. */
-  --title-top: #f6eaff;
-  --title-color: #d5aaff;
-  --title-deep: #9a4dff;
-  --fg: #f0e6fa;
-  --fg-muted: #cab5e0;
-  --fg-dim: #746389;
-  --fg-accent: #c194f0;
-  --page-glow: 178 130 245;
+  /* Green, and the bubbles take it too — --acc below is the film on each of
+     them, so the cluster is lit by the same colour the heading is set in.
 
-  --acc: 168 118 240;
+     An emerald rather than a mint: the highlight is pulled to a yellow-green
+     at 115 degrees, the body is the green proper at 145, and the shadow is a
+     sea green at 161. 46 degrees of travel, which is what keeps a green from
+     reading as a single flat wash. */
+  --title-top: #eaffe8;
+  --title-color: #6fe3a0;
+  --title-deep: #14996f;
+  --fg: #e9f8ee;
+  --fg-muted: #b7d8c4;
+  --fg-dim: #668573;
+  --fg-accent: #6fd9a2;
+  --page-glow: 111 227 160;
+
+  --acc: 96 214 150;
 
   /* Pinned below the nav rather than centred in the window, the same way the
      certificates page is. Centred, the heading had nowhere to go: the field
@@ -126,29 +129,33 @@
   color: var(--fg);
   background:
     /* the sheen off the near surface */
-    radial-gradient(40% 32% at 30% 24%, rgb(255 255 255 / 0.14), transparent 72%),
-    /* the wall: clear through the middle, thickening into the rim */
+    radial-gradient(46% 38% at 28% 22%, rgb(255 255 255 / 0.1), transparent 70%),
+    /* The wall. A bubble is a film, not a ball: almost all of what you see
+       through the middle is whatever is behind it, and the wall only becomes
+       visible towards the edge where the line of sight crosses more of it.
+       The clear centre runs to 52% for that reason — it was 44%, which left
+       enough tint across the middle to read as a solid. */
     radial-gradient(
       circle at 50% 50%,
-      transparent 44%,
-      rgb(var(--acc) / 0.1) 70%,
-      rgb(var(--acc) / 0.26) 89%,
-      rgb(var(--acc) / 0.44) 98%,
-      transparent 100%
+      transparent 52%,
+      rgb(var(--acc) / 0.07) 74%,
+      rgb(var(--acc) / 0.2) 90%,
+      rgb(var(--acc) / 0.38) 97%,
+      rgb(var(--acc) / 0.1) 100%
     ),
     /* the page bouncing up into the underside */
-    radial-gradient(110% 100% at 50% 114%, rgb(var(--acc) / 0.16), transparent 58%),
-    rgb(var(--acc) / 0.035);
+    radial-gradient(120% 105% at 50% 118%, rgb(var(--acc) / 0.18), transparent 56%),
+    rgb(var(--acc) / 0.03);
   box-shadow:
     /* the edge of the film itself, one pixel of it */
-    0 0 0 1px rgb(255 255 255 / 0.15),
+    0 0 0 1px rgb(255 255 255 / 0.13),
     /* light wrapping round the far side — the thing that says ball rather than
        disc, and the reason it is offset rather than even */
-    inset -4px -5px 15px rgb(255 255 255 / 0.2),
-    inset 5px 6px 18px rgb(var(--acc) / 0.2),
+    inset -5px -6px 18px rgb(255 255 255 / 0.16),
+    inset 6px 7px 20px rgb(var(--acc) / 0.18),
     /* and it is a body in the room: it drops a shadow and it glows */
-    0 16px 38px rgba(0, 0, 0, 0.5),
-    0 0 38px rgb(var(--acc) / 0.14);
+    0 18px 40px rgba(0, 0, 0, 0.55),
+    0 0 42px rgb(var(--acc) / 0.16);
 }
 
 /* The interference colours, kept to the rim where a real film shows them: the
@@ -160,21 +167,33 @@
   inset: 0;
   z-index: 0;
   border-radius: 50%;
-  background: conic-gradient(
-    from var(--spin, 0deg),
-    rgb(255 140 210 / 0.5),
-    rgb(140 200 255 / 0.45),
-    rgb(150 255 205 / 0.4),
-    rgb(255 235 150 / 0.5),
-    rgb(255 150 190 / 0.45),
-    rgb(255 140 210 / 0.5)
-  );
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 38%, #000 80%, #000 97%, transparent 100%);
-  mask-image: radial-gradient(circle at 50% 50%, transparent 38%, #000 80%, #000 97%, transparent 100%);
+  background:
+    /* A bubble drains. The film runs down under its own weight, so the top
+       goes thin — thin enough to show no colour at all, which is why a real
+       one is capped with black just before it bursts — while the bottom stays
+       thick and holds the strongest bands. Without this the ring is even all
+       the way round, and an even ring is a printed pattern rather than a
+       liquid. */
+    linear-gradient(180deg, rgb(0 0 0 / 0.72) 4%, rgb(0 0 0 / 0.2) 34%, transparent 62%),
+    /* The bands themselves, and their stops are deliberately uneven: film
+       thickness does not step in equal increments, so evenly spaced colours
+       are the other tell. */
+    conic-gradient(
+      from var(--spin, 0deg),
+      rgb(255 120 200 / 0.55),
+      rgb(120 190 255 / 0.5) 18%,
+      rgb(140 255 210 / 0.42) 33%,
+      rgb(255 240 150 / 0.55) 52%,
+      rgb(255 130 175 / 0.5) 71%,
+      rgb(150 210 255 / 0.45) 86%,
+      rgb(255 120 200 / 0.55)
+    );
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 46%, #000 84%, #000 97%, transparent 100%);
+  mask-image: radial-gradient(circle at 50% 50%, transparent 46%, #000 84%, #000 97%, transparent 100%);
   /* Strong enough to be seen as colour. At half this it reads as a grey-green
      ball with a bright edge, which is a marble — the bands are the whole
      difference between a marble and a bubble. */
-  opacity: 0.62;
+  opacity: 0.7;
   pointer-events: none;
 }
 
@@ -195,13 +214,28 @@
   z-index: 2;
   border-radius: 50%;
   background:
+    /* The rim, and it is the piece that was missing. At the edge you are
+       looking along the film rather than through it, so the light grazes and
+       nearly all of it comes back — on a photograph of a real bubble the edge
+       is the brightest thing in the frame. Without it the shape reads as a
+       ball with a shine on it. */
     radial-gradient(
-      22% 15% at 29% 22%,
-      rgb(255 255 255 / 0.85),
-      rgb(255 255 255 / 0.22) 58%,
+      circle at 50% 50%,
+      transparent 91%,
+      rgb(255 255 255 / 0.4) 96.5%,
+      rgb(255 255 255 / 0.06) 100%
+    ),
+    /* the source, small and hard: a big soft one is a snooker ball */
+    radial-gradient(
+      9% 6.5% at 30% 23%,
+      rgb(255 255 255 / 0.95),
+      rgb(255 255 255 / 0.3) 55%,
       transparent 100%
     ),
-    radial-gradient(11% 7.5% at 70% 79%, rgb(255 255 255 / 0.45), transparent 100%);
+    /* the haze around it */
+    radial-gradient(20% 15% at 30% 23%, rgb(255 255 255 / 0.18), transparent 100%),
+    /* and the source again, focused through the far wall and thrown back */
+    radial-gradient(13% 9% at 69% 78%, rgb(255 255 255 / 0.4), transparent 100%);
   pointer-events: none;
 }
 

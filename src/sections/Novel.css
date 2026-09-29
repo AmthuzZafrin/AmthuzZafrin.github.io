@@ -195,9 +195,13 @@
 
 .novel__copy {
   min-width: 0;
-  /* Narrower than the column it is given, so the measure stays a comfortable
-     read rather than running the full width of the grid track. */
-  max-width: 29rem;
+  /* High enough that the grid track is what decides the width, not this. At
+     29rem the column stopped 75px short of its own track and left a strip of
+     empty page down the right of the section; this only comes into play on a
+     window wide enough that the track would otherwise run the measure past
+     about eighty characters, which is where prose stops being comfortable to
+     read. */
+  max-width: 38rem;
   /* Extra air on this seam only. The plate is a lit object and the text was
      sitting inside its glow; the grid's own gap is right for the two picture
      columns but too tight between a picture and a column of prose. */
@@ -275,6 +279,15 @@
   line-height: 1.62;
   color: var(--fg-muted);
   text-wrap: pretty;
+  /* Flush on both edges, so the column ends where it says it ends instead of
+     fraying down the right. */
+  text-align: justify;
+  /* Justification without hyphenation is the version everyone regrets: the
+     browser has to make every line fit by stretching the word spaces alone,
+     and on a measure this narrow that opens rivers of white down the
+     paragraph. Allowing breaks gives it somewhere else to take up the slack.
+     It needs the lang on <html>, which is set. */
+  hyphens: auto;
 }
 
 /* The second paragraph is the one in his own voice, so it takes the page's
