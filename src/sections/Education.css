@@ -9,28 +9,31 @@
    caps. They inherit, so a section that names them recolours everything
    inside it, including the parts of it written before any of this existed. */
 #education {
-  /* Ice blue, sampled off the page as it looked in September rather than
-     guessed at: the mid, the small caps and the body are the same values that
-     screenshot holds — 9ad9e0 for the heading's body, 6db7c2 for the kicker,
-     e6f7f9 for the sentences, all sitting at 185 to 188 degrees.
+  /* Cream, taken off the building in the photograph below it rather than
+     chosen. The college's masonry is remarkably even across the frame — the
+     lit facade, the tower and the right wing all measure hue 19 to 20 at
+     about 22% saturation — so there is one colour to match, not a range.
 
-     What the screenshot did NOT have is any travel: its ramp moved two
-     degrees from end to end, which is the flat construction every heading on
-     this site has been moving away from. So the sampled colour is kept where
-     it is seen — the body of the ramp — and the ends are opened out around
-     it: the highlight cooled to a green-white at 163 and the shadow carried
-     down into a proper blue at 200. 37 degrees, and it reads as ice catching
-     light rather than as one blue tinted three ways. */
-  --title-top: #e9fbf6;
-  --title-color: #9ad9e0;
-  --title-deep: #3a94c0;
-  --fg: #e6f7f9;
-  --fg-muted: #b0dce3;
-  --fg-dim: #6b8288;
-  --fg-accent: #6db7c2;
-  --page-glow: 140 210 220;
+     It is matched in hue, not in value. #bca194 is the wall as photographed,
+     which is the colour of a thing lit; a heading wants the colour of the
+     light, so the body sits at the same hue with the saturation and value
+     lifted until it carries on black.
 
-  --acc: 140 210 220;
+     A cream is the hardest colour to keep from going flat, because there is
+     so little chroma to move. So the ends are opened out around it: a golden
+     ivory at 39 degrees for the highlight and a terracotta at 18 for the
+     shadow, which is 21 degrees of travel — the same as the gold on the
+     Websites page, and for the same reason. */
+  --title-top: #fff3dc;
+  --title-color: #e9cab3;
+  --title-deep: #a45c3c;
+  --fg: #f7ece2;
+  --fg-muted: #d8c0ae;
+  --fg-dim: #857065;
+  --fg-accent: #dcae8e;
+  --page-glow: 233 202 179;
+
+  --acc: 233 202 179;
 
   /* Pinned below the bar rather than centred in the window, the way the
      receipts and the toolkit are. Centred, the carousel is tall enough that
@@ -260,7 +263,7 @@
   border-radius: 2px;
   background: linear-gradient(
     180deg,
-    #c8f2f6 0%,
+    var(--title-top) 0%,
     rgb(var(--acc) / 0.7) 55%,
     rgb(var(--acc) / 0.22) 100%
   );
@@ -268,7 +271,12 @@
 }
 
 /* The node the rail starts from — the detail that makes it read as a point on
-   a line rather than as a decorative stripe. */
+   a line rather than as a decorative stripe.
+
+   Its three stops, the rail's lit top and the current pip were all frozen at
+   an ice blue: hard-coded when this page wore that colour, and left behind
+   when it went cream. They read from the palette now, so the next change
+   carries them with it. */
 .edu__node {
   position: absolute;
   left: calc(-1 * clamp(0.9rem, 1.9vw, 1.5rem));
@@ -277,7 +285,12 @@
   height: 9px;
   margin-left: -3.5px;
   border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #ffffff 0%, #a8e5ea 45%, #2c8a9e 100%);
+  background: radial-gradient(
+    circle at 40% 35%,
+    #fff 0%,
+    var(--title-color) 45%,
+    var(--title-deep) 100%
+  );
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.6),
     0 0 16px rgb(var(--acc) / 0.8);
@@ -496,7 +509,7 @@
 
 .edu__pip.is-at {
   width: 22px;
-  background: #a8e5ea;
+  background: rgb(var(--acc));
   box-shadow: 0 0 14px rgb(var(--acc) / 0.7);
 }
 

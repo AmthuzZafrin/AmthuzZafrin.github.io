@@ -2,7 +2,16 @@
    inside the section, heading and sentences alike — see Summary.css for the
    longer note on why it is done this way.
 
-   Cream. It was a pink, and the pink has gone back to the Certificates page
+   Gold. It was a cream — the same family, but a cream is a gold with the
+   colour taken out of it, and on a page whose whole subject is two
+   screen recordings lit in gold and violet, the heading may as well be
+   the metal rather than the memory of it.
+
+   The highlight is pulled to a pale lemon at 53 degrees, the body is the
+   gold proper at 43, and the shadow is a bronze at 32 — 21 degrees of
+   travel. Gold that does not travel is a mustard.
+
+   Before this it was a pink, and that pink has gone back to the Certificates page
    where it started — which leaves this one free to be the quietest colour on
    the site, and that suits it: the page is two recordings of somebody else's
    website, and a loud heading over them competes with the work it is meant
@@ -22,16 +31,16 @@
    .commission__frame, gold and purple, sampled off the videos themselves —
    this is what a third frame would inherit if one were ever added. */
 #commission {
-  --title-top: #fffcf0;
-  --title-color: #f6e7c2;
-  --title-deep: #c79552;
-  --fg: #f7efdf;
-  --fg-muted: #d8c8a8;
-  --fg-dim: #857a5f;
-  --fg-accent: #e0c184;
-  --page-glow: 246 231 194;
+  --title-top: #fffbdc;
+  --title-color: #f0c65a;
+  --title-deep: #a5651c;
+  --fg: #f9f0dc;
+  --fg-muted: #dcc99f;
+  --fg-dim: #8a7748;
+  --fg-accent: #e0b354;
+  --page-glow: 240 198 90;
 
-  --acc: 246 231 194;
+  --acc: 240 198 90;
 
   /* Pinned below the bar rather than centred: the recording is tall enough
      that a centred block pushes its own heading up against the nav. And the
