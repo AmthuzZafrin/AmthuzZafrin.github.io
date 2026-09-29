@@ -11,26 +11,23 @@
    caps. They inherit, so a section that names them recolours everything
    inside it, including the parts of it written before any of this existed. */
 #certificates {
-  /* Light pink. The first pass at this was a rose running into crimson,
-     which was pink but not LIGHT pink — the ramp spent its bottom half below
-     the midpoint and the word read hot rather than soft.
+  /* Rose. Deeper than the light pink it replaces — the documents in the row
+     are orange, blue and gold all at once, so unlike most pages here there is
+     nothing in the artwork to match. A rose is chosen rather than sampled: it
+     is a seal-and-ribbon colour, which is what a wall of certificates is, and
+     it is the one hue no other page on the site claims.
 
-     So the whole ramp moves up: the body sits at 12 : 1 on black where it
-     used to sit at 8, and the shadow at 8 : 1 where it used to sit at 4.
-     What it keeps is the travel, because a pale colour is the easiest of all
-     to flatten into a swatch — the highlight is a near-white blush at 338
-     degrees, the body a light pink at 330, and the shadow an orchid at 317.
-     21 degrees, carried entirely in the top half of the lightness range.
-
-     The Websites page no longer competes with it: that one is cream now. */
-  --title-top: #fff4f8;
-  --title-color: #ffadd6;
-  --title-deep: #e878c8;
-  --fg: #fbeaf4;
-  --fg-muted: #e2c0d6;
-  --fg-dim: #866b7c;
-  --fg-accent: #f79ad2;
-  --page-glow: 255 173 214;
+     The set is spaced so no two pages read as the same colour. Where a page
+     has imagery of its own the hue is taken from it; where it has none the
+     hue is chosen to hold its distance from the other eight. */
+  --title-top: #fff1e8;
+  --title-color: #ff8ec2;
+  --title-deep: #ab2a6d;
+  --fg: #fbe9f2;
+  --fg-muted: #e0bcd2;
+  --fg-dim: #86677a;
+  --fg-accent: #f581b8;
+  --page-glow: 255 142 194;
 
   justify-content: flex-start;
   padding-top: calc(5.5rem + clamp(0.5rem, 2vh, 1.4rem));
@@ -46,7 +43,7 @@
      It was a rose, which was this page's own note back when each page had one;
      a lit edge in a colour that appears nowhere in the type reads as a border
      someone forgot to restyle. */
-  --acc: 255 173 214;
+  --acc: 255 142 194;
   /* Capped by the section, not by taste: a taller card pushes the heading up
      behind the nav bar. Height is the binding constraint now — the row has the
      whole width of the page, and what is left of a viewport once the nav, the

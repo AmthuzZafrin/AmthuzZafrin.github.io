@@ -10,23 +10,27 @@
    caps. They inherit, so a section that names them recolours everything
    inside it, including the parts of it written before any of this existed. */
 #skills {
-  /* Green, and the bubbles take it too — --acc below is the film on each of
+  /* Teal, and the bubbles take it too — --acc below is the film on each of
      them, so the cluster is lit by the same colour the heading is set in.
 
-     An emerald rather than a mint: the highlight is pulled to a yellow-green
-     at 115 degrees, the body is the green proper at 145, and the shadow is a
-     sea green at 161. 46 degrees of travel, which is what keeps a green from
-     reading as a single flat wash. */
-  --title-top: #eaffe8;
-  --title-color: #6fe3a0;
-  --title-deep: #14996f;
-  --fg: #e9f8ee;
-  --fg-muted: #b7d8c4;
-  --fg-dim: #668573;
-  --fg-accent: #6fd9a2;
-  --page-glow: 111 227 160;
+     This page is the most freely chosen of the nine: a soap film is
+     iridescent and has no colour of its own to sample, so where every other
+     page was pulled toward its own imagery, this one was pushed to wherever
+     the set had room. That turned out to be 173 degrees.
 
-  --acc: 96 214 150;
+     The set is spaced so no two pages read as the same colour. Where a page
+     has imagery of its own the hue is taken from it; where it has none the
+     hue is chosen to hold its distance from the other eight. */
+  --title-top: #e8fff4;
+  --title-color: #5fe0d0;
+  --title-deep: #0a7f92;
+  --fg: #e4f8f6;
+  --fg-muted: #a9d6d2;
+  --fg-dim: #5c7f7e;
+  --fg-accent: #62ddcf;
+  --page-glow: 95 224 208;
+
+  --acc: 88 208 200;
 
   /* Pinned below the nav rather than centred in the window, the same way the
      certificates page is. Centred, the heading had nowhere to go: the field

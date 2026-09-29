@@ -24,24 +24,34 @@
    caps. They inherit, so a section that names them recolours everything
    inside it, including the parts of it written before any of this existed. */
 #summary {
-  /* Light blue. The ribbon, the panel it passes behind and the type are all
-     in it — see --line-* below, which is the same neon moved off gold. */
-  --title-top: #eaf6ff;
-  --title-color: #a8d8ff;
-  --title-deep: #3f9fe8;
-  --fg: #e7f3fb;
-  --fg-muted: #b7d2e3;
-  --fg-dim: #5e7c8f;
-  --fg-accent: #79bfe8;
-  --page-glow: 150 205 245;
+  /* Indigo. It was a light blue, which was all but the hero's own cerulean —
+     two pages opening on the same colour, and this is the one that introduces
+     the other. Moved to 234 degrees it stays in the cold family the ribbon is
+     lit by while ceasing to be a copy of it.
+
+     The ribbon moves with it. --line-* below is the same ramp: a white-hot
+     core with the atmosphere around it carried from blue into indigo, because
+     the artwork and the type on this page are lit by one light.
+
+     The set is spaced so no two pages read as the same colour. Where a page
+     has imagery of its own the hue is taken from it; where it has none the
+     hue is chosen to hold its distance from the other eight. */
+  --title-top: #eaf0ff;
+  --title-color: #8f9bff;
+  --title-deep: #4a3bc0;
+  --fg: #e9ecff;
+  --fg-muted: #bcc2e8;
+  --fg-dim: #6d7398;
+  --fg-accent: #9aa4ff;
+  --page-glow: 143 155 255;
 
   /* The ribbon. Same six steps and the same climb, in this page's hue. */
-  --line-atmos: #0a5ca8;
-  --line-far: #1a83d6;
-  --line-glow: #4aa9ee;
-  --line-halo: #93cdf6;
-  --line-core: #c4e4fb;
-  --line-hot: #f2fbff;
+  --line-atmos: #2a2a9e;
+  --line-far: #4a48d6;
+  --line-glow: #7a78ee;
+  --line-halo: #aeb0f6;
+  --line-core: #d8dafc;
+  --line-hot: #f4f4ff;
 
   --seam-r: clamp(0.9rem, 1.4vw, 1.6rem);
   border-top-left-radius: var(--seam-r);
@@ -66,7 +76,7 @@
      runs down the rule beside the examples — the ribbon's own colour, caught
      on the surface in front of it. Gold now, like the ribbon and like the
      sentences it is lighting. */
-  --acc: 130 200 248;
+  --acc: 143 155 255;
 
   --ink-hi: #f4fbff;
   --ink: #dbeefb;

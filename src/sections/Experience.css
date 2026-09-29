@@ -2,30 +2,29 @@
    inside the section, heading and sentences alike — see Summary.css for the
    longer note on why it is done this way. */
 #experience {
-  /* Orange, in the family the Novel page uses, as amber going into copper.
+  /* Bronze. It was an orange, which sat nine degrees from the gold on the
+     Websites page — near enough that the two read as one colour two sections
+     apart. This is the same family pulled down and back: the lanyard tags are
+     warm metal and the four certificates are orange-and-navy, so the page
+     keeps its warmth, but at 34 degrees and 6.9 : 1 it is darker and duller
+     than that gold rather than a neighbour of it.
 
-     The highlight is pulled toward gold at 38 degrees, the body is the orange
-     proper at 30, and the shadow lands on copper at 14 — 24 degrees of travel
-     against the 3 the Novel page's own ramp manages. That is the difference
-     between metal and a traffic cone.
+     Three pages here are warm because three pages here have warm source
+     material, and hue alone could not separate them. They are separated by
+     value instead: pale gold at 12.9 : 1 on Websites, a mid coral at 8.2 on
+     the Novel page, this bronze at 6.9.
 
-     Premium the same way the other reworked pages are: the hue MOVES. A ramp
-     built from one hue at three lightnesses is a coloured letter and the eye
-     reads it as poster paint. A real material lit from above shifts hue as it
-     travels — the highlight runs away from the body, the body holds the most
-     chroma, and the shadow rotates further still.
-
-     This page was a sapphire an hour ago, so every token moves, not just the
-     heading: the running copy is a warm tinted white now rather than a cool
-     one, or the sentences would still be reading blue under an orange name. */
-  --title-top: #ffeccc;
-  --title-color: #ff9d3d;
-  --title-deep: #d1461a;
-  --fg: #f9e8d8;
-  --fg-muted: #dcc0a4;
-  --fg-dim: #8a6f57;
-  --fg-accent: #f0913f;
-  --page-glow: 255 157 61;
+     The set is spaced so no two pages read as the same colour. Where a page
+     has imagery of its own the hue is taken from it; where it has none the
+     hue is chosen to hold its distance from the other eight. */
+  --title-top: #ffefcf;
+  --title-color: #c9862e;
+  --title-deep: #6f3d0c;
+  --fg: #f7ecd9;
+  --fg-muted: #d9c19c;
+  --fg-dim: #85704f;
+  --fg-accent: #c2882f;
+  --page-glow: 201 134 46;
 }
 
 /* Top left of the stage, over the ring rather than over the sheet. It shrinks

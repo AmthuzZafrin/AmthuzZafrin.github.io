@@ -12,15 +12,21 @@
    caps. They inherit, so a section that names them recolours everything
    inside it, including the parts of it written before any of this existed. */
 #novel {
-  /* Orange. */
-  --title-top: #fff0e2;
-  --title-color: #ffc79a;
-  --title-deep: #f0812a;
-  --fg: #f8eade;
-  --fg-muted: #d9bfa8;
-  --fg-dim: #856a54;
-  --fg-accent: #e59a5c;
-  --page-glow: 245 165 100;
+  /* Coral sunset, sampled off the book's own cover — the sky behind the
+     figure measures hue 13, and this is that colour lifted until it carries
+     on black. It was a peach, which was the same idea at half the strength.
+
+     The set is spaced so no two pages read as the same colour. Where a page
+     has imagery of its own the hue is taken from it; where it has none the
+     hue is chosen to hold its distance from the other eight. */
+  --title-top: #ffeee4;
+  --title-color: #ff7a55;
+  --title-deep: #b02f22;
+  --fg: #faeae0;
+  --fg-muted: #dcbaa9;
+  --fg-dim: #856257;
+  --fg-accent: #ff8a68;
+  --page-glow: 255 122 85;
 
   --stage-drop: clamp(0.9rem, 2.4vh, 1.7rem);
   padding-top: calc(var(--page-pad-y) + var(--stage-drop));
@@ -36,7 +42,7 @@
    on the left, the plate on show is held large beside them in a lit rim, and
    the copy stands on the black rather than in a box. */
 .novel__stage {
-  --acc: 240 150 80;
+  --acc: 255 122 85;
   /* the cover's own sunset violet, used only in the widest glow pass */
   --acc-cool: 150 116 214;
   /* Capped by the fixed nav, not by the section: the heading is centred with

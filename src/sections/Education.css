@@ -9,31 +9,26 @@
    caps. They inherit, so a section that names them recolours everything
    inside it, including the parts of it written before any of this existed. */
 #education {
-  /* Cream, taken off the building in the photograph below it rather than
-     chosen. The college's masonry is remarkably even across the frame — the
-     lit facade, the tower and the right wing all measure hue 19 to 20 at
-     about 22% saturation — so there is one colour to match, not a range.
+  /* Lawn green, and it is still taken from the photograph below — just from
+     the grass rather than the walls. The masonry reads hue 19, which is a
+     cream, and the Novel page's cover sits at 13; two pages on one colour,
+     and the cover is the stronger claim to it. The lawn is the next largest
+     area of the same picture and it is nowhere near anything else on the
+     site.
 
-     It is matched in hue, not in value. #bca194 is the wall as photographed,
-     which is the colour of a thing lit; a heading wants the colour of the
-     light, so the body sits at the same hue with the saturation and value
-     lifted until it carries on black.
+     The set is spaced so no two pages read as the same colour. Where a page
+     has imagery of its own the hue is taken from it; where it has none the
+     hue is chosen to hold its distance from the other eight. */
+  --title-top: #fbffd0;
+  --title-color: #a8d94f;
+  --title-deep: #3f6b20;
+  --fg: #f0f8e0;
+  --fg-muted: #c6d8a8;
+  --fg-dim: #6f8156;
+  --fg-accent: #a3d456;
+  --page-glow: 168 217 79;
 
-     A cream is the hardest colour to keep from going flat, because there is
-     so little chroma to move. So the ends are opened out around it: a golden
-     ivory at 39 degrees for the highlight and a terracotta at 18 for the
-     shadow, which is 21 degrees of travel — the same as the gold on the
-     Websites page, and for the same reason. */
-  --title-top: #fff3dc;
-  --title-color: #e9cab3;
-  --title-deep: #a45c3c;
-  --fg: #f7ece2;
-  --fg-muted: #d8c0ae;
-  --fg-dim: #857065;
-  --fg-accent: #dcae8e;
-  --page-glow: 233 202 179;
-
-  --acc: 233 202 179;
+  --acc: 168 217 79;
 
   /* Pinned below the bar rather than centred in the window, the way the
      receipts and the toolkit are. Centred, the carousel is tall enough that
