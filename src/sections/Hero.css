@@ -41,7 +41,7 @@
   position: absolute;
   right: 0;
   bottom: 0;
-  width: min(122%, 2600px);
+  width: min(122%, 162.5rem);
   aspect-ratio: 2400 / 843;
   background: url('/hero-ai.webp') center / cover no-repeat;
   pointer-events: none;

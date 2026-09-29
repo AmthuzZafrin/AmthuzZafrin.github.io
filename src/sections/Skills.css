@@ -57,7 +57,7 @@
      carried on, and the surplus came out as dead black. Set against ~1200px
      instead, so the vh governs on any ordinary screen.
   */
-  height: min(60rem, calc(100dvh - 293px));
+  height: min(60rem, calc(100dvh - 18.3125rem));
   margin: 0 auto;
   padding: 0;
   list-style: none;

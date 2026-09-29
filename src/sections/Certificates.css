@@ -51,7 +51,7 @@
      behind the nav bar. Height is the binding constraint now — the row has the
      whole width of the page, and what is left of a viewport once the nav, the
      heading and the rail have taken theirs is what a card can be. */
-  --card-h: min(58rem, calc(100dvh - 348px));
+  --card-h: min(58rem, calc(100dvh - 21.75rem));
   /* The frame's proportions, taken from the first certificate. */
   --card-r: 1.479;
 

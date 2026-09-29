@@ -88,7 +88,7 @@
    Perspective lives here, so the tags rotate in real depth rather than being
    flat shapes that merely turn. */
 .exp__rig {
-  --rig: min(58rem, calc(100dvh - 340px));
+  --rig: min(58rem, calc(100dvh - 21.25rem));
   /* The ring's own centre, worked out from the clasp: the art is 120 x 168 and
      the ring sits at y 122, so at a width of 0.34 rig the ring lands here.
      The fan has to pivot on that point or the tags hang off nothing. */

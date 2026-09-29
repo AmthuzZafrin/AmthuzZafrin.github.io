@@ -215,7 +215,7 @@
    cancelled outright, so the row sits on the last line of the page rather than
    floating above it. */
 .contact__stickers {
-  --gap: clamp(8px, 2.4vw, 40px);
+  --gap: clamp(0.5rem, 2.4vw, 2.5rem);
   --sticker-h: min(5rem, calc((100vw - 16 * var(--gap)) / 11.6));
 
   display: flex;

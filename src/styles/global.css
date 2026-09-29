@@ -64,6 +64,37 @@ textarea {
   font-family: inherit;
 }
 
+/* The design's unit of length.
+
+   Every layout on this site was tuned against a 1480 x 773 CSS viewport, and
+   two kinds of length behave differently when that viewport changes:
+
+     - vw and vh are already proportional. 74vh of a 773px window and 74vh of
+       a 966px window occupy the SAME physical space on the same screen, so
+       every piece of artwork sized that way already matched everywhere;
+
+     - rem and px do not. 16px is 16px of CSS at any zoom, so on a window
+       taller and wider than the reference, all the type and spacing came out
+       proportionally smaller than the artwork around it, and every
+       clamp(<rem>, <vw>, <rem>) resolved to a different branch.
+
+   So rem is made proportional too. 1.081vw is 16px at 1480 wide and 2.07vh is
+   16px at 773 tall; min() of the two takes whichever dimension is the tighter
+   constraint, which is what stops a short, wide window from overflowing.
+
+   The bounds are in rem rather than px on purpose. Inside the root's own
+   font-size, rem refers to the INITIAL value — the reader's browser default —
+   so someone who has set a larger default keeps the benefit of it at both
+   ends of the range.
+
+   Note that media query breakpoints are unaffected: em and rem in a media
+   query are always relative to the initial font size, never to this. The
+   breakpoints stay where they are, which is correct — they mark real device
+   widths, and should not move when the design scales. */
+html {
+  font-size: clamp(0.875rem, min(1.081081vw, 2.069857vh), 1.625rem);
+}
+
 html,
 body,
 #root {
