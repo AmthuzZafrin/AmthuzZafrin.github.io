@@ -40,25 +40,6 @@ const WAYS = [
   },
 ]
 
-/**
- * The strip along the foot of the page. Decoration and nothing else, so it is
- * hidden from anything reading the page aloud.
- *
- * The widths are carried here because every one of them is a different shape:
- * they are all drawn to the same height and the browser needs to know how wide
- * that makes each before the file has arrived, or the row re-lays itself out
- * twenty-three times as they load. Written by tools/prep-stickers.py, which is
- * where the height they were cut to lives.
- */
-const STICKERS = [
-  ['s01.webp', 217], ['s02.webp', 113], ['s03.webp', 158], ['s04.webp', 156],
-  ['s05.webp', 175], ['s06.webp', 196], ['s07.webp', 155], ['s08.webp', 211],
-  ['s09.webp', 228], ['s10.webp', 133], ['s11.webp', 180], ['s12.webp', 162],
-  ['s13.webp', 177], ['s14.webp', 144],
-]
-/** The height they were all written at — see the prep script. */
-const STICKER_H = 210
-
 export default function Contact() {
   const [ref, inView] = useInView({ threshold: 0.25 })
   const reduced = usePrefersReducedMotion()
@@ -151,25 +132,6 @@ export default function Contact() {
         </div>
       </motion.div>
 
-      <motion.div
-        className="contact__stickers"
-        aria-hidden="true"
-        variants={rise}
-        initial="hidden"
-        animate={inView ? 'shown' : 'hidden'}
-      >
-        {STICKERS.map(([file, w]) => (
-          <img
-            key={file}
-            src={`/stickers/${file}`}
-            alt=""
-            width={w}
-            height={STICKER_H}
-            loading="lazy"
-            decoding="async"
-          />
-        ))}
-      </motion.div>
     </section>
   )
 }

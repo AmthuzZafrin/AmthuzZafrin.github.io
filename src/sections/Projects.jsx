@@ -131,6 +131,21 @@ const PROJECTS = [
     meta: 'Android \u00b7 English \u00b7 coming to Google Play',
   },
   {
+    id: 'deen',
+    name: 'Deen & Daleel',
+    repo: 'https://github.com/AmthuzZafrin/deen-daleel',
+    tagline: 'An Islamic research assistant that shows you the evidence behind every answer.',
+    items: DEEN,
+    video: '/projects/deen-demo.mp4',
+    poster: '/projects/deen-demo-poster.webp',
+    ratio: '1280 / 666',
+    body: [
+      'Deen & Daleel lets people ask Islamic questions and receive an answer together with the original evidence behind it \u2014 including Qur\u2019an verses, hadith, tafsir, and scholarly writings. Instead of simply asking the user to trust an answer, the website lets them open the sources and read them for themselves.',
+      'The answers are prepared and carefully checked before they are published. When a question is unclear or outside the available knowledge, Deen & Daleel does not make up an answer. It shows the closest relevant sources instead.',
+      'I built the system around a large collection of more than 6,600 Islamic texts, turning them into a searchable library and connecting 488 carefully prepared answers to the sources they rely on. Every quotation is checked against its original source before it is published, with references designed to remain reliable even when the library is updated.',
+    ],
+  },
+  {
     id: 'kukai',
     name: 'KUKAI',
     repo: 'https://github.com/AmthuzZafrin/KUKAI',
@@ -148,21 +163,6 @@ const PROJECTS = [
       'The website also includes a learning section where people can explore signs by category, including alphabets, numbers, days, colours, family members, and common words.',
       'To make recognition more dependable, the system only accepts a sign when it is sufficiently confident. Unclear or partially hidden gestures are ignored instead of being turned into a random answer.',
       'I worked across the full project, from collecting training examples and teaching the recognition model to building the final application and making it run efficiently on a normal laptop.',
-    ],
-  },
-  {
-    id: 'deen',
-    name: 'Deen & Daleel',
-    repo: 'https://github.com/AmthuzZafrin/deen-daleel',
-    tagline: 'An Islamic research assistant that shows you the evidence behind every answer.',
-    items: DEEN,
-    video: '/projects/deen-demo.mp4',
-    poster: '/projects/deen-demo-poster.webp',
-    ratio: '1280 / 666',
-    body: [
-      'Deen & Daleel lets people ask Islamic questions and receive an answer together with the original evidence behind it \u2014 including Qur\u2019an verses, hadith, tafsir, and scholarly writings. Instead of simply asking the user to trust an answer, the website lets them open the sources and read them for themselves.',
-      'The answers are prepared and carefully checked before they are published. When a question is unclear or outside the available knowledge, Deen & Daleel does not make up an answer. It shows the closest relevant sources instead.',
-      'I built the system around a large collection of more than 6,600 Islamic texts, turning them into a searchable library and connecting 488 carefully prepared answers to the sources they rely on. Every quotation is checked against its original source before it is published, with references designed to remain reliable even when the library is updated.',
     ],
   },
 ]
