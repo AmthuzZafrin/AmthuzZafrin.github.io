@@ -143,7 +143,10 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter
 SRC = pathlib.Path(
     "/home/zafrin/Downloads/Gemini_Generated_Image_au2tbhau2tbhau2t.png"
 )
-OUT = pathlib.Path("public/hero-ai.webp")
+# Under src/, not public/, so the bundler fingerprints it — see the note in
+# prep-hero-name.py. A picture that has been through as many passes as this
+# one cannot afford to be cached under one name.
+OUT = pathlib.Path("src/assets/hero-ai.webp")
 
 # The mark's top edge is at y=548. Three pixels of margin, and nothing of it
 # survives into the crop.

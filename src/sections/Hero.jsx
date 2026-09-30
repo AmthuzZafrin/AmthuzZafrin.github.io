@@ -1,4 +1,6 @@
 import './Hero.css'
+import nameMark from '../assets/hero-name.svg'
+import roleMark from '../assets/hero-role.svg'
 
 /**
  * The tally along the foot of the page.
@@ -57,11 +59,11 @@ export default function Hero() {
         <div className="hero__type">
           <div className="hero__intro">
             <h1 className="hero__name">
-              <img src="/hero-name.svg" alt="Amthuz Zafrin" />
+              <img src={nameMark} alt="Amthuz Zafrin" />
             </h1>
 
             <p className="hero__role">
-              <img src="/hero-role.svg" alt="Gen AI Engineer, Full-Stack Developer" />
+              <img src={roleMark} alt="Gen AI Engineer, Full-Stack Developer" />
             </p>
           </div>
 

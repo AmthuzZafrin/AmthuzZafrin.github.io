@@ -61,7 +61,13 @@ from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 
 FONT = pathlib.Path("public/fonts/super-adorable.ttf")
-OUT = pathlib.Path("public")
+# Under src/, not public/. Vite copies public/ verbatim, so a drawing there
+# keeps one URL for ever and a browser that has seen it once will go on
+# showing that one — which it did: the name went violet and came back
+# cerulean on a reload. Imported from src/ instead, it is emitted with a
+# hash of its own contents in the name, so changing it changes its URL and
+# no cache anywhere can serve the old one.
+OUT = pathlib.Path("src/assets")
 
 NAME_LINES = ["AMTHUZ ZAFRIN"]
 ROLE = "GEN AI ENGINEER  |  FULL-STACK DEVELOPER"
