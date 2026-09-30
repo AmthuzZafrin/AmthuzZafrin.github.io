@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """The image on the home page.
 
-Two things are done to the source: the interface rings come off the light the
-robot is touching, and the generator's sparkle comes off the foot.
+Three things are done to the source: the interface rings come off the light
+the robot is touching, the glow they sat in comes off after them, and the
+generator's sparkle comes off the foot.
 
 
 ---- the rings ----
@@ -72,6 +73,37 @@ Things that were tried and are not here:
     radius over their length — they are drawn as a loose spiral, not as
     circles — so at any fixed radius they break into fragments and the test
     fails on them.
+
+
+---- the glow ----
+
+Taking the rings off leaves the bloom they were drawn on: a soft disc of
+light about 350 pixels across, still circular, still the same thing. That
+goes too, and what is left is the white point and the flare.
+
+Subtracting it does not work, and the reason is worth keeping. The obvious
+move is to measure the bloom as a profile against radius and take it off,
+which does remove it — and then every faint thing that was left behind
+becomes glaring. A ten-unit ripple sitting on a bloom of 110 is invisible;
+the same ripple on a background of 8 is a stain. Removing light amplifies
+whatever survives it, so a subtraction has to be perfect or it is worse than
+nothing.
+
+So the field is rebuilt instead of corrected. Everything within 400 pixels of
+the light is discarded, along with the robot, and what is thrown away is
+replaced by the smoothest field that meets the picture at the edge of the
+hole — Laplace's equation, whose answer is exactly what an unlit background
+is: a slow gradient and nothing else. It is solved on a coarse grid with
+over-relaxed Gauss-Seidel, which is ample, because the thing being solved for
+has no detail in it by definition.
+
+Four things then keep their own pixels: the white point, with a tight bloom
+of its own so it still reads as a light; the flare, as a soft band along its
+line; the robot; and the last stretch of the fingertip. That last one is
+named as a capsule rather than found, because inside the light nothing tells
+metal from bloom — G/R is 1.3 against 2.0 out in the open but both go to 1.1
+in the glare, and saturation, which looked more promising, overlaps at every
+radius from 18 to 54.
 
 
 ---- the sparkle ----
@@ -185,6 +217,38 @@ SMOOTH = 3
 # steps than the 61-pixel one, and the fingertip is in there. At 1.4 the
 # steps go and the finger keeps its edges.
 SMOOTH_NEAR = 1.4
+
+# ---- the glow the rings sat in ----
+
+# Past this there is no light left to take: the field around the light reads
+# 12 luminance at r=300 and 7.7 at r=400, which is the picture's own dark.
+GLOW_REACH = 400
+# And the last stretch of it is handed back gradually, so the rebuilt field
+# never has to meet the picture along a hard circle.
+GLOW_RIM = 110
+
+# The grid the field is solved on, and how hard. The answer is smooth by
+# construction, so it is solved coarse and blurred on the way back up.
+GLOW_STEP = 12
+SOLVE_SWEEPS = 400
+SOLVE_OMEGA = 1.85
+
+# How much of its own bloom the white point keeps. Chosen by rendering it:
+# at 16 it is a spark, at 46 it is a circle again — which is the thing being
+# removed — and 22 is a light.
+DOT_SIGMA = 22.0
+
+# The flare's half-height. It keeps whatever is inside this band along its
+# own line, which near the middle is bloom as much as flare; that is right,
+# since a flare has a thick middle.
+FLARE_H = 16.0
+
+# The fingertip, where it is inside the light. Traced off the picture: the
+# metal's core runs from the tip out past the edge of the bloom, and nothing
+# but its position tells it from the glow around it.
+FINGER_A = (957, 281)
+FINGER_B = (1014, 316)
+FINGER_W = 27
 
 
 def to_polar(im, reach, pad):
@@ -386,6 +450,106 @@ def dot_guard(base, out):
     return out
 
 
+def dark_field(im, robot):
+    """The picture as it would be with no light in it at all.
+
+    Everything within GLOW_REACH of the light is thrown away and put back by
+    solving for the smoothest field that meets what is left at the edge of the
+    hole. That is Laplace's equation, and its answer is what an unlit
+    background is: a slow gradient and nothing else. The robot is thrown away
+    with it, everywhere in the frame — it is the other bright thing, and left
+    in it would drag the solution toward white. Nothing is lost by that,
+    because the composite puts the robot back from the source afterwards.
+
+    Solved on a coarse grid, since the answer is smooth by construction, and
+    each cell takes a low percentile of its pixels so that a star inside one
+    does not lift it.
+    """
+    w, h = im.size
+    src = im.load()
+    rb = robot.load()
+    cw, ch = (w + GLOW_STEP - 1) // GLOW_STEP, (h + GLOW_STEP - 1) // GLOW_STEP
+    cx, cy = DOT
+
+    fixed = [[None] * cw for _ in range(ch)]
+    for j in range(ch):
+        for i in range(cw):
+            bands = ([], [], [])
+            for y in range(j * GLOW_STEP, min(h, j * GLOW_STEP + GLOW_STEP)):
+                for x in range(i * GLOW_STEP, min(w, i * GLOW_STEP + GLOW_STEP)):
+                    if math.hypot(x - cx, y - cy) <= GLOW_REACH or rb[x, y] > 40:
+                        continue
+                    p = src[x, y]
+                    for c in range(3):
+                        bands[c].append(p[c])
+            if len(bands[0]) >= GLOW_STEP * GLOW_STEP * 0.45:
+                fixed[j][i] = tuple(
+                    sorted(band)[int(len(band) * 0.4)] for band in bands)
+
+    seen = [v for row in fixed for v in row if v]
+    start = tuple(sum(v[c] for v in seen) / len(seen) for c in range(3))
+    grid = [[fixed[j][i] or start for i in range(cw)] for j in range(ch)]
+
+    # Gauss-Seidel, over-relaxed: each unknown cell walks toward the mean of
+    # its neighbours, in place, so the boundary reaches the middle of the hole
+    # in a few dozen sweeps rather than a few thousand.
+    for _ in range(SOLVE_SWEEPS):
+        for j in range(ch):
+            for i in range(cw):
+                if fixed[j][i]:
+                    continue
+                acc, n = [0.0, 0.0, 0.0], 0
+                for dj, di in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+                    a, b = j + dj, i + di
+                    if 0 <= a < ch and 0 <= b < cw:
+                        near = grid[a][b]
+                        for c in range(3):
+                            acc[c] += near[c]
+                        n += 1
+                here = grid[j][i]
+                grid[j][i] = tuple(
+                    here[c] + SOLVE_OMEGA * (acc[c] / n - here[c]) for c in range(3))
+
+    small = Image.new("RGB", (cw, ch))
+    sp = small.load()
+    for j in range(ch):
+        for i in range(cw):
+            sp[i, j] = tuple(max(0, min(255, round(v))) for v in grid[j][i])
+    field = small.resize((cw * GLOW_STEP, ch * GLOW_STEP), Image.BICUBIC)
+    return field.crop((0, 0, w, h)).filter(ImageFilter.GaussianBlur(GLOW_STEP))
+
+
+def light_mask(size, robot):
+    """What keeps its own pixels when the glow comes off.
+
+    Four things: the white point, which keeps a tight bloom of its own so it
+    still reads as a light rather than as a pinhole; the flare, as a soft band
+    along its own line; the robot; and the last stretch of the fingertip,
+    which is inside the light and cannot be told from the bloom by colour —
+    at r=30 the metal runs 0.33 saturation against the bloom's 0.45, and both
+    spread far enough to overlap. It is named here as a capsule instead.
+
+    A rim ramp brings the mask back to 1 before GLOW_REACH, so the rebuilt
+    field is never asked to meet the picture along a hard circle.
+    """
+    w, h = size
+    cx, cy = DOT
+    mask = Image.new("L", size, 0)
+    px = mask.load()
+    for y in range(h):
+        band = math.exp(-((y - cy) / FLARE_H) ** 2)
+        for x in range(w):
+            r = math.hypot(x - cx, y - cy)
+            rim = min(1.0, max(0.0, (r - (GLOW_REACH - GLOW_RIM)) / GLOW_RIM))
+            v = max(band, math.exp(-((r / DOT_SIGMA) ** 2)), rim)
+            px[x, y] = round(255 * min(1.0, v))
+
+    finger = Image.new("L", size, 0)
+    ImageDraw.Draw(finger).line([FINGER_A, FINGER_B], fill=255, width=FINGER_W)
+    mask = ImageChops.lighter(mask, finger.filter(ImageFilter.GaussianBlur(3)))
+    return ImageChops.lighter(mask, robot)
+
+
 def deglow(im):
     """Take the arcs, the cog of ticks and the crescent off the light."""
     # Deep enough that the filters' wrap never reaches a real radius: they
@@ -414,7 +578,24 @@ def deglow(im):
     # The mask is found on the arc-free picture and then applied to the
     # source, so the robot comes through the whole of this untouched.
     mask = metal_mask(from_polar(arcs, im, pad))
-    return dot_guard(im, Image.composite(im, from_polar(cleaned, im, pad), mask))
+    out = dot_guard(im, Image.composite(im, from_polar(cleaned, im, pad), mask))
+    return out, mask
+
+
+def strip_light(im):
+    """The rings, and then the glow they sat in.
+
+    Two stages, and the order matters: the field cannot be rebuilt around a
+    light that still has arcs drawn across it, because the arcs would be
+    measured as part of the background at the edge of the hole.
+    """
+    cleaned, mask = deglow(im)
+    # Wide enough that no dark joint inside the robot is read as background:
+    # a 21-pixel closing bridges its gaps, and the erode after leaves three
+    # pixels of growth.
+    robot = mask.filter(ImageFilter.MaxFilter(21)).filter(ImageFilter.MinFilter(15))
+    return Image.composite(cleaned, dark_field(cleaned, robot),
+                           light_mask(im.size, robot))
 
 
 def main():
@@ -428,7 +609,7 @@ def main():
         print(f"source is {w}x{h}; nothing to cut")
         return 1
 
-    im = deglow(im)
+    im = strip_light(im)
     band = im.crop((0, 0, w, CUT))
 
     # Written wider than the file is, because the page draws it wider than the
@@ -446,8 +627,9 @@ def main():
     band.save(OUT, "WEBP", quality=QUALITY, method=6)
 
     print(f"source {w}x{h} ({w / h:.3f} : 1)")
-    print(f"rings off the light at {RING[0]:.0f},{RING[1]:.0f}, "
-          f"white point at {DOT[0]:.0f},{DOT[1]:.0f} kept")
+    print(f"rings off the light at {RING[0]:.0f},{RING[1]:.0f}; glow out to "
+          f"{GLOW_REACH}px rebuilt; white point at {DOT[0]:.0f},{DOT[1]:.0f} "
+          f"and its flare kept")
     print(f"cut {h - CUT}px from the foot, taking the mark with it")
     print(f"{OUT} — {band.size[0]}x{band.size[1]} ({band.size[0] / band.size[1]:.3f} : 1), "
           f"{OUT.stat().st_size // 1024}K")
