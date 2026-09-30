@@ -68,8 +68,6 @@ ROLE = "GEN AI ENGINEER  |  FULL-STACK DEVELOPER"
 # Line advance for the name, as a fraction of the em. Unused at one line, and
 # kept because the name has been two lines before and may be again.
 LEADING = 0.98
-# Breathing room around the drawn marks so nothing is clipped by the viewBox.
-PAD = 0.04
 
 # What separates a counter from a gloss mark, measured off this font. Area is
 # in em², so it does not depend on the units the font happens to use.
@@ -158,7 +156,7 @@ def to_path(contours, glyphset):
 
 
 def line_paths(text, glyphset, cmap, hmtx, upem):
-    """One path string per glyph, with the x it sits at."""
+    """One path per glyph, the x it sits at, and where its ink actually is."""
     x = 0
     drawn = []
     space = cmap.get(ord(" "))
@@ -171,27 +169,46 @@ def line_paths(text, glyphset, cmap, hmtx, upem):
         glyphset[gname].draw(rec)
         contours = split_contours(rec.value)
         if contours:
-            drawn.append((to_path(letterform(contours, glyphset, upem), glyphset),
-                          f"translate({x} 0)"))
+            kept = letterform(contours, glyphset, upem)
+            pen = BoundsPen(glyphset)
+            for contour in kept:
+                replay(contour, pen)
+            drawn.append((to_path(kept, glyphset), x, pen.bounds))
         x += hmtx[gname][0]
-    return drawn, x
+    return drawn
 
 
 def build(lines, colour, gradient, upem, font, glyphset, cmap, hmtx):
+    """One drawing per line-set, cropped to its own ink.
+
+    The box is the ink and nothing else — no margin, not even a hair of one.
+    Two drawings side by side on the page are sized by WIDTH, so any margin
+    inside the box is scaled by a different amount in each of them: a 0.04em
+    pad put the name's first letter 5.6px right of its box and the role's
+    1.0px right of its box, and the two lines stood 4.6px out of line under
+    each other for that reason alone. With the box on the ink, setting the
+    same left edge in CSS puts the same left edge on the page.
+    """
     cap = font["OS/2"].sCapHeight if hasattr(font["OS/2"], "sCapHeight") else int(upem * 0.7)
     laid = [line_paths(t, glyphset, cmap, hmtx, upem) for t in lines]
-    width = max(l[1] for l in laid)
     step = upem * LEADING
-    height = cap + step * (len(lines) - 1)
-    pad = upem * PAD
 
     fill = "url(#ink)" if gradient else colour
     body = []
-    for i, (drawn, _) in enumerate(laid):
+    x0 = y0 = 1e9
+    x1 = y1 = -1e9
+    for i, drawn in enumerate(laid):
         base = cap + step * i
-        for d, shift in drawn:
+        for d, shift, box in drawn:
             body.append(f'<g transform="translate(0 {base:.0f}) scale(1 -1)">'
-                        f'<g transform="{shift}"><path d="{d}" fill="{fill}"/></g></g>')
+                        f'<g transform="translate({shift} 0)">'
+                        f'<path d="{d}" fill="{fill}"/></g></g>')
+            if box:
+                # the glyph is drawn shifted across and flipped about `base`
+                x0 = min(x0, shift + box[0])
+                x1 = max(x1, shift + box[2])
+                y0 = min(y0, base - box[3])
+                y1 = max(y1, base - box[1])
 
     defs = ""
     if gradient:
@@ -199,7 +216,8 @@ def build(lines, colour, gradient, upem, font, glyphset, cmap, hmtx):
         defs = ('<defs><linearGradient id="ink" x1="0" y1="0" x2="0.18" y2="1">'
                 f'{stops}</linearGradient></defs>')
 
-    vb = f"{-pad:.0f} {-pad:.0f} {width + pad * 2:.0f} {height + pad * 2:.0f}"
+    width, height = x1 - x0, y1 - y0
+    vb = f"{x0:.0f} {y0:.0f} {width:.0f} {height:.0f}"
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}">'
             f'{defs}{"".join(body)}</svg>'), width, height
 

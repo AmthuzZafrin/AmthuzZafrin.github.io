@@ -108,15 +108,22 @@
 
      The name then hangs off the same block, and the gap below it is the only
      thing setting how high the name sits — the role cannot move, so raising
-     the name means opening that gap. */
-  --role-w: clamp(12rem, 34vw, 46rem);
-  --role-h: calc(var(--role-w) / 28.151);
+     the name means opening that gap.
+
+     35.6 rather than 34 because the block starts 1.6% further left than the
+     page margin: the role is measured to where it ENDS, so the two numbers
+     have to move together. */
+  --role-w: clamp(12rem, 35.6vw, 48rem);
+  --role-h: calc(var(--role-w) / 21.154);
 }
 
 .hero__intro {
   position: absolute;
   z-index: 1;
-  left: var(--page-pad-x);
+  /* Left of the page's own margin. The picture bleeds to the edges here, so
+     the type is ranged on the picture rather than on the column the rest of
+     the site keeps, and it wants the extra run to the light. */
+  left: calc(var(--page-pad-x) - 1.6vw);
   bottom: calc(var(--flare-up) - var(--role-h) / 2);
   text-align: left;
 }
@@ -127,7 +134,12 @@
 }
 
 /* Each line is one drawing, so it is sized by width and its height follows
-   from the viewBox. */
+   from the viewBox — and each viewBox is cropped to its own ink, which is
+   what lets the two range flush. They are sized by WIDTH and at different
+   widths, so any margin inside a drawing is scaled differently in each: the
+   0.04em the two used to carry put the name's first letter 5.6px right of
+   its box and the role's 1.0px right of its box, and the two stood 4.6px out
+   of line for that reason alone. See tools/prep-hero-name.py. */
 .hero__name img,
 .hero__role img {
   display: block;
