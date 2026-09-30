@@ -191,3 +191,67 @@
     width: min(66vw, 17rem);
   }
 }
+
+/* ---- the tally ---- */
+
+/* Hung below the block rather than added to it. The block is placed by its
+   foot — that is what puts the role on the light — so a fourth thing in the
+   flow underneath would lift the role and the name off it by its own height.
+   Taken out of the flow, it hangs from the foot and changes nothing above. */
+.hero__tally {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: flex;
+  gap: clamp(1.5rem, 4vw, 4.5rem);
+  margin: clamp(1.1rem, 2.4vw, 2.8rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero__tally li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+
+/* The figures take the same gradient the wordmark does, at the same angle,
+   so the three of them read as the bottom of one mark rather than as a
+   caption that happens to sit under it. */
+.hero__tally-n {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.5vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  background-image: linear-gradient(
+    165deg,
+    var(--title-top) 0%,
+    var(--title-color) 55%,
+    var(--title-deep) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Set in the body face and in caps, which is the role's own treatment a size
+   down — the two lines of small type on this page should match each other
+   rather than each find their own way. */
+.hero__tally-l {
+  font-family: var(--font-body);
+  font-size: clamp(0.6rem, 0.82vw, 0.92rem);
+  font-weight: 500;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+/* Narrow: the row would run under the robot before it ran out of window, so
+   it tightens rather than wraps — three short pairs still fit across. */
+@media (max-width: 60rem) {
+  .hero__tally {
+    gap: clamp(1rem, 3.4vw, 2.4rem);
+  }
+}
