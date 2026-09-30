@@ -3,18 +3,21 @@ import './Hero.css'
 /**
  * The tally along the foot of the page.
  *
- * These are the figures as given, and they are not read off the sections
- * they name. Three of the six agree with what the site shows — 3 projects,
- * 1 novel, 4 internships — and three do not: the Websites page has one site
- * on it, the Certificates page twenty, and the Skills page twenty-nine. So
- * they live here, on one line each, to be easy to correct.
+ * In the order the figures run rather than the order the work does, which
+ * is what makes the row read as a row: 1, 2, 3, 4, 21, 30.
+ *
+ * They are as given and are not read off the sections they name. Three of
+ * the six agree with what the site shows — 1 novel, 3 projects, 4
+ * internships — and three do not: the Websites page has one site on it, the
+ * Certificates page twenty, and the Skills page twenty-nine. So they live
+ * here, on one line each, to be easy to correct.
  */
 const TALLY = [
-  ['3', 'Projects'],
-  ['2', 'Websites'],
   ['1', 'Novel'],
-  ['21', 'Certificates'],
+  ['2', 'Websites'],
+  ['3', 'Projects'],
   ['4', 'Internships'],
+  ['21', 'Certificates'],
   ['30', 'Skills'],
 ]
 

@@ -218,10 +218,22 @@
 
 /* Even columns rather than even gaps: the labels run from five characters to
    twelve, and spacing them by their own widths gives a ragged rhythm where a
-   row of figures wants a regular one. */
+   row of figures wants a regular one.
+
+   Within a column the pair centres on itself — the word under the middle of
+   the figure rather than under its left edge — and the pair sits at the
+   column's start rather than filling it. That second part is what keeps the
+   first figure's word flush with the name above: centre the pair in a full
+   column and the whole row steps in by half of whatever the column has
+   spare. */
+.hero__tally {
+  justify-items: start;
+}
+
 .hero__tally li {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.25em;
   min-width: 0;
 }
@@ -251,7 +263,7 @@
    size down — the small type on this page should match itself. */
 .hero__tally-l {
   font-family: var(--font-body);
-  font-size: clamp(0.54rem, 0.72vw, 0.82rem);
+  font-size: clamp(0.62rem, 0.86vw, 0.98rem);
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
