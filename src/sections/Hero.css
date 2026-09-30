@@ -49,7 +49,7 @@
   right: 0;
   bottom: 0;
   width: min(122%, 162.5rem);
-  aspect-ratio: 2400 / 843;
+  aspect-ratio: 3200 / 1124;
   background: url('/hero-ai.webp') center / cover no-repeat;
   pointer-events: none;
 }
@@ -83,18 +83,37 @@
 
 /* ---- the name ---- */
 
-/* Ranged left, in the dark the pointing hand leaves open, and sitting on the
-   window's own middle line.
+/* Ranged left, in the dark the picture leaves open, and set against the one
+   landmark in it: the line of light running out of the fingertip.
 
-   The hand's leftmost fingertip reaches x=684 of a 1480px window at this
-   framing. The block is capped so its right edge stops short of that with a
-   gap wide enough that the two never look like they are touching. */
+   That line's height can be worked out rather than guessed, and it has to be,
+   because it does not sit at a fixed fraction of the WINDOW — it sits at a
+   fixed fraction of the PICTURE, and the picture is sized off the window's
+   width while the window's height does as it likes. The picture is hung at
+   122% of the width at a ratio of 2.847, so it is 0.4285W tall and its top
+   edge is at H - 0.4285W. The light is 0.4991 of the way down the frame. Put
+   those together and everything in H cancels: the line is 0.2146W above the
+   foot, whatever shape the window is.
+
+   The same arithmetic places it across: 0.5275W from the left. And it is only
+   worth reading from about 0.40W, where it has come up out of the background
+   — which is where the role stops. */
+.hero {
+  --flare-up: 21.46vw;
+
+  /* The role runs to the point the light becomes visible and no further, so
+     the words end and the line begins. Its height follows from the drawing's
+     own ratio, and the block is placed by it: half of it below the light's
+     line, half above, so the two read as one horizontal. */
+  --role-w: clamp(12rem, 34vw, 46rem);
+  --role-h: calc(var(--role-w) / 28.151);
+}
+
 .hero__intro {
   position: absolute;
   z-index: 1;
   left: var(--page-pad-x);
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: calc(var(--flare-up) - var(--role-h) / 2);
   text-align: left;
 }
 
@@ -103,37 +122,52 @@
   margin: 0;
 }
 
-/* Both lines are one drawing each, so they are sized by width and their
-   height follows from the viewBox. The two share a width, which is what keeps
-   the role's line ranged flush with the name above it. */
+/* Each line is one drawing, so it is sized by width and its height follows
+   from the viewBox. */
 .hero__name img,
 .hero__role img {
   display: block;
-  /* The fingertip sits at 46.2% of the window's width at every size, and the
-     page margin takes 6% off the left, so 34% is the widest the block can be
-     and still keep a clear gap to the hand on any screen. Sized in vw for
-     exactly that reason: a cap in rem froze the name at 528px on a wide
-     window while the picture behind it carried on growing. */
-  width: clamp(15rem, 34vw, 44rem);
   height: auto;
 }
 
+/* The name is one line now, so it is ten times as wide as it is tall and the
+   width has to carry it: at the 34% the two-line version used it would set at
+   half the size. 58% is what the picture allows — the robot's head starts at
+   0.755W at every window size, and the page margin takes 6% off the left, so
+   the mark ends at 0.64W with a clear run to it. Nothing else is up there:
+   the hand's highest point is the fingertip, and that is on the light's line,
+   below all of this. */
+.hero__name img {
+  width: clamp(20rem, 58vw, 78rem);
+}
+
+.hero__role img {
+  width: var(--role-w);
+}
+
 .hero__role {
-  margin-top: clamp(1.1rem, 2.8vh, 1.9rem);
+  margin-top: clamp(0.8rem, 2.1vw, 2.4rem);
 }
 
 /* Narrow windows: the robot keeps the right of the frame at every width, so
-   the type gives ground rather than running under it. */
+   the type gives ground rather than running under it — but the name may take
+   a little more of what is left, since there is less of it. */
 @media (max-width: 60rem) {
-  .hero__name img,
-  .hero__role img {
-    width: min(58vw, 26rem);
+  .hero {
+    --role-w: min(52vw, 26rem);
+  }
+
+  .hero__name img {
+    width: min(64vw, 30rem);
   }
 }
 
 @media (max-width: 34rem) {
-  .hero__name img,
-  .hero__role img {
-    width: min(78vw, 20rem);
+  .hero {
+    --role-w: min(74vw, 18rem);
+  }
+
+  .hero__name img {
+    width: min(66vw, 17rem);
   }
 }
