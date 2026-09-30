@@ -150,13 +150,17 @@ OUT = pathlib.Path("public/hero-ai.webp")
 CUT = 545
 
 # The picture is almost all dark navy and near-black, which is the easiest
-# thing there is to encode; the detail that matters is the rim light on the
-# robot and the flare at the fingertip, and both hold at this.
-QUALITY = 86
+# thing there is to encode. It was 86, which cost 1.37 of a level on the
+# hand; 90 costs 1.1 and is worth the 30K here, because with the glow gone
+# the metal is most of what is left to look at.
+QUALITY = 90
 
-# What the page asks for on a large window, so the browser is never the one
-# doing the enlarging.
-WIDE = 2400
+# What the page asks for, with a HiDPI screen counted in. The picture is hung
+# at 122% of the window, so a 1512-point window asks for 1845 points of it —
+# and 3690 device pixels on a screen that has two per point. At 2400 the
+# browser made up the difference on every such screen, which is the one place
+# this image had left to lose detail.
+WIDE = 3200
 
 # ---- the interface, in source pixels ----
 
@@ -248,7 +252,21 @@ FLARE_H = 16.0
 # but its position tells it from the glow around it.
 FINGER_A = (957, 281)
 FINGER_B = (1014, 316)
-FINGER_W = 27
+FINGER_W = 23
+
+# Inside that capsule, the finger's lit faces: bright and weakly coloured,
+# against a bloom that is bright and strongly coloured. Neither test carries
+# the separation on its own anywhere in the frame — it is the capsule that
+# makes the pair enough. The closing afterwards puts the dark knuckle band
+# back, which those faces enclose.
+TIP_SAT = 0.40
+TIP_LUM = 120
+TIP_CLOSE = 19
+
+# And the silhouette the glow stage keeps, closed by enough to bridge a
+# knuckle band and then given every pixel of that back, so no bloom is held
+# around the robot's edge.
+SILHOUETTE = 19
 
 
 def to_polar(im, reach, pad):
@@ -384,7 +402,7 @@ def from_polar(polar, base, pad):
     return out
 
 
-def metal_mask(im):
+def metal_mask(im, grow=True, hole=True):
     """Where the robot is, read off the picture once the arcs are gone.
 
     Bright and close to neutral is metal; bright and twice as green as it is
@@ -416,19 +434,32 @@ def metal_mask(im):
             if 0.2126 * r + 0.7152 * g + 0.0722 * b > 85 and g < 1.55 * r + 12:
                 px[x, y] = 255
 
-    # Out by three, to close the dark seams between the finger segments:
-    # thresholding alone returns the lit faces as separate islands, and a
-    # mask full of holes puts the filtered version back over half the hand.
-    mask = mask.filter(ImageFilter.MaxFilter(7))
+    # Closed, to bridge the dark seams between the finger segments:
+    # thresholding alone returns the lit faces as separate islands, and a mask
+    # full of holes puts the filtered version back over half the hand.
+    #
+    # `grow` is what the two callers disagree about. Taking the arcs off, the
+    # mask chooses between two pictures that have both had the arcs taken off
+    # already, so a few pixels of slack outside the silhouette cost nothing
+    # and closing the seams is all that matters. Taking the GLOW off, the same
+    # slack is a band of bloom held around every edge of the robot — which is
+    # exactly the halo that was hugging the finger — so there the closing has
+    # to give back everything it took.
+    mask = mask.filter(ImageFilter.MaxFilter(7 if grow else SILHOUETTE))
+    if not grow:
+        mask = mask.filter(ImageFilter.MinFilter(SILHOUETTE))
 
     # Then the bloom back out, after the growing rather than before it, or
-    # the growing would simply fill it in again.
-    hole = ImageDraw.Draw(mask)
-    hole.ellipse(
-        [DOT[0] - DOT_BLOB, DOT[1] - DOT_BLOB, DOT[0] + DOT_BLOB, DOT[1] + DOT_BLOB],
-        fill=0,
-    )
-    return mask.filter(ImageFilter.GaussianBlur(3))
+    # the growing would simply fill it in again. `hole` is off only when the
+    # caller wants the fingertip that lives inside the light and will bound
+    # it some other way.
+    if hole:
+        ImageDraw.Draw(mask).ellipse(
+            [DOT[0] - DOT_BLOB, DOT[1] - DOT_BLOB,
+             DOT[0] + DOT_BLOB, DOT[1] + DOT_BLOB],
+            fill=0,
+        )
+    return mask.filter(ImageFilter.GaussianBlur(3 if grow else 1.2))
 
 
 def dot_guard(base, out):
@@ -519,18 +550,61 @@ def dark_field(im, robot):
     return field.crop((0, 0, w, h)).filter(ImageFilter.GaussianBlur(GLOW_STEP))
 
 
+def fingertip_mask(im):
+    """The last stretch of the finger, where it is inside the light.
+
+    Colour cannot find it there. Out in the open G/R separates metal from
+    glow completely, 1.3 against 2.0, but in the glare both go to 1.1;
+    saturation looked better and overlaps at every radius from 18 to 54. So
+    the capsule, traced off the picture, does the finding, and the two tests
+    only have to hold inside it — where they do, because what is in there is
+    either the lit face of a finger or bloom, and the bloom is the coloured
+    one.
+
+    Read off the picture with the ARCS taken off and nothing else — not the
+    source, where an arc is 0.29 saturated and sits inside the finger's own
+    0.22 to 0.35, and not the fully cleaned picture, where the angular pass
+    and the blur have dulled the tip to 0.47 and it is no longer telling
+    apart from the bloom's 0.46. In between, the finger reads 0.20 to 0.36
+    and the bloom a pixel away from it reads 0.50 to 0.55.
+
+    This is wanted twice: the arcs stage uses it so the tip comes from the
+    source rather than through a filter that softens it, and the glow stage
+    uses it so the tip is kept rather than rebuilt as background.
+    """
+    w, h = im.size
+    src = im.load()
+    x0 = max(0, min(FINGER_A[0], FINGER_B[0]) - FINGER_W)
+    x1 = min(w, max(FINGER_A[0], FINGER_B[0]) + FINGER_W)
+    y0 = max(0, min(FINGER_A[1], FINGER_B[1]) - FINGER_W)
+    y1 = min(h, max(FINGER_A[1], FINGER_B[1]) + FINGER_W)
+
+    core = Image.new("L", (w, h), 0)
+    px = core.load()
+    for y in range(y0, y1):
+        for x in range(x0, x1):
+            r, g, b = src[x, y]
+            hi, lo = max(r, g, b), min(r, g, b)
+            if not hi:
+                continue
+            if (hi - lo) / hi < TIP_SAT and 0.2126 * r + 0.7152 * g + 0.0722 * b > TIP_LUM:
+                px[x, y] = 255
+    core = core.filter(ImageFilter.MaxFilter(TIP_CLOSE))
+    core = core.filter(ImageFilter.MinFilter(TIP_CLOSE))
+
+    reach = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(reach).line([FINGER_A, FINGER_B], fill=255, width=FINGER_W)
+    return ImageChops.darker(core, reach).filter(ImageFilter.GaussianBlur(1.2))
+
+
 def light_mask(size, robot):
     """What keeps its own pixels when the glow comes off.
 
-    Four things: the white point, which keeps a tight bloom of its own so it
-    still reads as a light rather than as a pinhole; the flare, as a soft band
-    along its own line; the robot; and the last stretch of the fingertip,
-    which is inside the light and cannot be told from the bloom by colour —
-    at r=30 the metal runs 0.33 saturation against the bloom's 0.45, and both
-    spread far enough to overlap. It is named here as a capsule instead.
-
-    A rim ramp brings the mask back to 1 before GLOW_REACH, so the rebuilt
-    field is never asked to meet the picture along a hard circle.
+    Three things, plus whatever `robot` covers: the white point, which keeps a
+    tight bloom of its own so it still reads as a light rather than as a
+    pinhole; the flare, as a soft band along its own line; and a rim ramp that
+    brings the mask back to 1 before GLOW_REACH, so the rebuilt field is never
+    asked to meet the picture along a hard circle.
     """
     w, h = size
     cx, cy = DOT
@@ -544,9 +618,6 @@ def light_mask(size, robot):
             v = max(band, math.exp(-((r / DOT_SIGMA) ** 2)), rim)
             px[x, y] = round(255 * min(1.0, v))
 
-    finger = Image.new("L", size, 0)
-    ImageDraw.Draw(finger).line([FINGER_A, FINGER_B], fill=255, width=FINGER_W)
-    mask = ImageChops.lighter(mask, finger.filter(ImageFilter.GaussianBlur(3)))
     return ImageChops.lighter(mask, robot)
 
 
@@ -561,6 +632,9 @@ def deglow(im):
 
     # The arcs, everywhere.
     arcs = open_radially(polar, ARC_HALF)
+    # Held onto: this is the one version of the picture in which the tip of
+    # the finger can be told from the bloom around it. See fingertip_mask.
+    tip = fingertip_mask(from_polar(arcs, im, pad))
     # The cog of ticks, near the middle only.
     arcs = Image.composite(
         _open(arcs, TICK_HALF, 1, 0), arcs,
@@ -577,9 +651,13 @@ def deglow(im):
 
     # The mask is found on the arc-free picture and then applied to the
     # source, so the robot comes through the whole of this untouched.
-    mask = metal_mask(from_polar(arcs, im, pad))
+    arc_free = from_polar(arcs, im, pad)
+    # The robot, plus the tip of the finger that the mask's own hole cuts
+    # out. Without it the tip is the one piece of metal in the frame that
+    # goes through a filter, and it comes back soft.
+    mask = ImageChops.lighter(metal_mask(arc_free), tip)
     out = dot_guard(im, Image.composite(im, from_polar(cleaned, im, pad), mask))
-    return out, mask
+    return out, arc_free, tip
 
 
 def strip_light(im):
@@ -589,13 +667,21 @@ def strip_light(im):
     light that still has arcs drawn across it, because the arcs would be
     measured as part of the background at the edge of the hole.
     """
-    cleaned, mask = deglow(im)
-    # Wide enough that no dark joint inside the robot is read as background:
-    # a 21-pixel closing bridges its gaps, and the erode after leaves three
-    # pixels of growth.
-    robot = mask.filter(ImageFilter.MaxFilter(21)).filter(ImageFilter.MinFilter(15))
-    return Image.composite(cleaned, dark_field(cleaned, robot),
-                           light_mask(im.size, robot))
+    cleaned, arc_free, tip = deglow(im)
+
+    # What keeps its own pixels is the silhouette and not a pixel more. The
+    # first version of this used the grown mask and the picture came back
+    # with a glow tracing the whole hand — the grown part is bloom, and
+    # keeping bloom is the one thing this stage exists to stop.
+    tight = metal_mask(arc_free, grow=False)
+
+    keep = light_mask(im.size, ImageChops.lighter(tight, tip))
+
+    # The field, though, wants the robot excluded generously — a dark joint
+    # left in it would be read as background and pin the solution dark.
+    wide = metal_mask(arc_free, hole=False)
+    wide = wide.filter(ImageFilter.MaxFilter(21)).filter(ImageFilter.MinFilter(15))
+    return Image.composite(cleaned, dark_field(cleaned, wide), keep)
 
 
 def main():
@@ -617,11 +703,12 @@ def main():
     # asks for 2257px across from a 1552px source — and a browser upscaling by
     # half does it with a filter that smears every edge in the robot. Lanczos
     # with a light unsharp does not invent detail either, but it keeps the
-    # edges it has, which is the whole difference between soft and mushy.
+    # edges it has, which is the whole difference between soft and mushy. The
+    # radius follows the scale: 1.1 was set for 2400 across.
     if band.width < WIDE:
         tall = round(band.height * WIDE / band.width)
         band = band.resize((WIDE, tall), Image.LANCZOS)
-        band = band.filter(ImageFilter.UnsharpMask(radius=1.1, percent=45, threshold=3))
+        band = band.filter(ImageFilter.UnsharpMask(radius=1.4, percent=50, threshold=3))
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     band.save(OUT, "WEBP", quality=QUALITY, method=6)
