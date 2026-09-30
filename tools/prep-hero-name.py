@@ -81,22 +81,25 @@ LEADING = 0.98
 COUNTER_AREA = 0.0048
 COUNTER_FILL = 0.65
 
-# Left to right rather than top to bottom, and white into violet: sampled off
-# the reference at a tenth of its width at a time, which runs #f8f3ff flat
-# for the first third and then falls away through #e0bfff, #cc74fe and
-# #bb47fd to #9e46ff at the end.
+# Left to right rather than top to bottom, and white into the page's own
+# cerulean. The shape of it is the reference's, sampled at a tenth of its
+# width at a time — flat white for the first third, then away through three
+# steps to a saturated end — but the colour is the one the rest of this page
+# is in. The violet it was first built in is kept nowhere: #4fcbff at 86% is
+# the exact blue the role line and the nav are set in, so the name lands on
+# it before going one step deeper.
 #
 # The stops here hold the white a little longer than that — to 42% — because
 # the given name ends at 53% of this drawing and the surname begins after it.
 # Holding white across AMTHUZ and running the colour through ZAFRIN puts the
 # turn on the space, where the reference puts it on its own full stop.
 GRADIENT = [
-    ("0%", "#f8f3ff"),
-    ("42%", "#f3eaff"),
-    ("58%", "#ddb8ff"),
-    ("72%", "#cf8afe"),
-    ("86%", "#c355fd"),
-    ("100%", "#9e46ff"),
+    ("0%", "#f4fbff"),
+    ("42%", "#e9f7ff"),
+    ("58%", "#b3e5ff"),
+    ("72%", "#77d2ff"),
+    ("86%", "#4fcbff"),
+    ("100%", "#14a3e6"),
 ]
 # Horizontal. It was 0,0 -> 0.18,1, which is a top-to-bottom ramp with a
 # lean — and that lean is why the old one worked at all while every glyph
