@@ -207,29 +207,24 @@
   z-index: 1;
   left: calc(var(--page-pad-x) - 1.6vw);
   bottom: clamp(1.3rem, 5vh, 3.2rem);
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 0 clamp(0.5rem, 1.3vw, 1.7rem);
-  width: min(58vw, 62rem);
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(0.9rem, 3.2vw, 4rem);
+  max-width: min(58vw, 62rem);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* Even columns rather than even gaps: the labels run from five characters to
-   twelve, and spacing them by their own widths gives a ragged rhythm where a
-   row of figures wants a regular one.
+/* Even gaps rather than even columns. It was the other way round — six
+   columns of one fraction each — which spaces the COLUMNS evenly and so
+   spaces the words unevenly, because the labels run from five characters to
+   twelve and each one sat at its column's left edge. Laid out by gap
+   instead, the space between any two words is the space between any other
+   two, and the columns are as wide as their words need.
 
-   Within a column the pair centres on itself — the word under the middle of
-   the figure rather than under its left edge — and the pair sits at the
-   column's start rather than filling it. That second part is what keeps the
-   first figure's word flush with the name above: centre the pair in a full
-   column and the whole row steps in by half of whatever the column has
-   spare. */
-.hero__tally {
-  justify-items: start;
-}
-
+   Each pair still centres on itself, the word under the middle of its figure
+   rather than under its left edge. */
 .hero__tally li {
   display: flex;
   flex-direction: column;
@@ -238,25 +233,19 @@
   min-width: 0;
 }
 
-/* The figures take the same gradient the wordmark does, at the same angle,
-   so the strip reads as the foot of one mark rather than as a caption that
-   happens to share the page with it. */
+/* Flat and near-white, at the heaviest weight Inter is loaded with. They
+   used to carry the wordmark's gradient, which was right while that gradient
+   was one colour across — now it runs white into violet, and a figure two
+   characters wide catches a two-character slice of it, so the six of them
+   came out six different colours for no reason anyone could see. White is
+   also where the wordmark starts, so the row still belongs to it. */
 .hero__tally-n {
   font-family: var(--font-display);
   font-size: clamp(1.15rem, 2vw, 2.3rem);
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1;
   letter-spacing: -0.025em;
-  background-image: linear-gradient(
-    165deg,
-    var(--title-top) 0%,
-    var(--title-color) 55%,
-    var(--title-deep) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+  color: #f6f2ff;
 }
 
 /* Set in the body face and in caps, which is the role line's own treatment a
@@ -303,16 +292,11 @@
   .hero__tally {
     position: static;
     margin-top: clamp(0.9rem, 3vh, 2rem);
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(0.5rem, 1.6vh, 1rem) clamp(0.5rem, 1.3vw, 1.7rem);
+    gap: clamp(0.6rem, 1.8vh, 1.2rem) clamp(0.9rem, 4vw, 2.4rem);
   }
 }
 
 @media (max-width: 34rem) {
-  .hero__tally {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .hero__tally-l {
     letter-spacing: 0.1em;
   }

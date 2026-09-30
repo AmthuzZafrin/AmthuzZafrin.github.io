@@ -57,6 +57,7 @@ from fontTools.pens.areaPen import AreaPen
 from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.recordingPen import RecordingPen
 from fontTools.pens.svgPathPen import SVGPathPen
+from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 
 FONT = pathlib.Path("public/fonts/super-adorable.ttf")
@@ -74,7 +75,36 @@ LEADING = 0.98
 COUNTER_AREA = 0.0048
 COUNTER_FILL = 0.65
 
-GRADIENT = [("0%", "#dff4ff"), ("52%", "#4fcbff"), ("100%", "#0b7cb4")]
+# Left to right rather than top to bottom, and white into violet: sampled off
+# the reference at a tenth of its width at a time, which runs #f8f3ff flat
+# for the first third and then falls away through #e0bfff, #cc74fe and
+# #bb47fd to #9e46ff at the end.
+#
+# The stops here hold the white a little longer than that — to 42% — because
+# the given name ends at 53% of this drawing and the surname begins after it.
+# Holding white across AMTHUZ and running the colour through ZAFRIN puts the
+# turn on the space, where the reference puts it on its own full stop.
+GRADIENT = [
+    ("0%", "#f8f3ff"),
+    ("42%", "#f3eaff"),
+    ("58%", "#ddb8ff"),
+    ("72%", "#cf8afe"),
+    ("86%", "#c355fd"),
+    ("100%", "#9e46ff"),
+]
+# Horizontal. It was 0,0 -> 0.18,1, which is a top-to-bottom ramp with a
+# lean — and that lean is why the old one worked at all while every glyph
+# was its own path with its own bounding box. A gradient in the default
+# objectBoundingBox units is measured against the box of the shape it fills,
+# so a per-glyph path gets a per-glyph ramp. Vertically that is invisible,
+# because every capital is the same height and so every letter got the same
+# ramp. Horizontally it is a disaster: each letter ran white to violet on its
+# own and the word came out striped.
+#
+# So the glyphs are drawn into one path in one coordinate space, with the
+# offsets and the y-flip baked into the outlines rather than carried on
+# wrapper transforms, and the gradient is given in that space.
+GRADIENT_LINE = (0.0, 0.0, 1.0, 0.0)
 ROLE_COLOUR = "#4fcbff"
 
 
@@ -148,17 +178,26 @@ def letterform(contours, glyphset, upem):
     return keep
 
 
-def to_path(contours, glyphset):
+def to_path(contours, glyphset, transform=None):
+    """The contours as SVG path data, optionally moved into another space."""
     pen = SVGPathPen(glyphset)
+    replay_into = TransformPen(pen, transform) if transform else pen
     for contour in contours:
-        replay(contour, pen)
+        replay(contour, replay_into)
     return pen.getCommands()
 
 
-def line_paths(text, glyphset, cmap, hmtx, upem):
-    """One path per glyph, the x it sits at, and where its ink actually is."""
+def line_paths(text, glyphset, cmap, hmtx, upem, base):
+    """The line as one run of path data, already in the drawing's own space.
+
+    `base` is the baseline this line sits on. Each glyph is replayed through
+    a transform that shifts it along and flips it upright, so what comes back
+    needs no wrapper group and, more to the point, shares a coordinate space
+    with every other glyph — which is what a gradient across the line needs.
+    """
     x = 0
-    drawn = []
+    parts = []
+    box = None
     space = cmap.get(ord(" "))
     for ch in text:
         if ch == " ":
@@ -170,12 +209,18 @@ def line_paths(text, glyphset, cmap, hmtx, upem):
         contours = split_contours(rec.value)
         if contours:
             kept = letterform(contours, glyphset, upem)
-            pen = BoundsPen(glyphset)
+            bounds = BoundsPen(glyphset)
             for contour in kept:
-                replay(contour, pen)
-            drawn.append((to_path(kept, glyphset), x, pen.bounds))
+                replay(contour, bounds)
+            parts.append(to_path(kept, glyphset, (1, 0, 0, -1, x, base)))
+            if bounds.bounds:
+                bx0, by0, bx1, by1 = bounds.bounds
+                here = (x + bx0, base - by1, x + bx1, base - by0)
+                box = here if box is None else (
+                    min(box[0], here[0]), min(box[1], here[1]),
+                    max(box[2], here[2]), max(box[3], here[3]))
         x += hmtx[gname][0]
-    return drawn
+    return " ".join(parts), box
 
 
 def build(lines, colour, gradient, upem, font, glyphset, cmap, hmtx):
@@ -190,30 +235,30 @@ def build(lines, colour, gradient, upem, font, glyphset, cmap, hmtx):
     same left edge in CSS puts the same left edge on the page.
     """
     cap = font["OS/2"].sCapHeight if hasattr(font["OS/2"], "sCapHeight") else int(upem * 0.7)
-    laid = [line_paths(t, glyphset, cmap, hmtx, upem) for t in lines]
     step = upem * LEADING
+    laid = [line_paths(t, glyphset, cmap, hmtx, upem, cap + step * i)
+            for i, t in enumerate(lines)]
 
     fill = "url(#ink)" if gradient else colour
     body = []
     x0 = y0 = 1e9
     x1 = y1 = -1e9
-    for i, drawn in enumerate(laid):
-        base = cap + step * i
-        for d, shift, box in drawn:
-            body.append(f'<g transform="translate(0 {base:.0f}) scale(1 -1)">'
-                        f'<g transform="translate({shift} 0)">'
-                        f'<path d="{d}" fill="{fill}"/></g></g>')
-            if box:
-                # the glyph is drawn shifted across and flipped about `base`
-                x0 = min(x0, shift + box[0])
-                x1 = max(x1, shift + box[2])
-                y0 = min(y0, base - box[3])
-                y1 = max(y1, base - box[1])
+    for d, box in laid:
+        if not box:
+            continue
+        body.append(f'<path d="{d}" fill="{fill}"/>')
+        x0, y0 = min(x0, box[0]), min(y0, box[1])
+        x1, y1 = max(x1, box[2]), max(y1, box[3])
 
     defs = ""
     if gradient:
         stops = "".join(f'<stop offset="{o}" stop-color="{c}"/>' for o, c in GRADIENT)
-        defs = ('<defs><linearGradient id="ink" x1="0" y1="0" x2="0.18" y2="1">'
+        # In the drawing's own units, spanning its ink, so the ramp crosses
+        # the whole line once instead of once per letter.
+        fx, fy, tx, ty = GRADIENT_LINE
+        defs = ('<defs><linearGradient id="ink" gradientUnits="userSpaceOnUse" '
+                f'x1="{x0 + fx * (x1 - x0):.0f}" y1="{y0 + fy * (y1 - y0):.0f}" '
+                f'x2="{x0 + tx * (x1 - x0):.0f}" y2="{y0 + ty * (y1 - y0):.0f}">'
                 f'{stops}</linearGradient></defs>')
 
     width, height = x1 - x0, y1 - y0
