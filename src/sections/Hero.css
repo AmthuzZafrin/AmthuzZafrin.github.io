@@ -100,6 +100,7 @@
    — which is where the role stops. */
 .hero {
   --flare-up: 21.46vw;
+  --flare-x: 52.75vw;
 
   /* The role runs to the point the light becomes visible and no further, so
      the words end and the line begins. Its height follows from the drawing's
@@ -133,6 +134,15 @@
   margin: 0;
 }
 
+/* The name is inline SVG now rather than an <img>, so the rules that used to
+   name the image name the drawing. */
+.hero__name svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
 /* Each line is one drawing, so it is sized by width and its height follows
    from the viewBox — and each viewBox is cropped to its own ink, which is
    what lets the two range flush. They are sized by WIDTH and at different
@@ -140,7 +150,6 @@
    0.04em the two used to carry put the name's first letter 5.6px right of
    its box and the role's 1.0px right of its box, and the two stood 4.6px out
    of line for that reason alone. See tools/prep-hero-name.py. */
-.hero__name img,
 .hero__role img {
   display: block;
   height: auto;
@@ -157,7 +166,7 @@
    reaches 0.7625W and never less, at any window size. The page margin takes
    6% off the left, which leaves 67% with a clear 3.2% of the window between
    the last letter and the head. At 72% the N runs into it. */
-.hero__name img {
+.hero__name {
   width: clamp(20rem, 67vw, 90rem);
 }
 
@@ -177,7 +186,7 @@
     --role-w: min(52vw, 26rem);
   }
 
-  .hero__name img {
+  .hero__name {
     width: min(64vw, 30rem);
   }
 }
@@ -187,7 +196,7 @@
     --role-w: min(74vw, 18rem);
   }
 
-  .hero__name img {
+  .hero__name {
     width: min(66vw, 17rem);
   }
 }
@@ -299,5 +308,248 @@
 @media (max-width: 34rem) {
   .hero__tally-l {
     letter-spacing: 0.1em;
+  }
+}
+
+/* ---- the light comes on ----
+
+   The page had no motion on it at all, and the composition was already
+   asking for one particular piece: the robot is touching a light, a beam
+   runs out of that light, and the role line sits ON the beam and stops where
+   it starts. So that is what moves. The light fires, the beam goes out of it
+   both ways, and everything else on the page arrives in its wake — the name
+   a letter at a time, the role wiped in along the beam's own line, the
+   figures last.
+
+   It runs once, on load, and it is all CSS: nothing here needs to know when
+   the section is in view, because the section is the first thing on the page
+   and `animation-fill-mode: both` holds every element at its starting state
+   through its delay.
+
+   The beats, as one number each so the order can be read off in one place.
+   The whole thing is done at 1.95s. */
+.hero {
+  --in-scene: 0.05s;
+  --in-spark: 0.25s;
+  --in-beam: 0.4s;
+  --in-name: 0.62s;
+  --in-role: 1.05s;
+  --in-tally: 1.2s;
+}
+
+/* The picture comes up out of the dark rather than being there already. The
+   opacity is on the picture and not a filter on it: a brightness filter
+   repaints the whole 3200px image every frame, where opacity is handed to
+   the compositor. */
+.hero__ai {
+  animation: hero-scene 0.9s ease-out var(--in-scene) both;
+}
+
+@keyframes hero-scene {
+  from {
+    opacity: 0.22;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The flare at the fingertip. Screened rather than drawn over, so it adds
+   light to the picture's own instead of covering it. */
+.hero__spark {
+  position: absolute;
+  left: var(--flare-x);
+  bottom: var(--flare-up);
+  width: 26vw;
+  aspect-ratio: 1;
+  transform: translate(-50%, 50%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  animation: hero-spark 1.15s cubic-bezier(0.2, 0.85, 0.35, 1) var(--in-spark) both;
+}
+
+/* The glow itself sits on a layer of its own. It does not breathe and it
+   does not stay: the flare goes out completely, and what is left on the page
+   afterwards is the light the picture already had.
+
+   That is not a detail. A radial glow around this light is the exact thing
+   that was taken out of the picture two passes ago — rings, then the bloom
+   they sat in, leaving the white point and the line through it. Putting a
+   permanent one back in CSS would undo that with a different tool. It is
+   allowed to exist for half a second because a light switching on is an
+   event; it is not allowed to still be there when the page is at rest. */
+.hero__spark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(233 248 255 / 0.85) 0%,
+    rgb(120 210 255 / 0.5) 16%,
+    rgb(50 160 235 / 0.22) 38%,
+    transparent 70%
+  );
+}
+
+@keyframes hero-spark {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 50%) scale(0.12);
+  }
+  32% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, 50%) scale(1.25);
+  }
+}
+
+/* The beam, going out of the light both ways along its own line. It scales
+   from the middle, which is where the light is, so it reads as coming out of
+   the fingertip rather than sliding in from the edge. */
+.hero__beam {
+  position: absolute;
+  left: var(--flare-x);
+  bottom: var(--flare-up);
+  width: 52vw;
+  height: 0.5vw;
+  transform: translate(-50%, 50%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(70 180 245 / 0.28) 18%,
+    rgb(190 235 255 / 0.75) 50%,
+    rgb(70 180 245 / 0.28) 82%,
+    transparent 100%
+  );
+  animation:
+    hero-beam 0.85s cubic-bezier(0.16, 0.85, 0.3, 1) var(--in-beam) both,
+    hero-pulse 7s ease-in-out 1.6s infinite;
+}
+
+@keyframes hero-beam {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 50%) scaleX(0.02);
+  }
+  42% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.2;
+    transform: translate(-50%, 50%) scaleX(1);
+  }
+}
+
+/* The one thing that keeps moving after the page has arrived, and it is the
+   line rather than a halo — the horizontal flare is in the picture already
+   and is meant to be, so brightening and dimming it slightly reads as the
+   light being alive rather than as something added back around it. Seven
+   seconds, and it never goes above a third: at rest this is a few levels of
+   blue on a line that is already there.
+
+   It shares the element with the entrance, and the two DO both touch
+   opacity — so they are made to meet: the entrance ends at 0.2 and this
+   starts and ends at 0.2. A later animation in the list wins wherever it
+   applies, and this one does not apply until its delay, so without that the
+   beam would sit at full strength for the third of a second between the two
+   and then drop. */
+@keyframes hero-pulse {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  35% {
+    opacity: 0.36;
+  }
+}
+
+/* The name, a letter at a time. --i is written into each path by
+   tools/prep-hero-name.py, so the order is the order they are read in.
+
+   `transform-box: fill-box` is what makes the percentages and the origin
+   mean the letter rather than the whole drawing — without it every letter
+   would scale about the corner of the SVG and fly in from off to the left.
+
+   The overshoot in the curve is deliberate and small. This face is a fat
+   round one; letters that arrive dead flat look posted rather than placed. */
+.hero__name path {
+  transform-box: fill-box;
+  transform-origin: 50% 88%;
+  animation: hero-letter 0.52s cubic-bezier(0.34, 1.42, 0.64, 1)
+    calc(var(--in-name) + var(--i) * 0.035s) both;
+}
+
+@keyframes hero-letter {
+  from {
+    opacity: 0;
+    transform: translateY(30%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The role is wiped in rather than faded, left to right, which is the one
+   thing on this page that sits in the beam's own line. */
+.hero__role {
+  animation: hero-role 0.72s cubic-bezier(0.22, 0.9, 0.3, 1) var(--in-role) both;
+}
+
+@keyframes hero-role {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* And the figures, in their own order, after everything above them. */
+.hero__tally li {
+  animation: hero-figure 0.5s cubic-bezier(0.22, 0.9, 0.3, 1)
+    calc(var(--in-tally) + var(--i) * 0.07s) both;
+}
+
+@keyframes hero-figure {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Asked not to move, none of it moves — and the page is the finished state
+   rather than the starting one, which is the part that is easy to get wrong:
+   `animation: none` on a rule with `fill-mode: both` leaves whatever the
+   element's own properties say, so the from-state has to be undone too. */
+@media (prefers-reduced-motion: reduce) {
+  .hero__ai,
+  .hero__spark,
+  .hero__spark::after,
+  .hero__beam,
+  .hero__name path,
+  .hero__role,
+  .hero__tally li {
+    animation: none;
+  }
+
+  .hero__spark {
+    opacity: 0;
+  }
+
+  .hero__beam {
+    opacity: 0.2;
   }
 }

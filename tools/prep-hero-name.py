@@ -203,6 +203,11 @@ def line_paths(text, glyphset, cmap, hmtx, upem, base):
     a transform that shifts it along and flips it upright, so what comes back
     needs no wrapper group and, more to the point, shares a coordinate space
     with every other glyph — which is what a gradient across the line needs.
+
+    One path per glyph rather than one for the line, so each letter can be
+    moved on its own. That is free now: a gradient in userSpaceOnUse is the
+    same gradient whatever fills it, so thirteen paths take the same ramp one
+    would. It is only objectBoundingBox that cannot do this.
     """
     x = 0
     parts = []
@@ -229,7 +234,7 @@ def line_paths(text, glyphset, cmap, hmtx, upem, base):
                     min(box[0], here[0]), min(box[1], here[1]),
                     max(box[2], here[2]), max(box[3], here[3]))
         x += hmtx[gname][0]
-    return " ".join(parts), box
+    return parts, box
 
 
 def build(lines, colour, gradient, upem, font, glyphset, cmap, hmtx):
@@ -252,10 +257,15 @@ def build(lines, colour, gradient, upem, font, glyphset, cmap, hmtx):
     body = []
     x0 = y0 = 1e9
     x1 = y1 = -1e9
-    for d, box in laid:
+    n = 0
+    for parts, box in laid:
         if not box:
             continue
-        body.append(f'<path d="{d}" fill="{fill}"/>')
+        for d in parts:
+            # --i is the letter's place in the line, which is all the page
+            # needs to bring them in one after another.
+            body.append(f'<path style="--i:{n}" d="{d}" fill="{fill}"/>')
+            n += 1
         x0, y0 = min(x0, box[0]), min(y0, box[1])
         x1, y1 = max(x1, box[2]), max(y1, box[3])
 
@@ -272,7 +282,12 @@ def build(lines, colour, gradient, upem, font, glyphset, cmap, hmtx):
 
     width, height = x1 - x0, y1 - y0
     vb = f"{x0:.0f} {y0:.0f} {width:.0f} {height:.0f}"
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}">'
+    # width and height as well as the viewBox: inlined in the page rather
+    # than loaded as an <img>, an SVG with only a viewBox has no intrinsic
+    # size to give `height: auto` anything to work from.
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}" '
+            f'width="{width:.0f}" height="{height:.0f}" '
+            f'preserveAspectRatio="xMinYMid meet" aria-hidden="true" focusable="false">'
             f'{defs}{"".join(body)}</svg>'), width, height
 
 

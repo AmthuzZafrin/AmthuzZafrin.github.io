@@ -1,5 +1,8 @@
 import './Hero.css'
-import nameMark from '../assets/hero-name.svg'
+// The name is inlined rather than linked, because the page moves its letters
+// one at a time and CSS cannot reach inside an <img>. The role is not, since
+// it arrives as one thing.
+import nameMark from '../assets/hero-name.svg?raw'
 import roleMark from '../assets/hero-role.svg'
 
 /**
@@ -43,6 +46,15 @@ export default function Hero() {
         {/* Decoration, and it says nothing, so it is hidden. */}
         <div className="hero__ai" aria-hidden="true" />
 
+        {/* The light the robot is touching, drawn again in CSS on top of the
+            one in the picture, so it can be switched on. The picture's own is
+            fixed; these two are the flare and the beam coming out of it, and
+            everything else on the page arrives in their wake. Placed by the
+            same two numbers the type is: 52.75% of the window across, and
+            21.46% of the window up from the foot. */}
+        <div className="hero__spark" aria-hidden="true" />
+        <div className="hero__beam" aria-hidden="true" />
+
         {/* Drawn rather than set. The display face hides a gloss mark inside
             every letter and those marks are holes in the glyph, so on a black
             page they came out black. They are not drawn at all now — see
@@ -58,9 +70,11 @@ export default function Hero() {
             not, and below about 60rem the two meet. */}
         <div className="hero__type">
           <div className="hero__intro">
-            <h1 className="hero__name">
-              <img src={nameMark} alt="Amthuz Zafrin" />
-            </h1>
+            <h1
+              className="hero__name"
+              aria-label="Amthuz Zafrin"
+              dangerouslySetInnerHTML={{ __html: nameMark }}
+            />
 
             <p className="hero__role">
               <img src={roleMark} alt="Gen AI Engineer, Full-Stack Developer" />
@@ -71,8 +85,8 @@ export default function Hero() {
               child of it: that block is placed by ITS foot, so anything hung
               inside it would move the role off the light in the picture. */}
           <ul className="hero__tally">
-            {TALLY.map(([count, label]) => (
-              <li key={label}>
+            {TALLY.map(([count, label], i) => (
+              <li key={label} style={{ '--i': i }}>
                 <span className="hero__tally-n">{count}</span>
                 <span className="hero__tally-l">{label}</span>
               </li>
