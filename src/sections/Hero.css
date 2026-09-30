@@ -104,7 +104,11 @@
   /* The role runs to the point the light becomes visible and no further, so
      the words end and the line begins. Its height follows from the drawing's
      own ratio, and the block is placed by it: half of it below the light's
-     line, half above, so the two read as one horizontal. */
+     line, half above, so the two read as one horizontal.
+
+     The name then hangs off the same block, and the gap below it is the only
+     thing setting how high the name sits — the role cannot move, so raising
+     the name means opening that gap. */
   --role-w: clamp(12rem, 34vw, 46rem);
   --role-h: calc(var(--role-w) / 28.151);
 }
@@ -132,13 +136,17 @@
 
 /* The name is one line now, so it is ten times as wide as it is tall and the
    width has to carry it: at the 34% the two-line version used it would set at
-   half the size. 58% is what the picture allows — the robot's head starts at
-   0.755W at every window size, and the page margin takes 6% off the left, so
-   the mark ends at 0.64W with a clear run to it. Nothing else is up there:
-   the hand's highest point is the fingertip, and that is on the light's line,
-   below all of this. */
+   half the size.
+
+   67% is what the picture allows and very nearly to the pixel. The robot's
+   silhouette was measured row by row down the frame: it is furthest left a
+   quarter to a third of the way down, at 0.8056 of the frame, and the frame
+   is hung at 122% of the window with its left edge at -0.22W — so the robot
+   reaches 0.7625W and never less, at any window size. The page margin takes
+   6% off the left, which leaves 67% with a clear 3.2% of the window between
+   the last letter and the head. At 72% the N runs into it. */
 .hero__name img {
-  width: clamp(20rem, 58vw, 78rem);
+  width: clamp(20rem, 67vw, 90rem);
 }
 
 .hero__role img {
@@ -146,7 +154,7 @@
 }
 
 .hero__role {
-  margin-top: clamp(0.8rem, 2.1vw, 2.4rem);
+  margin-top: clamp(0.9rem, 4.6vw, 5.2rem);
 }
 
 /* Narrow windows: the robot keeps the right of the frame at every width, so
