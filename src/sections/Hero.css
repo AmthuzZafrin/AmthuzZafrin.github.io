@@ -194,33 +194,44 @@
 
 /* ---- the tally ---- */
 
-/* Hung below the block rather than added to it. The block is placed by its
-   foot — that is what puts the role on the light — so a fourth thing in the
-   flow underneath would lift the role and the name off it by its own height.
-   Taken out of the flow, it hangs from the foot and changes nothing above. */
+/* Along the foot of the page, ranged on the same left edge as the name.
+
+   How far right it may run is set by the robot, and at the foot the robot is
+   further left than anywhere else: the arm comes down across the frame, so
+   where the head reaches 0.7625W the hand reaches 0.6576W. Measured over the
+   rows the strip actually occupies, which is the bottom eighth of the frame.
+   That leaves 58% of the window from a left edge at 4.4%, with about 2.5% of
+   clear window after the last figure. */
 .hero__tally {
   position: absolute;
-  top: 100%;
-  left: 0;
-  display: flex;
-  gap: clamp(1.5rem, 4vw, 4.5rem);
-  margin: clamp(1.1rem, 2.4vw, 2.8rem) 0 0;
+  z-index: 1;
+  left: calc(var(--page-pad-x) - 1.6vw);
+  bottom: clamp(1.3rem, 5vh, 3.2rem);
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0 clamp(0.5rem, 1.3vw, 1.7rem);
+  width: min(58vw, 62rem);
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* Even columns rather than even gaps: the labels run from five characters to
+   twelve, and spacing them by their own widths gives a ragged rhythm where a
+   row of figures wants a regular one. */
 .hero__tally li {
   display: flex;
   flex-direction: column;
-  gap: 0.2em;
+  gap: 0.25em;
+  min-width: 0;
 }
 
 /* The figures take the same gradient the wordmark does, at the same angle,
-   so the three of them read as the bottom of one mark rather than as a
-   caption that happens to sit under it. */
+   so the strip reads as the foot of one mark rather than as a caption that
+   happens to share the page with it. */
 .hero__tally-n {
   font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2.5vw, 2.9rem);
+  font-size: clamp(1.15rem, 2vw, 2.3rem);
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.025em;
@@ -236,22 +247,61 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* Set in the body face and in caps, which is the role's own treatment a size
-   down — the two lines of small type on this page should match each other
-   rather than each find their own way. */
+/* Set in the body face and in caps, which is the role line's own treatment a
+   size down — the small type on this page should match itself. */
 .hero__tally-l {
   font-family: var(--font-body);
-  font-size: clamp(0.6rem, 0.82vw, 0.92rem);
+  font-size: clamp(0.54rem, 0.72vw, 0.82rem);
   font-weight: 500;
-  letter-spacing: 0.17em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--fg-muted);
 }
 
-/* Narrow: the row would run under the robot before it ran out of window, so
-   it tightens rather than wraps — three short pairs still fit across. */
+/* On a wide window the wrapper is not there at all: each block places itself
+   against the picture, one on the light and one along the foot. */
+.hero__type {
+  display: contents;
+}
+
+/* Narrow: the two cannot both be placed against the picture any more. The
+   light is 0.2146W above the foot, so the gap between them shrinks with the
+   WIDTH while the strip's own height does not — at 430 across there is 92px
+   between them and the strip alone wants 113, so they overlap and the name
+   ends up printed through the figures.
+
+   Below 60rem the wrapper becomes a real box at the foot and the two stack
+   inside it in the ordinary way. The role gives up the light, which is the
+   right thing to give up: on a window this shape the picture is only the
+   bottom fifth of the page and the line is barely in it. */
 @media (max-width: 60rem) {
+  .hero__type {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: calc(var(--page-pad-x) - 1.6vw);
+    bottom: clamp(1.3rem, 5vh, 3.2rem);
+  }
+
+  .hero__intro {
+    position: static;
+  }
+
   .hero__tally {
-    gap: clamp(1rem, 3.4vw, 2.4rem);
+    position: static;
+    margin-top: clamp(0.9rem, 3vh, 2rem);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1.6vh, 1rem) clamp(0.5rem, 1.3vw, 1.7rem);
+  }
+}
+
+@media (max-width: 34rem) {
+  .hero__tally {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero__tally-l {
+    letter-spacing: 0.1em;
   }
 }

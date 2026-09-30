@@ -1,16 +1,20 @@
 import './Hero.css'
 
 /**
- * The tally under the role.
+ * The tally along the foot of the page.
  *
  * These are the figures as given, and they are not read off the sections
- * they name — the site itself shows 3 AI products and 1 commissioned site,
- * 19 certificates and 29 skills. Anyone who counts will find that, so the
- * three numbers live here on one line to be easy to correct.
+ * they name. Three of the six agree with what the site shows — 3 projects,
+ * 1 novel, 4 internships — and three do not: the Websites page has one site
+ * on it, the Certificates page nineteen, and the Skills page twenty-nine. So
+ * they live here, on one line each, to be easy to correct.
  */
 const TALLY = [
-  ['6', 'Works'],
-  ['25', 'Certificates'],
+  ['3', 'Projects'],
+  ['2', 'Websites'],
+  ['1', 'Novel'],
+  ['21', 'Certificates'],
+  ['4', 'Internships'],
   ['30', 'Skills'],
 ]
 
@@ -40,19 +44,27 @@ export default function Hero() {
             tools/prep-hero-name.py, which has how the marks are told from the
             counters and the four things tried before it. Vector, so it stays
             sharp at any size, and each line keeps its own alt text. */}
-        <div className="hero__intro">
-          <h1 className="hero__name">
-            <img src="/hero-name.svg" alt="Amthuz Zafrin" />
-          </h1>
+        {/* A wrapper that is `display: contents` on a wide window — the two
+            blocks inside it place themselves against the picture, one on the
+            light and one along the foot. On a narrow one it becomes a real
+            box and they stack inside it, because there is no room to do
+            both: the light is 0.2146W above the foot, so the gap between
+            them shrinks with the WIDTH while the strip's own height does
+            not, and below about 60rem the two meet. */}
+        <div className="hero__type">
+          <div className="hero__intro">
+            <h1 className="hero__name">
+              <img src="/hero-name.svg" alt="Amthuz Zafrin" />
+            </h1>
 
-          <p className="hero__role">
-            <img src="/hero-role.svg" alt="Gen AI Engineer, Full-Stack Developer" />
-          </p>
+            <p className="hero__role">
+              <img src="/hero-role.svg" alt="Gen AI Engineer, Full-Stack Developer" />
+            </p>
+          </div>
 
-          {/* Out of the block's flow on purpose. The block is positioned by
-              its foot so the role lands on the light in the picture, so
-              anything added under the role in flow would push the role — and
-              the name with it — off that line. */}
+          {/* Along the foot, and a sibling of the block above rather than a
+              child of it: that block is placed by ITS foot, so anything hung
+              inside it would move the role off the light in the picture. */}
           <ul className="hero__tally">
             {TALLY.map(([count, label]) => (
               <li key={label}>
