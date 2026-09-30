@@ -6,11 +6,11 @@ import './Hero.css'
  * In the order the figures run rather than the order the work does, which
  * is what makes the row read as a row: 1, 2, 3, 4, 21, 30.
  *
- * They are as given and are not read off the sections they name. Three of
+ * They are as given and are not read off the sections they name. Four of
  * the six agree with what the site shows — 1 novel, 3 projects, 4
- * internships — and three do not: the Websites page has one site on it, the
- * Certificates page twenty, and the Skills page twenty-nine. So they live
- * here, on one line each, to be easy to correct.
+ * internships, and 21 certificates as of the twenty-first being added. Two
+ * do not: the Websites page has one site on it and the Skills page
+ * twenty-nine. So they live here, on one line each, to be easy to correct.
  */
 const TALLY = [
   ['1', 'Novel'],
