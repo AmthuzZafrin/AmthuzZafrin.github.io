@@ -12,25 +12,50 @@ import './Certificates.css'
  */
 const CERTS = [
   { f: '01-swayam', name: 'Generative AI and Large Language Models', by: 'IIM Bangalore · SWAYAM', when: '2026 · scored 92.5%' },
-  { f: '02-multi-agent', name: 'Building Multi-Agent Systems', by: 'Microsoft · Coursera', when: 'July 2026' },
-  { f: '03-agentic-ai', name: 'Complete Agentic AI Bootcamp with LangGraph and LangChain', by: 'Krish Naik · Udemy', when: 'August 2026 · 45.5 hours' },
-  { f: '04-udemy1', name: 'Building Gen AI Apps — 12+ Hands-on Projects with Gemini Pro', by: 'Krish Naik · Udemy', when: 'July 2026 · 16 hours' },
-  { f: '05-mldl', name: 'Complete Data Science, Machine Learning, DL and NLP Bootcamp', by: 'Krish Naik · Udemy', when: 'August 2026 · 101.5 hours' },
-  { f: '06-dl-keras', name: 'Introduction to Deep Learning & Neural Networks with Keras', by: 'IBM · Coursera', when: 'April 2024' },
-  { f: '07-dnn-pytorch', name: 'Deep Neural Networks with PyTorch', by: 'IBM · Coursera', when: 'April 2024' },
-  { f: '08-ml-python', name: 'Machine Learning with Python', by: 'IBM · Coursera', when: 'April 2024' },
-  { f: '09-tcs-ion', name: 'TCS iON Career Edge — Young Professional', by: 'Tata Consultancy Services', when: 'August 2025' },
-  { f: '10-udemy3', name: 'Master Business Writing and Editing', by: 'Grant Hall · Udemy', when: 'August 2026 · 3 hours' },
-  { f: '11-udemy4', name: 'Effective Communication in the Workplace', by: 'Lecturio · Udemy', when: 'August 2026 · 3 hours' },
-  { f: '12-udemy4b', name: 'The Growth Mindset Blueprint: Confidence, Impact & Success', by: 'Zubin Rashid · Udemy', when: 'August 2026 · 2.5 hours' },
-  { f: '13-udemy6', name: 'Teamwork Masterclass — Guide to Team Building & Teamwork', by: 'Salil Dhawan · Udemy', when: 'August 2026 · 4.5 hours' },
-  { f: '14-interviewing', name: 'Complete Job Interviewing Skills with Real Life Examples', by: 'Imran Afzal · Udemy', when: 'September 2026 · 3.5 hours' },
-  { f: '15-emotional-intelligence', name: 'Emotional Intelligence Training: EI in the Workplace', by: 'Ermin Dedic · Udemy', when: 'September 2026 · 1.5 hours' },
-  { f: '16-ai', name: 'Artificial Intelligence Fundamentals', by: 'IBM SkillsBuild', when: 'September 2025' },
-  { f: '17-data-science-101', name: 'Data Science 101', by: 'IBM · Cognitive Class', when: 'June 2025' },
-  { f: '18-data-analysis', name: 'Data Analysis with Python', by: 'IBM SkillsBuild', when: 'July 2025' },
-  { f: '19-data-viz', name: 'Data Visualization with Python', by: 'IBM SkillsBuild', when: 'July 2025' },
+  { f: '02-multimodal', name: 'Multimodal and cross-modal AI integrations', by: 'Microsoft · Coursera', when: 'September 2026' },
+  { f: '03-multi-agent', name: 'Building Multi-Agent Systems', by: 'Microsoft · Coursera', when: 'July 2026' },
+  { f: '04-agentic-ai', name: 'Complete Agentic AI Bootcamp with LangGraph and LangChain', by: 'Krish Naik · Udemy', when: 'August 2026 · 45.5 hours' },
+  { f: '05-udemy1', name: 'Building Gen AI Apps — 12+ Hands-on Projects with Gemini Pro', by: 'Krish Naik · Udemy', when: 'July 2026 · 16 hours' },
+  { f: '06-mldl', name: 'Complete Data Science, Machine Learning, DL and NLP Bootcamp', by: 'Krish Naik · Udemy', when: 'August 2026 · 101.5 hours' },
+  { f: '07-dl-keras', name: 'Introduction to Deep Learning & Neural Networks with Keras', by: 'IBM · Coursera', when: 'April 2024' },
+  { f: '08-dnn-pytorch', name: 'Deep Neural Networks with PyTorch', by: 'IBM · Coursera', when: 'April 2024' },
+  { f: '09-ml-python', name: 'Machine Learning with Python', by: 'IBM · Coursera', when: 'April 2024' },
+  { f: '10-tcs-ion', name: 'TCS iON Career Edge — Young Professional', by: 'Tata Consultancy Services', when: 'August 2025' },
+  { f: '11-udemy3', name: 'Master Business Writing and Editing', by: 'Grant Hall · Udemy', when: 'August 2026 · 3 hours' },
+  { f: '12-udemy4', name: 'Effective Communication in the Workplace', by: 'Lecturio · Udemy', when: 'August 2026 · 3 hours' },
+  { f: '13-udemy4b', name: 'The Growth Mindset Blueprint: Confidence, Impact & Success', by: 'Zubin Rashid · Udemy', when: 'August 2026 · 2.5 hours' },
+  { f: '14-udemy6', name: 'Teamwork Masterclass — Guide to Team Building & Teamwork', by: 'Salil Dhawan · Udemy', when: 'August 2026 · 4.5 hours' },
+  { f: '15-interviewing', name: 'Complete Job Interviewing Skills with Real Life Examples', by: 'Imran Afzal · Udemy', when: 'September 2026 · 3.5 hours' },
+  { f: '16-emotional-intelligence', name: 'Emotional Intelligence Training: EI in the Workplace', by: 'Ermin Dedic · Udemy', when: 'September 2026 · 1.5 hours' },
+  { f: '17-ai', name: 'Artificial Intelligence Fundamentals', by: 'IBM SkillsBuild', when: 'September 2025' },
+  { f: '18-data-science-101', name: 'Data Science 101', by: 'IBM · Cognitive Class', when: 'June 2025' },
+  { f: '19-data-analysis', name: 'Data Analysis with Python', by: 'IBM SkillsBuild', when: 'July 2025' },
+  { f: '20-data-viz', name: 'Data Visualization with Python', by: 'IBM SkillsBuild', when: 'July 2025' },
 ]
+
+/**
+ * The count, spelled out, because the caption under the heading reads as a
+ * sentence rather than as a figure.
+ *
+ * Counted rather than written into that sentence. It said "Nineteen courses"
+ * for exactly as long as there were nineteen, and went wrong the moment a
+ * twentieth was added — which is the one thing a number in prose beside a
+ * list it describes will always do.
+ */
+const ONES = [
+  '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
+  'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
+  'seventeen', 'eighteen', 'nineteen',
+]
+const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty']
+
+function spelled(n) {
+  if (n < ONES.length) return ONES[n]
+  const tens = TENS[Math.floor(n / 10)] ?? String(n)
+  return n % 10 ? `${tens}-${ONES[n % 10]}` : tens
+}
+
+const HOW_MANY = spelled(CERTS.length).replace(/^./, (c) => c.toUpperCase())
 
 /** How many cards are drawn either side of the front one. */
 const SIDE = 1
@@ -120,7 +145,7 @@ export default function Certificates() {
         initial={'hidden'}
         animate={inView ? 'shown' : 'hidden'}
       >
-        Nineteen courses, newest first. Scroll across the row.
+        {HOW_MANY} courses, newest first. Scroll across the row.
       </motion.p>
 
       <motion.div
@@ -166,7 +191,7 @@ export default function Certificates() {
                         name: cert.name,
                       })
                     : { src: `/certs/gallery/${cert.f}.webp`, alt: '' })}
-                  // Not lazy: any of the nineteen can be brought to the front
+                  // Not lazy: any of them can be brought to the front
                   // in a single step, and a deferred one shows as an empty
                   // frame when it gets there. The whole set is under a megabyte.
                   decoding="async"

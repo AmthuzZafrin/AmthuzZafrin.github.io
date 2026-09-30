@@ -6,7 +6,7 @@ import './Hero.css'
  * These are the figures as given, and they are not read off the sections
  * they name. Three of the six agree with what the site shows — 3 projects,
  * 1 novel, 4 internships — and three do not: the Websites page has one site
- * on it, the Certificates page nineteen, and the Skills page twenty-nine. So
+ * on it, the Certificates page twenty, and the Skills page twenty-nine. So
  * they live here, on one line each, to be easy to correct.
  */
 const TALLY = [
