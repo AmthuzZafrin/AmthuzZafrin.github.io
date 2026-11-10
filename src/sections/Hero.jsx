@@ -9,16 +9,17 @@ import roleMark from '../assets/hero-role.svg'
  * The tally along the foot of the page.
  *
  * In the order the figures run rather than the order the work does, which
- * is what makes the row read as a row: 1, 2, 3, 4, 21, 30.
+ * is what makes the row read as a row: 1, 1, 2, 3, 4, 21, 30.
  *
- * They are as given and are not read off the sections they name. Four of
- * the six agree with what the site shows — 1 novel, 3 projects, 4
- * internships, and 21 certificates as of the twenty-first being added. Two
- * do not: the Websites page has one site on it and the Skills page
- * twenty-nine. So they live here, on one line each, to be easy to correct.
+ * They are as given and are not read off the sections they name. Six of
+ * the seven agree with what the site shows — 1 novel, 1 research paper, 2
+ * websites, 3 projects, 4 internships, and 21 certificates as of the
+ * twenty-first being added. One does not: the Skills page has twenty-nine.
+ * So they live here, on one line each, to be easy to correct.
  */
 const TALLY = [
   ['1', 'Novel'],
+  ['1', 'Research Paper'],
   ['2', 'Websites'],
   ['3', 'Projects'],
   ['4', 'Internships'],

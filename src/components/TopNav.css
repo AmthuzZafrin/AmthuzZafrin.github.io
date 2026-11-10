@@ -164,10 +164,12 @@
   list-style: none;
 }
 
-/* Nine tabs is one more than the row comfortably holds. Below about this, the
+/* Ten tabs is two more than the row comfortably holds. Below about this, the
    gap tightens and the row starts scrolling sideways instead — the labels are
-   nowrap, so without somewhere to go they would push the bar apart. The
-   narrower rule further down takes over from here. */
+   nowrap, so without somewhere to go they would push the bar apart. Measured
+   with the tenth, Research, it still sets in one row down to 1081px, with
+   about four rems between the wordmark and the first tab. The narrower rule
+   further down takes over from here. */
 @media (max-width: 1080px) {
   .topnav__list {
     gap: clamp(0.8rem, 1.7vw, 1.5rem);

@@ -4,6 +4,7 @@ import Hero from './sections/Hero.jsx'
 import Summary from './sections/Summary.jsx'
 import Projects from './sections/Projects.jsx'
 import Commission from './sections/Commission.jsx'
+import Research from './sections/Research.jsx'
 import Certificates from './sections/Certificates.jsx'
 import Experience from './sections/Experience.jsx'
 import Education from './sections/Education.jsx'
@@ -20,6 +21,7 @@ export default function App() {
         <Summary />
         <Projects />
         <Commission />
+        <Research />
         <Certificates />
         <Experience />
         <Education />

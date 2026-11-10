@@ -168,6 +168,22 @@ body {
   padding: var(--page-pad-y) var(--page-pad-x);
 }
 
+/* The foot of a section that can be taller than the window — Websites always,
+   Research when its columns stack — there only to be snapped to. `end` puts
+   the section's bottom edge on the window's bottom edge, which is the last
+   screenful of it; .section aligns the start, and one element can only align
+   one edge. Out of flow, so it adds no height, and out of the hit-test path.
+   See useScrollThrough for the half of this that is not CSS. */
+.section-end {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  scroll-snap-align: end;
+  pointer-events: none;
+}
+
 /* The pinned first page. The spacer holds its viewport of scroll and carries
    the snap point, so the track's geometry is ordinary; the page itself is
    fixed to the viewport and simply never moves.

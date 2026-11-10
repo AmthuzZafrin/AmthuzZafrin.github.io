@@ -210,7 +210,14 @@
    where the head reaches 0.7625W the hand reaches 0.6576W. Measured over the
    rows the strip actually occupies, which is the bottom eighth of the frame.
    That leaves 58% of the window from a left edge at 4.4%, with about 2.5% of
-   clear window after the last figure. */
+   clear window after the last figure.
+
+   Seven figures now, and the gap is what made room for the seventh: at the
+   3.2vw it was, the row needed 61% of the window, wrapped inside its 58%, and
+   would have reached the hand at 65.3% if it had not. At 2.3vw it ends near
+   60%. The cap moves up with it, because on a window wider than about 21 : 9
+   it is the cap that binds and not the 58% — and on those the robot sits
+   further right than the row can reach. */
 .hero__tally {
   position: absolute;
   z-index: 1;
@@ -218,8 +225,8 @@
   bottom: clamp(1.3rem, 5vh, 3.2rem);
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(0.9rem, 3.2vw, 4rem);
-  max-width: min(58vw, 62rem);
+  gap: clamp(0.8rem, 2.3vw, 3.4rem);
+  max-width: min(58vw, 68rem);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -228,7 +235,7 @@
 /* Even gaps rather than even columns. It was the other way round — six
    columns of one fraction each — which spaces the COLUMNS evenly and so
    spaces the words unevenly, because the labels run from five characters to
-   twelve and each one sat at its column's left edge. Laid out by gap
+   fourteen and each one sat at its column's left edge. Laid out by gap
    instead, the space between any two words is the space between any other
    two, and the columns are as wide as their words need.
 

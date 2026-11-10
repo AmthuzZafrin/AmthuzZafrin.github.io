@@ -162,17 +162,3 @@
   outline-offset: 4px;
   border-radius: 3px;
 }
-
-/* A hairline pinned to the foot of the section, there only to be snapped to:
-   `end` puts the section's bottom edge on the window's bottom edge, which is
-   the last screenful of it. Out of flow, so it adds no height, and out of the
-   hit-test path. */
-.commission__end {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  scroll-snap-align: end;
-  pointer-events: none;
-}

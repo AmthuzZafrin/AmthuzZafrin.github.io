@@ -1,0 +1,625 @@
+/* This page's own colour. Setting the shared type tokens recolours everything
+   inside the section, heading and sentences alike — see Summary.css for the
+   longer note on why it is done this way.
+
+   Emerald: the green of a phosphor trace, which is what a measurement looks
+   like when it is drawn as light — and this is the one page on the site that
+   is a measurement.
+
+   It is also the one hue the set had left. Measured perceptually, the widest
+   gap between the other pages' colours ran from the lime on Education to the
+   teal on the Toolkit, and this sits in the middle of it, as far from each as
+   they are from their own nearest neighbours. Both of those are pale; this is
+   deeper, at 9.1 : 1 against their 12.7 and 13.1, so it is told from them by
+   value as well as by hue. And it is a long way from the two pages either
+   side of it, the gold of Websites and the pink of the Receipts. */
+#research {
+  --title-top: #e7ffe2;
+  --title-color: #0ac378;
+  --title-deep: #106f4c;
+  --fg: #e4f7ea;
+  --fg-muted: #aed6bc;
+  --fg-dim: #5a806a;
+  --fg-accent: #50d08d;
+  --page-glow: 10 195 120;
+
+  --acc: 10 195 120;
+
+  /* Clear of the bar, then centred in what is left below it: the stage is
+     sized to fill that space on a window of the reference shape, so there
+     it reads as pinned, and on a taller one it floats in the middle. */
+  padding-top: calc(4.6rem + clamp(0.5rem, 2vh, 1.4rem));
+  padding-bottom: clamp(1rem, 3vh, 2rem);
+}
+
+/* The page on the left; the title across the top of the rest, and two
+   columns under it — what the paper did, and what it found.
+
+   The page sets the height: it is as tall as the window allows once the bar
+   and the heading are paid for, and its width follows from US Letter. The
+   copy runs the page's full height — the title on its top edge, the note on
+   its bottom one — so the three read as one block rather than three.
+
+   min-height rather than height, so the second row is what stretches to fill
+   it: a grid of indefinite height with a minimum resolves its fr tracks
+   against that minimum. */
+.research__stage {
+  --stage-h: min(38rem, calc(100dvh - 15.5rem));
+  --plate-w: calc(var(--stage-h) * 612 / 792);
+  --col-gap: clamp(1.4rem, 2.8vw, 3rem);
+
+  display: grid;
+  grid-template-columns: var(--plate-w) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: clamp(0.9rem, 2.6vh, 1.5rem) var(--col-gap);
+  min-height: var(--stage-h);
+  width: 100%;
+  /* Generous, because on a window wider than the reference the type reaches
+     its rem caps while the page is still held by the window's height — the
+     copy grows and the page does not. The extra width is what lets the two
+     columns take that in by getting wider rather than taller. */
+  max-width: 92rem;
+}
+
+.research__plate {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.research__head {
+  grid-column: 2 / span 2;
+  grid-row: 1;
+  min-width: 0;
+}
+
+/* The copy paints over the page's light, not under it. The page is
+   positioned, so without this its glow and the shadow it casts are drawn on
+   top of any words they reach — and with the page set small beside the title
+   the shadow falls straight across the first line under it. */
+.research__head,
+.research__paper,
+.research__found {
+  position: relative;
+  z-index: 1;
+}
+
+.research__paper {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.research__found {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+/* ---- the page ---- */
+
+/* Held up the way the book's cover is: a crisp line on the very edge, then
+   the light falling off it into the black. White paper on a black page is
+   the brightest thing here by a distance, so the rim stays thin and the
+   glow stays low — it has to say lit, not compete. */
+.research__plate {
+  position: relative;
+  display: block;
+  align-self: start;
+  width: var(--plate-w);
+  aspect-ratio: 612 / 792;
+  border-radius: 4px;
+  background: #f4f6f3;
+  box-shadow:
+    0 0 0 1px rgb(var(--acc) / 0.85),
+    0 0 0 5px rgb(var(--acc) / 0.08),
+    0 0 18px rgb(var(--acc) / 0.42),
+    0 0 54px rgb(var(--acc) / 0.22),
+    0 0 110px rgb(var(--acc) / 0.12),
+    0 24px 60px rgba(0, 0, 0, 0.75);
+  transition:
+    translate 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.32s ease-out;
+}
+
+.research__plate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+/* Lifted with `translate`, not `transform`. The entrance animation leaves an
+   inline `transform: none` on this element when it finishes, and an inline
+   style beats any rule here — a lift written as a transform never moved. The
+   two properties compose rather than compete, so this one is free. */
+.research__plate:hover,
+.research__plate:focus-visible {
+  translate: 0 -4px;
+  box-shadow:
+    0 0 0 1px rgb(var(--acc)),
+    0 0 0 6px rgb(var(--acc) / 0.12),
+    0 0 24px rgb(var(--acc) / 0.55),
+    0 0 70px rgb(var(--acc) / 0.3),
+    0 0 130px rgb(var(--acc) / 0.16),
+    0 32px 70px rgba(0, 0, 0, 0.8);
+}
+
+.research__plate:focus-visible {
+  outline: 2px solid rgb(var(--acc));
+  outline-offset: 6px;
+}
+
+/* ---- what the paper is ---- */
+
+.research__paper,
+.research__found {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The state of the thing first, then what it is — the order the book's
+   listing reads in on the Novel page. */
+.research__eyebrow {
+  margin: 0 0 clamp(0.35rem, 1vh, 0.6rem);
+  font-size: clamp(0.62rem, 0.74vw, 0.76rem);
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--fg-accent);
+}
+
+.research__name {
+  margin: 0;
+  font-weight: 400;
+}
+
+/* The question is the title, so it is the thing set large; the rest of the
+   title is its answer in brief and reads as a subtitle under it. Both are in
+   the one heading, because they are one title. */
+.research__name-main {
+  display: block;
+  padding-bottom: 0.08em;
+  font-family: var(--font-body);
+  font-size: clamp(1.8rem, 2.8vw, 2.7rem);
+  font-weight: 450;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  background-image: linear-gradient(
+    170deg,
+    var(--title-top) 0%,
+    var(--title-color) 52%,
+    var(--title-deep) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.research__name-sub {
+  display: block;
+  margin-top: clamp(0.35rem, 1vh, 0.6rem);
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 1.18vw, 1.12rem);
+  font-weight: 450;
+  line-height: 1.34;
+  letter-spacing: -0.005em;
+  color: var(--fg-muted);
+  text-wrap: balance;
+}
+
+.research__author {
+  margin: clamp(0.5rem, 1.4vh, 0.85rem) 0 0;
+  font-size: clamp(0.62rem, 0.74vw, 0.76rem);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+
+/* In the first person, so it takes the page's full white, the way the
+   second paragraph on the book does. Justified and hyphenated like the
+   book's copy — see .novel__blurb for why the one needs the other.
+
+   No margin above: it starts the column, level with the label at the head
+   of the one beside it, and the grid's own gap is what sits over both. */
+.research__lede {
+  margin: 0;
+  font-size: clamp(0.86rem, 1vw, 1rem);
+  line-height: 1.64;
+  color: var(--fg);
+  text-align: justify;
+  hyphens: auto;
+  text-wrap: pretty;
+}
+
+/* Where to go, straight after what it is. The margin under it is the least
+   the note can sit below it; the note takes whatever height is left over on
+   top of that, which is what keeps it on the page's bottom edge. */
+.research__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(0.4rem, 0.8vw, 0.65rem);
+  margin: clamp(0.9rem, 2.4vh, 1.4rem) 0 clamp(1rem, 2.6vh, 1.6rem);
+}
+
+/* Blue, like every link on the site that leaves it — see .novel__buy-link,
+   which these are the same object as. */
+.research__link {
+  --link: 124 170 255;
+
+  display: inline-flex;
+  align-items: center;
+  padding: 0.62em 1.1em;
+  border: 1px solid rgb(var(--link) / 0.5);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgb(var(--link) / 0.16), rgb(var(--link) / 0.05));
+  font-family: var(--font-display);
+  font-size: clamp(0.7rem, 0.82vw, 0.84rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: #b9d2ff;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    background 0.2s ease-out;
+}
+
+.research__link:hover,
+.research__link:focus-visible {
+  color: #e6efff;
+  border-color: rgb(var(--link) / 0.95);
+  background: linear-gradient(180deg, rgb(var(--link) / 0.3), rgb(var(--link) / 0.12));
+  text-decoration: underline;
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: 1px;
+}
+
+.research__link:focus-visible {
+  outline: 2px solid rgb(var(--link));
+  outline-offset: 3px;
+}
+
+/* The one control here that does not leave the page, so it is not blue: it
+   wears the page's own colour, and an outline rather than a fill. */
+.research__cite-open {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.62em 1.1em;
+  border: 1px solid rgb(var(--acc) / 0.55);
+  border-radius: 999px;
+  background: rgb(var(--acc) / 0.06);
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: clamp(0.7rem, 0.82vw, 0.84rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--fg-accent);
+  white-space: nowrap;
+  transition:
+    color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    background 0.2s ease-out;
+}
+
+.research__cite-open:hover,
+.research__cite-open:focus-visible {
+  color: var(--title-top);
+  border-color: rgb(var(--acc) / 0.95);
+  background: rgb(var(--acc) / 0.16);
+}
+
+.research__cite-open:focus-visible {
+  outline: 2px solid rgb(var(--acc));
+  outline-offset: 3px;
+}
+
+/* ---- what it found ---- */
+
+.research__label {
+  display: block;
+  margin: 0;
+  font-size: clamp(0.6rem, 0.72vw, 0.74rem);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-accent);
+}
+
+.research__findings {
+  counter-reset: finding;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.65rem, 1.8vh, 1.05rem);
+  margin: clamp(0.7rem, 1.9vh, 1.1rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Numbered down a rule, the way a lab notebook is: the figure in the page's
+   colour hung in the margin, the sentence ranged on its own edge. */
+.research__finding {
+  counter-increment: finding;
+  position: relative;
+  padding-left: 2.1em;
+  font-size: clamp(0.82rem, 0.95vw, 0.95rem);
+  line-height: 1.56;
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+
+.research__finding::before {
+  content: counter(finding, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0.22em;
+  font-family: var(--font-display);
+  font-size: 0.78em;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--title-color);
+}
+
+/* The figure that carries each result, in the page's colour — the same
+   treatment the quotation at the foot of the contact page gets. */
+.research__finding strong {
+  font-weight: 600;
+  color: var(--fg-accent);
+}
+
+/* The scope and the disclosure, under a hairline on the page's bottom edge:
+   quieter than the results, because it is a condition on reading them rather
+   than one of them, and still in the body's own ink rather than greyed away,
+   because it is the part a careful reader looks for first.
+
+   It sits under the description rather than under the results because that
+   is where the room is: the results fill their column, and the description
+   leaves about this much of its own. */
+.research__note {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding-top: clamp(0.6rem, 1.8vh, 1rem);
+  border-top: 1px solid rgb(var(--acc) / 0.28);
+}
+
+.research__note p {
+  margin: 0;
+  font-size: clamp(0.74rem, 0.84vw, 0.86rem);
+  line-height: 1.6;
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+
+/* ---- the citation ----
+
+   Over everything, in the browser's top layer. The browser's own popover
+   rules centre it in the window; these only dress it. Nothing here may set
+   `display` on the popover itself — an author rule beats the browser's
+   `display: none` for a closed one and would leave it permanently open. */
+/* Wide enough for the BibTeX's longest line, the title, to sit on one line
+   on any ordinary screen. */
+.research__cite {
+  width: min(56rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: clamp(0.9rem, 2.4vh, 1.4rem) clamp(1rem, 2.2vw, 1.6rem) clamp(1rem, 2.6vh, 1.5rem);
+  border: 0;
+  border-radius: 14px;
+  color: var(--fg);
+  background:
+    radial-gradient(120% 90% at 50% -20%, rgb(var(--acc) / 0.1), transparent 60%),
+    linear-gradient(180deg, #0d1411 0%, #070a09 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 0 1px rgb(var(--acc) / 0.5),
+    0 0 24px rgb(var(--acc) / 0.2),
+    0 30px 80px rgba(0, 0, 0, 0.85);
+}
+
+.research__cite:popover-open {
+  animation: research-cite-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes research-cite-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+
+/* Literal colours, not tokens: a backdrop has not always inherited from the
+   element it belongs to. The same near-black the picture viewer uses. */
+.research__cite::backdrop {
+  background: rgba(4, 4, 9, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.research__cite-bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.4rem, 1vw, 0.7rem);
+}
+
+.research__cite-name {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(0.86rem, 1vw, 1rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--title-top);
+}
+
+/* The picture viewer's buttons, so the two overlays on the site are made of
+   the same parts. */
+.research__cite-act {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.46rem 0.85rem;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.05);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: clamp(0.62rem, 0.72vw, 0.74rem);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  transition:
+    background 0.2s ease-out,
+    border-color 0.2s ease-out,
+    color 0.2s ease-out;
+}
+
+.research__cite-act:hover {
+  background: rgb(255 255 255 / 0.1);
+  border-color: rgb(255 255 255 / 0.28);
+  color: var(--fg);
+}
+
+.research__cite-act:focus-visible {
+  outline: 2px solid rgb(var(--acc));
+  outline-offset: 3px;
+}
+
+.research__bibtex {
+  margin: clamp(0.8rem, 2vh, 1.1rem) 0 0;
+  padding: clamp(0.8rem, 2vh, 1.1rem) clamp(0.9rem, 1.6vw, 1.2rem);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.035);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas,
+    monospace;
+  font-size: clamp(0.68rem, 0.78vw, 0.78rem);
+  line-height: 1.7;
+  color: var(--fg-muted);
+  /* Wrapped rather than scrolled where the window is too narrow for the title
+     line. The wrap is only on screen — Copy takes the string, not the page. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.research__bibtex code {
+  font: inherit;
+}
+
+/* ---- short windows ----
+
+   The type here stops shrinking at its floor before the window does: below
+   about 720px tall the root size is held at 14px while the page beside the
+   copy keeps getting shorter, so the copy ends up taller than the page and
+   the section than the window. These take back the space that is only
+   spacing — the title's size, and the gaps around the buttons. */
+@media (max-height: 46rem) {
+  .research__stage {
+    row-gap: 0.8rem;
+  }
+
+  .research__name-main {
+    font-size: clamp(1.6rem, 2.2vw, 2.25rem);
+  }
+
+  .research__name-sub {
+    margin-top: 0.3rem;
+  }
+
+  .research__author {
+    margin-top: 0.4rem;
+  }
+
+  .research__links {
+    margin: 0.7rem 0 0.8rem;
+  }
+}
+
+/* ---- narrower windows ----
+
+   Under about 1250px three columns are too narrow to read, so the page goes
+   small and moves up beside the title, and the two columns of copy take the
+   full width under both. The third track is half the stage exactly, so the
+   description — which spans the page's track and the one after it — and the
+   results come out the same width. */
+@media (max-width: 78rem) {
+  .research__stage {
+    --stage-h: clamp(11rem, calc(100dvh - 40rem), 22rem);
+    grid-template-columns:
+      var(--plate-w)
+      minmax(0, 1fr)
+      calc((100% - var(--col-gap)) / 2);
+    grid-template-rows: auto auto;
+    min-height: 0;
+  }
+
+  .research__plate {
+    grid-row: 1;
+  }
+
+  .research__head {
+    align-self: center;
+  }
+
+  .research__paper {
+    grid-column: 1 / span 2;
+  }
+}
+
+/* One column: the page above, then the copy at a reading measure. From here
+   down the section is taller than the window, which is what
+   useScrollThrough is for. */
+@media (max-width: 46rem) {
+  .research__stage {
+    --stage-h: min(17rem, 48vh);
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    row-gap: clamp(1.2rem, 3vh, 1.8rem);
+    justify-items: center;
+  }
+
+  .research__plate,
+  .research__head,
+  .research__paper,
+  .research__found {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .research__head,
+  .research__paper,
+  .research__found {
+    width: 100%;
+    max-width: 34rem;
+  }
+
+  .research__head {
+    align-self: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .research__plate,
+  .research__link,
+  .research__cite-open,
+  .research__cite-act {
+    transition: none;
+  }
+
+  .research__plate:hover,
+  .research__plate:focus-visible {
+    translate: none;
+  }
+
+  .research__cite:popover-open {
+    animation: none;
+  }
+}

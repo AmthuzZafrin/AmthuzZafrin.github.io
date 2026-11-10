@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from '../hooks/useInView.js'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion.js'
+import { useScrollThrough } from '../hooks/useScrollThrough.js'
 import './Commission.css'
 
 /**
@@ -16,57 +16,9 @@ export default function Commission() {
   const [ref, inView] = useInView({ threshold: 0.25 })
   const reduced = usePrefersReducedMotion()
 
-  /**
-   * This page scrolls freely in the middle and stops at both ends.
-   *
-   * The track is `scroll-snap-type: y mandatory`, which means the scroll must
-   * always come to rest on a snap point — so a section that simply opts out
-   * with `scroll-snap-align: none` does not become free, it becomes
-   * impossible to stop on. The only way to scroll through a region is for
-   * snapping not to be in force while you are in it.
-   *
-   * But it has to be in force at the two edges, or the section has no ends:
-   * you would drift out of the bottom of it and into the next page without
-   * anything marking the join. So snapping is off only while the section
-   * covers the window in both directions — there is more of it above and more
-   * below, and therefore something to scroll — and on the moment either edge
-   * comes into view. Arriving, that lands you on the top; leaving, it lands
-   * you on the bottom, which is what .commission__end is for.
-   *
-   * The eight pixels are hysteresis, and they are not optional. Without them
-   * the bottom edge is both the point where snapping switches on and the
-   * position it snaps you to, so it would switch off again on arrival and
-   * oscillate.
-   */
-  useEffect(() => {
-    const page = document.querySelector('.page')
-    const here = document.getElementById('commission')
-    if (!page || !here) return undefined
-
-    let free = false
-    const read = () => {
-      const box = here.getBoundingClientRect()
-      const tall = window.innerHeight
-      const want = box.top <= -8 && box.bottom >= tall + 8
-      if (want === free) return
-      free = want
-      page.style.scrollSnapType = want ? 'none' : ''
-    }
-
-    read()
-    // A scroll listener rather than thresholds: this turns on a few pixels
-    // either side of an edge, and an IntersectionObserver on a target nearly
-    // twice the window's height cannot resolve that finely.
-    page.addEventListener('scroll', read, { passive: true })
-    window.addEventListener('resize', read)
-
-    return () => {
-      page.removeEventListener('scroll', read)
-      window.removeEventListener('resize', read)
-      // Never leave the rest of the site unsnapped because this one unmounted.
-      page.style.scrollSnapType = ''
-    }
-  }, [])
+  // This page scrolls freely in the middle and stops at both ends — see the
+  // hook for how, and for why snapping cannot simply be switched off here.
+  useScrollThrough('commission')
 
   const rise = {
     hidden: reduced ? { opacity: 0 } : { opacity: 0, y: 18 },
@@ -171,7 +123,7 @@ export default function Commission() {
       {/* The section's own end, as a snap point. .section aligns its start, and
           an element can only align one edge — so the other end needs a box of
           its own sitting on it. */}
-      <div className="commission__end" aria-hidden="true" />
+      <div className="section-end" aria-hidden="true" />
     </section>
   )
 }

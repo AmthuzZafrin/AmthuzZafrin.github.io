@@ -6,6 +6,7 @@ const TABS = [
   { id: 'summary', label: 'About me' },
   { id: 'projects', label: 'Projects' },
   { id: 'commission', label: 'Websites' },
+  { id: 'research', label: 'Research' },
   { id: 'certificates', label: 'Certificates' },
   { id: 'experience', label: 'Experience' },
   { id: 'education', label: 'Education' },
